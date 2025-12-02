@@ -59,9 +59,20 @@ export const PartnerRequestVerification: React.FC = () => {
       });
 
       console.log('[RequestVerification] Response status:', response.status);
+      console.log('[RequestVerification] Response statusText:', response.statusText);
+      console.log('[RequestVerification] Response URL:', response.url);
 
-      const data = await response.json();
-      console.log('[RequestVerification] Response data:', data);
+      let data;
+      const responseText = await response.text();
+      console.log('[RequestVerification] Response text:', responseText);
+
+      try {
+        data = JSON.parse(responseText);
+        console.log('[RequestVerification] Parsed response data:', data);
+      } catch (parseError) {
+        console.error('[RequestVerification] Failed to parse response as JSON:', parseError);
+        throw new Error(`Server returned invalid response: ${responseText.substring(0, 100)}`);
+      }
 
       if (!response.ok) {
         throw new Error(data.error || 'Failed to create verification request');

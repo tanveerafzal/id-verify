@@ -1,5 +1,6 @@
 // API configuration
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://100.31.50.33:3002/api/v1';
+// Base URL should be just the server URL without /api/v1
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://100.31.50.33:3002';
 
 console.log('[API Config] Environment:', import.meta.env.MODE);
 console.log('[API Config] DEV mode:', import.meta.env.DEV);
@@ -16,8 +17,9 @@ export const getApiUrl = (path: string): string => {
   }
 
   // In production, use full URL and convert /api to /api/v1
+  // Remove /api prefix and add /api/v1
   const cleanPath = path.replace(/^\/api/, '');
-  const fullUrl = `${API_BASE_URL}${cleanPath}`;
+  const fullUrl = `${API_BASE_URL}/api/v1${cleanPath}`;
   console.log('[API Config] PROD mode - converting', path, 'to', fullUrl);
   return fullUrl;
 };
