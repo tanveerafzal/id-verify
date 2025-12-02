@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PartnerLayout } from './PartnerLayout';
+import { getApiUrl } from '../config/api';
 
 interface Partner {
   id: string;
@@ -57,7 +58,7 @@ export const PartnerDashboard: React.FC = () => {
 
     try {
       // Load partner profile
-      const profileResponse = await fetch('/api/partners/profile', {
+      const profileResponse = await fetch(getApiUrl('/api/partners/profile'), {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -71,7 +72,7 @@ export const PartnerDashboard: React.FC = () => {
       setPartner(profileData.data);
 
       // Load usage stats
-      const statsResponse = await fetch('/api/partners/usage-stats', {
+      const statsResponse = await fetch(getApiUrl('/api/partners/usage-stats'), {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -83,7 +84,7 @@ export const PartnerDashboard: React.FC = () => {
       }
 
       // Load available tiers
-      const tiersResponse = await fetch('/api/partners/tiers');
+      const tiersResponse = await fetch(getApiUrl('/api/partners/tiers'));
       if (tiersResponse.ok) {
         const tiersData = await tiersResponse.json();
         setTiers(tiersData.data);
@@ -335,7 +336,7 @@ const TierUpgradeModal: React.FC<TierUpgradeModalProps> = ({
 
     try {
       const token = localStorage.getItem('partnerToken');
-      const response = await fetch('/api/partners/upgrade-tier', {
+      const response = await fetch(getApiUrl('/api/partners/upgrade-tier'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

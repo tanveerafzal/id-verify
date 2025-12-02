@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { DocumentCapture } from './DocumentCapture';
 import { SelfieCapture } from './SelfieCapture';
 import { VerificationResult } from './VerificationResult';
+import { getApiUrl } from '../config/api';
 
 interface VerificationStep {
   step: 'document' | 'selfie' | 'processing' | 'complete';
@@ -25,7 +26,7 @@ export const IDVerification: React.FC = () => {
         const apiKey = getApiKey();
         const url = apiKey ? `/api/verifications?apiKey=${apiKey}` : '/api/verifications';
 
-        const createResponse = await fetch(url, {
+        const createResponse = await fetch(getApiUrl(url), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -46,7 +47,7 @@ export const IDVerification: React.FC = () => {
           ? `/api/verifications/${createData.data.id}/documents?apiKey=${apiKey}`
           : `/api/verifications/${createData.data.id}/documents`;
 
-        const uploadResponse = await fetch(uploadUrl, {
+        const uploadResponse = await fetch(getApiUrl(uploadUrl), {
           method: 'POST',
           body: formData
         });
@@ -73,7 +74,7 @@ export const IDVerification: React.FC = () => {
         ? `/api/verifications/${verificationId}/selfie?apiKey=${apiKey}`
         : `/api/verifications/${verificationId}/selfie`;
 
-      await fetch(selfieUrl, {
+      await fetch(getApiUrl(selfieUrl), {
         method: 'POST',
         body: formData
       });
@@ -82,7 +83,7 @@ export const IDVerification: React.FC = () => {
         ? `/api/verifications/${verificationId}/submit?apiKey=${apiKey}`
         : `/api/verifications/${verificationId}/submit`;
 
-      const submitResponse = await fetch(submitUrl, { method: 'POST' });
+      const submitResponse = await fetch(getApiUrl(submitUrl), { method: 'POST' });
 
       const submitData = await submitResponse.json();
       setResult(submitData.data);

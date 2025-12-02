@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PartnerLayout } from './PartnerLayout';
+import { getApiUrl } from '../config/api';
 
 interface Verification {
   id: string;
@@ -35,7 +36,7 @@ export const PartnerVerifications: React.FC = () => {
     }
 
     try {
-      const response = await fetch('/api/partners/verifications', {
+      const response = await fetch(getApiUrl('/api/partners/verifications'), {
         headers: {
           'Authorization': `Bearer ${token}`
         }

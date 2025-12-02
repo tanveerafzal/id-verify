@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getApiUrl } from '../config/api';
 
 export const PartnerLogin: React.FC = () => {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ export const PartnerLogin: React.FC = () => {
     setLoading(true);
 
     try {
-      const response = await fetch('/api/partners/login', {
+      const response = await fetch(getApiUrl('/api/partners/login'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

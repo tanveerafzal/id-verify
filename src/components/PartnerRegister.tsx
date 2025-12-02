@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getApiUrl } from '../config/api';
 
 export const PartnerRegister: React.FC = () => {
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ export const PartnerRegister: React.FC = () => {
     setLoading(true);
 
     try {
-      const response = await fetch('/api/partners/register', {
+      const response = await fetch(getApiUrl('/api/partners/register'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
