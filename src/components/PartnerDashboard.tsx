@@ -236,7 +236,7 @@ export const PartnerDashboard: React.FC = () => {
                       <code>{partner.apiSecret}</code>
                       <button
                         className="btn-copy"
-                        onClick={() => copyToClipboard(partner.apiSecret)}
+                        onClick={() => copyToClipboard(partner.apiSecret || '')}
                       >
                         Copy
                       </button>

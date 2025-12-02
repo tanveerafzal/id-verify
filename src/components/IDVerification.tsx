@@ -52,7 +52,6 @@ export const IDVerification: React.FC = () => {
         });
 
         const uploadData = await uploadResponse.json();
-        setDocumentData(uploadData.data);
         setCurrentStep({ step: 'selfie', data: uploadData.data });
       }
     } catch (error) {
