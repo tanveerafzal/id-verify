@@ -39,34 +39,62 @@ export const PartnerRegister: React.FC = () => {
     setLoading(true);
 
     try {
-      const response = await fetch(getApiUrl('/api/partners/register'), {
+      const apiUrl = getApiUrl('/api/partners/register');
+      console.log('[PartnerRegister] API URL:', apiUrl);
+      console.log('[PartnerRegister] Environment:', import.meta.env.MODE);
+      console.log('[PartnerRegister] VITE_API_BASE_URL:', import.meta.env.VITE_API_BASE_URL);
+
+      const requestBody = {
+        email: formData.email,
+        password: formData.password,
+        companyName: formData.companyName,
+        contactName: formData.contactName,
+        phone: formData.phone
+      };
+      console.log('[PartnerRegister] Request body:', { ...requestBody, password: '***' });
+
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-          companyName: formData.companyName,
-          contactName: formData.contactName,
-          phone: formData.phone
-        })
+        body: JSON.stringify(requestBody)
       });
 
-      const data = await response.json();
+      console.log('[PartnerRegister] Response status:', response.status);
+      console.log('[PartnerRegister] Response statusText:', response.statusText);
+      console.log('[PartnerRegister] Response URL:', response.url);
+      console.log('[PartnerRegister] Response headers:', Object.fromEntries(response.headers.entries()));
+
+      let data;
+      try {
+        const responseText = await response.text();
+        console.log('[PartnerRegister] Response text:', responseText);
+        data = JSON.parse(responseText);
+        console.log('[PartnerRegister] Parsed response data:', data);
+      } catch (parseErr) {
+        console.error('[PartnerRegister] Failed to parse response as JSON:', parseErr);
+        throw new Error('Server returned invalid response');
+      }
 
       if (!response.ok) {
-        throw new Error(data.error || 'Registration failed');
+        throw new Error(data.error || `Registration failed: ${response.status} ${response.statusText}`);
       }
 
       // Store token
       localStorage.setItem('partnerToken', data.data.token);
       localStorage.setItem('partner', JSON.stringify(data.data.partner));
 
+      console.log('[PartnerRegister] Registration successful, navigating to dashboard');
       // Redirect to dashboard
       navigate('/partner/dashboard');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Registration failed');
+      console.error('[PartnerRegister] Error:', err);
+      if (err instanceof TypeError && err.message.includes('fetch')) {
+        setError('Network error: Unable to connect to server. Please check your connection.');
+      } else {
+        setError(err instanceof Error ? err.message : 'Registration failed');
+      }
     } finally {
       setLoading(false);
     }

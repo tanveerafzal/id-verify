@@ -24,7 +24,13 @@ export const PartnerLogin: React.FC = () => {
     setLoading(true);
 
     try {
-      const response = await fetch(getApiUrl('/api/partners/login'), {
+      const apiUrl = getApiUrl('/api/partners/login');
+      console.log('[PartnerLogin] API URL:', apiUrl);
+      console.log('[PartnerLogin] Environment:', import.meta.env.MODE);
+      console.log('[PartnerLogin] VITE_API_BASE_URL:', import.meta.env.VITE_API_BASE_URL);
+      console.log('[PartnerLogin] Request body:', { email: formData.email, password: '***' });
+
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -32,20 +38,40 @@ export const PartnerLogin: React.FC = () => {
         body: JSON.stringify(formData)
       });
 
-      const data = await response.json();
+      console.log('[PartnerLogin] Response status:', response.status);
+      console.log('[PartnerLogin] Response statusText:', response.statusText);
+      console.log('[PartnerLogin] Response URL:', response.url);
+      console.log('[PartnerLogin] Response headers:', Object.fromEntries(response.headers.entries()));
+
+      let data;
+      try {
+        const responseText = await response.text();
+        console.log('[PartnerLogin] Response text:', responseText);
+        data = JSON.parse(responseText);
+        console.log('[PartnerLogin] Parsed response data:', data);
+      } catch (parseErr) {
+        console.error('[PartnerLogin] Failed to parse response as JSON:', parseErr);
+        throw new Error('Server returned invalid response');
+      }
 
       if (!response.ok) {
-        throw new Error(data.error || 'Login failed');
+        throw new Error(data.error || `Login failed: ${response.status} ${response.statusText}`);
       }
 
       // Store token
       localStorage.setItem('partnerToken', data.data.token);
       localStorage.setItem('partner', JSON.stringify(data.data.partner));
 
+      console.log('[PartnerLogin] Login successful, navigating to dashboard');
       // Redirect to dashboard
       navigate('/partner/dashboard');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed');
+      console.error('[PartnerLogin] Error:', err);
+      if (err instanceof TypeError && err.message.includes('fetch')) {
+        setError('Network error: Unable to connect to server. Please check your connection.');
+      } else {
+        setError(err instanceof Error ? err.message : 'Login failed');
+      }
     } finally {
       setLoading(false);
     }

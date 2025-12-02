@@ -50,47 +50,76 @@ export const PartnerDashboard: React.FC = () => {
 
   const loadDashboardData = async () => {
     const token = localStorage.getItem('partnerToken');
+    console.log('[PartnerDashboard] Token from localStorage:', token ? 'exists' : 'missing');
 
     if (!token) {
+      console.log('[PartnerDashboard] No token, redirecting to login');
       navigate('/partner/login');
       return;
     }
 
     try {
       // Load partner profile
-      const profileResponse = await fetch(getApiUrl('/api/partners/profile'), {
+      const profileUrl = getApiUrl('/api/partners/profile');
+      console.log('[PartnerDashboard] Loading profile from:', profileUrl);
+      console.log('[PartnerDashboard] Environment:', import.meta.env.MODE);
+      console.log('[PartnerDashboard] VITE_API_BASE_URL:', import.meta.env.VITE_API_BASE_URL);
+
+      const profileResponse = await fetch(profileUrl, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
 
+      console.log('[PartnerDashboard] Profile response status:', profileResponse.status);
+      console.log('[PartnerDashboard] Profile response headers:', Object.fromEntries(profileResponse.headers.entries()));
+
       if (!profileResponse.ok) {
+        const errorText = await profileResponse.text();
+        console.error('[PartnerDashboard] Profile error response:', errorText);
         throw new Error('Failed to load profile');
       }
 
       const profileData = await profileResponse.json();
+      console.log('[PartnerDashboard] Profile data loaded:', profileData);
       setPartner(profileData.data);
 
       // Load usage stats
-      const statsResponse = await fetch(getApiUrl('/api/partners/usage-stats'), {
+      const statsUrl = getApiUrl('/api/partners/usage-stats');
+      console.log('[PartnerDashboard] Loading stats from:', statsUrl);
+
+      const statsResponse = await fetch(statsUrl, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
 
+      console.log('[PartnerDashboard] Stats response status:', statsResponse.status);
+
       if (statsResponse.ok) {
         const statsData = await statsResponse.json();
+        console.log('[PartnerDashboard] Stats data loaded:', statsData);
         setUsageStats(statsData.data);
+      } else {
+        console.error('[PartnerDashboard] Failed to load stats:', await statsResponse.text());
       }
 
       // Load available tiers
-      const tiersResponse = await fetch(getApiUrl('/api/partners/tiers'));
+      const tiersUrl = getApiUrl('/api/partners/tiers');
+      console.log('[PartnerDashboard] Loading tiers from:', tiersUrl);
+
+      const tiersResponse = await fetch(tiersUrl);
+      console.log('[PartnerDashboard] Tiers response status:', tiersResponse.status);
+
       if (tiersResponse.ok) {
         const tiersData = await tiersResponse.json();
+        console.log('[PartnerDashboard] Tiers data loaded:', tiersData);
         setTiers(tiersData.data);
+      } else {
+        console.error('[PartnerDashboard] Failed to load tiers:', await tiersResponse.text());
       }
     } catch (error) {
-      console.error('Error loading dashboard:', error);
+      console.error('[PartnerDashboard] Error loading dashboard:', error);
     } finally {
       setLoading(false);
     }
