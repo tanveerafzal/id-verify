@@ -5,6 +5,7 @@ import { PartnerLogin } from './components/PartnerLogin'
 import { PartnerDashboard } from './components/PartnerDashboard'
 import { PartnerVerifications } from './components/PartnerVerifications'
 import { PartnerSettings } from './components/PartnerSettings'
+import { PartnerRequestVerification } from './components/PartnerRequestVerification'
 import './styles/verification.css'
 import './styles/partner.css'
 
@@ -17,6 +18,7 @@ function App() {
         <Route path="/partner/login" element={<PartnerLogin />} />
         <Route path="/partner/dashboard" element={<PartnerDashboard />} />
         <Route path="/partner/verifications" element={<PartnerVerifications />} />
+        <Route path="/partner/request-verification" element={<PartnerRequestVerification />} />
         <Route path="/partner/settings" element={<PartnerSettings />} />
       </Routes>
     </BrowserRouter>
