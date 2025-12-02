@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { DocumentCapture } from './DocumentCapture';
 import { SelfieCapture } from './SelfieCapture';
 import { VerificationResult } from './VerificationResult';
@@ -11,7 +11,6 @@ interface VerificationStep {
 export const IDVerification: React.FC = () => {
   const [currentStep, setCurrentStep] = useState<VerificationStep>({ step: 'document' });
   const [verificationId, setVerificationId] = useState<string | null>(null);
-  const [documentData, setDocumentData] = useState<any>(null);
   const [result, setResult] = useState<any>(null);
 
   // Get API key from URL query parameter
