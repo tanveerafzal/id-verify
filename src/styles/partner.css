@@ -1336,6 +1336,28 @@ select.form-input:focus {
   margin-bottom: 20px;
 }
 
+.success-message-box {
+  background: #f0fdf4;
+  border: 2px solid #86efac;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 24px;
+  text-align: left;
+}
+
+.success-main-text {
+  font-size: 16px;
+  color: #166534;
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.success-sub-text {
+  font-size: 14px;
+  color: #15803d;
+  margin: 0;
+}
+
 .verification-link-container {
   display: flex;
   gap: 12px;

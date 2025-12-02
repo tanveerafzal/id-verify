@@ -24,6 +24,7 @@ export const PartnerRequestVerification: React.FC = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [verificationLink, setVerificationLink] = useState('');
+  const [sentToEmail, setSentToEmail] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({
@@ -70,6 +71,7 @@ export const PartnerRequestVerification: React.FC = () => {
       const baseUrl = window.location.origin;
       const link = `${baseUrl}?verificationId=${data.data.id}`;
       setVerificationLink(link);
+      setSentToEmail(formData.userEmail);
       setSuccess(true);
 
       // Reset form
@@ -119,7 +121,15 @@ export const PartnerRequestVerification: React.FC = () => {
               <span className="success-icon">✓</span>
               <h3>Verification Request Created!</h3>
             </div>
-            <p>Share this verification link with the user:</p>
+
+            <div className="success-message-box">
+              <p className="success-main-text">
+                An email has been automatically sent to <strong>{sentToEmail}</strong> with the verification link.
+              </p>
+              <p className="success-sub-text">
+                You can also share the link manually if needed:
+              </p>
+            </div>
 
             <div className="verification-link-container">
               <input
@@ -134,10 +144,10 @@ export const PartnerRequestVerification: React.FC = () => {
             </div>
 
             <div className="action-buttons">
-              <button onClick={sendEmailToUser} className="btn btn-primary">
-                Send Email to User
+              <button onClick={sendEmailToUser} className="btn btn-outline">
+                Resend Email
               </button>
-              <button onClick={() => navigate('/partner/verifications')} className="btn btn-secondary">
+              <button onClick={() => navigate('/partner/verifications')} className="btn btn-primary">
                 View All Verifications
               </button>
               <button onClick={() => setSuccess(false)} className="btn btn-outline">
