@@ -14,11 +14,18 @@ interface PartnerInfo {
   logoUrl?: string;
 }
 
+interface VerificationInfo {
+  userName?: string;
+  userEmail?: string;
+  partnerId?: string;
+}
+
 export const IDVerification: React.FC = () => {
   const [currentStep, setCurrentStep] = useState<VerificationStep>({ step: 'document' });
   const [verificationId, setVerificationId] = useState<string | null>(null);
   const [result, setResult] = useState<any>(null);
   const [partnerInfo, setPartnerInfo] = useState<PartnerInfo | null>(null);
+  const [verificationInfo, setVerificationInfo] = useState<VerificationInfo | null>(null);
 
   useEffect(() => {
     loadVerificationInfo();
@@ -34,6 +41,13 @@ export const IDVerification: React.FC = () => {
         if (response.ok) {
           const data = await response.json();
           const verification = data.data;
+
+          // Store verification info
+          setVerificationInfo({
+            userName: verification.userName,
+            userEmail: verification.userEmail,
+            partnerId: verification.partnerId
+          });
 
           // Load partner info if verification has partnerId
           if (verification.partnerId) {
@@ -154,6 +168,24 @@ export const IDVerification: React.FC = () => {
 
       <div className="verification-header">
         <h1>Identity Verification</h1>
+
+        {/* Welcome Message */}
+        {(verificationInfo?.userName || partnerInfo?.companyName) && (
+          <div className="welcome-message">
+            {verificationInfo?.userName && (
+              <p className="greeting">
+                Hello <strong>{verificationInfo.userName}</strong>!
+              </p>
+            )}
+            {partnerInfo?.companyName && (
+              <p className="request-info">
+                <strong>{partnerInfo.companyName}</strong> has requested you to complete an identity verification.
+                Please follow the steps below to verify your identity securely.
+              </p>
+            )}
+          </div>
+        )}
+
         <div className="progress-bar">
           <div
             className={`step ${currentStep.step === 'document' ? 'active' : 'completed'}`}
