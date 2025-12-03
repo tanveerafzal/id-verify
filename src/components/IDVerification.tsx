@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { DocumentCapture } from './DocumentCapture';
 import { SelfieCapture } from './SelfieCapture';
 import { VerificationResult } from './VerificationResult';
@@ -9,10 +9,51 @@ interface VerificationStep {
   data?: any;
 }
 
+interface PartnerInfo {
+  companyName: string;
+  logoUrl?: string;
+}
+
 export const IDVerification: React.FC = () => {
   const [currentStep, setCurrentStep] = useState<VerificationStep>({ step: 'document' });
   const [verificationId, setVerificationId] = useState<string | null>(null);
   const [result, setResult] = useState<any>(null);
+  const [partnerInfo, setPartnerInfo] = useState<PartnerInfo | null>(null);
+
+  useEffect(() => {
+    loadVerificationInfo();
+  }, []);
+
+  const loadVerificationInfo = async () => {
+    const params = new URLSearchParams(window.location.search);
+    const verificationIdParam = params.get('verificationId');
+
+    if (verificationIdParam) {
+      try {
+        const response = await fetch(getApiUrl(`/api/verifications/${verificationIdParam}`));
+        if (response.ok) {
+          const data = await response.json();
+          const verification = data.data;
+
+          // Load partner info if verification has partnerId
+          if (verification.partnerId) {
+            const partnerResponse = await fetch(
+              getApiUrl(`/api/partners/${verification.partnerId}/public`)
+            );
+            if (partnerResponse.ok) {
+              const partnerData = await partnerResponse.json();
+              setPartnerInfo({
+                companyName: partnerData.data.companyName,
+                logoUrl: partnerData.data.logoUrl
+              });
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Failed to load verification info:', error);
+      }
+    }
+  };
 
   // Get API key from URL query parameter
   const getApiKey = () => {
@@ -95,6 +136,22 @@ export const IDVerification: React.FC = () => {
 
   return (
     <div className="id-verification-container">
+      {partnerInfo && (
+        <div className="partner-brand-header">
+          {partnerInfo.logoUrl && (
+            <img
+              src={partnerInfo.logoUrl}
+              alt={partnerInfo.companyName}
+              className="partner-brand-logo"
+            />
+          )}
+          <div className="partner-brand-text">
+            <span className="verification-for">Verification requested by</span>
+            <span className="partner-brand-name">{partnerInfo.companyName}</span>
+          </div>
+        </div>
+      )}
+
       <div className="verification-header">
         <h1>Identity Verification</h1>
         <div className="progress-bar">

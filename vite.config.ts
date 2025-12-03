@@ -13,9 +13,17 @@ export default defineConfig({
     ],
     proxy: {
       '/api': {
-        target: 'http://100.31.50.33:3002',  // Port 80 (Nginx)
+        target: 'https://8870f1d90b56.ngrok-free.app',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '/api/v1')
+        rewrite: (path) => path.replace(/^\/api/, '/api/v1'),
+        configure: (proxy, options) => {
+          proxy.on('error', (err, req, res) => {
+            console.log('[Vite Proxy] Proxy error:', err);
+          });
+          proxy.on('proxyReq', (proxyReq, req, res) => {
+            console.log('[Vite Proxy] Request:', req.method, req.url, '→', options.target + proxyReq.path);
+          });
+        }
       }
     }
   }

@@ -22,6 +22,8 @@ export const PartnerVerifications: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [filter, setFilter] = useState<'all' | 'completed' | 'pending'>('all');
+  const [resendingId, setResendingId] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
     loadVerifications();
@@ -88,6 +90,44 @@ export const PartnerVerifications: React.FC = () => {
     );
   };
 
+  const handleResendEmail = async (verificationId: string) => {
+    const token = localStorage.getItem('partnerToken');
+
+    if (!token) {
+      navigate('/partner/login');
+      return;
+    }
+
+    setResendingId(verificationId);
+    setError('');
+    setSuccessMessage('');
+
+    try {
+      const response = await fetch(
+        getApiUrl(`/api/partners/verifications/${verificationId}/resend-email`),
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        }
+      );
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to resend email');
+      }
+
+      setSuccessMessage('Verification email sent successfully!');
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (err) {
+      console.error('Resend email error:', err);
+      setError(err instanceof Error ? err.message : 'Failed to resend email');
+    } finally {
+      setResendingId(null);
+    }
+  };
+
   const filteredVerifications = verifications.filter((v) => {
     if (filter === 'all') return true;
     if (filter === 'completed') return v.status === 'COMPLETED';
@@ -117,6 +157,12 @@ export const PartnerVerifications: React.FC = () => {
       {error && (
         <div className="error-alert">
           {error}
+        </div>
+      )}
+
+      {successMessage && (
+        <div className="success-alert">
+          {successMessage}
         </div>
       )}
 
@@ -161,6 +207,7 @@ export const PartnerVerifications: React.FC = () => {
                 <th>Score</th>
                 <th>Created</th>
                 <th>Completed</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -184,6 +231,17 @@ export const PartnerVerifications: React.FC = () => {
                     {verification.completedAt
                       ? new Date(verification.completedAt).toLocaleDateString()
                       : '-'}
+                  </td>
+                  <td>
+                    {verification.status === 'PENDING' && (
+                      <button
+                        onClick={() => handleResendEmail(verification.id)}
+                        disabled={resendingId === verification.id}
+                        className="btn btn-secondary btn-sm"
+                      >
+                        {resendingId === verification.id ? 'Sending...' : 'Resend Email'}
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}

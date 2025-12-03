@@ -1,14 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { getApiUrl } from '../config/api';
 
 interface PartnerLayoutProps {
   children: React.ReactNode;
+}
+
+interface Partner {
+  id: string;
+  email: string;
+  companyName: string;
+  logoUrl?: string;
 }
 
 export const PartnerLayout: React.FC<PartnerLayoutProps> = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [partner, setPartner] = useState<Partner | null>(null);
+
+  useEffect(() => {
+    loadPartnerInfo();
+  }, []);
+
+  const loadPartnerInfo = async () => {
+    const token = localStorage.getItem('partnerToken');
+    if (!token) return;
+
+    try {
+      const response = await fetch(getApiUrl('/api/partners/profile'), {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setPartner(data.data);
+      }
+    } catch (error) {
+      console.error('Failed to load partner info:', error);
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('partnerToken');
@@ -30,7 +63,20 @@ export const PartnerLayout: React.FC<PartnerLayoutProps> = ({ children }) => {
       {/* Left Sidebar */}
       <aside className={`sidebar ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
         <div className="sidebar-header">
-          <h2>ID Verify</h2>
+          <div className="partner-branding">
+            {partner?.logoUrl ? (
+              <img
+                src={partner.logoUrl}
+                alt={partner.companyName}
+                className="partner-logo"
+              />
+            ) : (
+              <div className="partner-logo-placeholder">
+                {partner?.companyName?.substring(0, 2).toUpperCase() || 'ID'}
+              </div>
+            )}
+            <h2 className="partner-name">{partner?.companyName || 'ID Verify'}</h2>
+          </div>
           <button
             className="mobile-close"
             onClick={() => setIsMobileMenuOpen(false)}
