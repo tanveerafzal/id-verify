@@ -105,7 +105,7 @@ export const PartnerRegister: React.FC = () => {
       <div className="auth-card">
         <div className="auth-brand">
           <div className="brand-icon">ID</div>
-          <h2>ID Verification</h2>
+          <h2>[The ID verification Company]</h2>
         </div>
         <div className="auth-header">
           <h1>Partner Registration</h1>

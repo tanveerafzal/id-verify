@@ -74,7 +74,7 @@ export const LandingPage: React.FC = () => {
         <div className="nav-container">
           <div className="nav-brand">
             <div className="brand-icon">ID</div>
-            <span className="brand-name">ID Verification</span>
+            <span className="brand-name">[The ID Verification Company]</span>
           </div>
           <div className="nav-links">
             <a href="#features">Features</a>
@@ -251,7 +251,7 @@ export const LandingPage: React.FC = () => {
         <div className="footer-container">
           <div className="footer-brand">
             <div className="brand-icon">ID</div>
-            <span className="brand-name">ID Verification</span>
+            <span className="brand-name">[The ID verification Company]</span>
             <p>Secure identity verification for modern businesses</p>
           </div>
           <div className="footer-links">
