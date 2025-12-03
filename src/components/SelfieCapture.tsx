@@ -2,9 +2,10 @@ import React, { useState, useRef, useEffect } from 'react';
 
 interface SelfieCaptureProps {
   onCapture: (file: File) => void;
+  onBack?: () => void;
 }
 
-export const SelfieCapture: React.FC<SelfieCaptureProps> = ({ onCapture }) => {
+export const SelfieCapture: React.FC<SelfieCaptureProps> = ({ onCapture, onBack }) => {
   const [preview, setPreview] = useState<string | null>(null);
   const [capturedFile, setCapturedFile] = useState<File | null>(null);
   const [isCamera, setIsCamera] = useState(false);
@@ -196,8 +197,18 @@ export const SelfieCapture: React.FC<SelfieCaptureProps> = ({ onCapture }) => {
   // Debug render states
   console.log('Render states:', { loading, error, useUpload, isCamera, preview: !!preview });
 
+  const handleBack = () => {
+    stopCamera();
+    onBack?.();
+  };
+
   return (
     <div className="selfie-capture">
+      {onBack && (
+        <button className="btn-back" onClick={handleBack}>
+          ← Back to Document
+        </button>
+      )}
       <h2>Take a Selfie</h2>
       <p className="instructions">
         Position your face in the center of the frame. We'll verify it matches your ID.

@@ -3,6 +3,7 @@ import { IDVerification } from './components/IDVerification'
 import { PartnerRegister } from './components/PartnerRegister'
 import { PartnerLogin } from './components/PartnerLogin'
 import { PartnerForgotPassword } from './components/PartnerForgotPassword'
+import { PartnerResetPassword } from './components/PartnerResetPassword'
 import { PartnerDashboard } from './components/PartnerDashboard'
 import { PartnerVerifications } from './components/PartnerVerifications'
 import { PartnerSettings } from './components/PartnerSettings'
@@ -18,6 +19,7 @@ function App() {
         <Route path="/partner/register" element={<PartnerRegister />} />
         <Route path="/partner/login" element={<PartnerLogin />} />
         <Route path="/partner/forgot-password" element={<PartnerForgotPassword />} />
+        <Route path="/reset-password" element={<PartnerResetPassword />} />
         <Route path="/partner/dashboard" element={<PartnerDashboard />} />
         <Route path="/partner/verifications" element={<PartnerVerifications />} />
         <Route path="/partner/request-verification" element={<PartnerRequestVerification />} />

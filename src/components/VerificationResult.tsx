@@ -196,9 +196,20 @@ export const VerificationResult: React.FC<VerificationResultProps> = ({ result }
       </div>
 
       <div className="result-actions">
-        <button className="btn-primary" onClick={() => window.location.reload()}>
-          Start New Verification
-        </button>
+        {result.passed ? (
+          <>
+            <button className="btn-primary" onClick={() => window.print()}>
+              Print
+            </button>
+            <button className="btn-secondary" onClick={() => window.close()}>
+              Close
+            </button>
+          </>
+        ) : (
+          <button className="btn-primary" onClick={() => window.location.reload()}>
+            Start New Verification
+          </button>
+        )}
       </div>
     </div>
   );

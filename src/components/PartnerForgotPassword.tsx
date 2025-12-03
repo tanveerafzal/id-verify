@@ -23,6 +23,12 @@ export const PartnerForgotPassword: React.FC = () => {
         body: JSON.stringify({ email })
       });
 
+      // Check if response is JSON
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error('Password reset service is not available. Please try again later.');
+      }
+
       const data = await response.json();
 
       if (!response.ok) {
@@ -31,7 +37,11 @@ export const PartnerForgotPassword: React.FC = () => {
 
       setSuccess(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to send reset email');
+      if (err instanceof SyntaxError) {
+        setError('Password reset service is not available. Please try again later.');
+      } else {
+        setError(err instanceof Error ? err.message : 'Failed to send reset email');
+      }
     } finally {
       setLoading(false);
     }

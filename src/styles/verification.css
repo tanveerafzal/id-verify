@@ -133,6 +133,27 @@ body {
 
 .document-capture, .selfie-capture {
   text-align: center;
+  position: relative;
+}
+
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: transparent;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  color: #374151;
+  font-size: 14px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: all 0.2s ease;
+}
+
+.btn-back:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
 }
 
 .document-capture h2, .selfie-capture h2 {
@@ -641,5 +662,69 @@ body {
 
   .btn-primary, .btn-secondary {
     width: 100%;
+  }
+}
+
+/* Print Styles */
+@media print {
+  body {
+    background: white;
+    padding: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .id-verification-container {
+    box-shadow: none;
+    max-width: 100%;
+  }
+
+  .verification-header,
+  .progress-bar,
+  .result-actions,
+  .btn-back {
+    display: none !important;
+  }
+
+  .verification-content {
+    padding: 20px;
+  }
+
+  .result-header {
+    padding: 30px;
+  }
+
+  .result-header.success {
+    background: #10b981 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .result-header.failure {
+    background: #ef4444 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .detail-card {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .score-circle svg circle {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .check-item.pass .check-icon {
+    color: #10b981 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .check-item.fail .check-icon {
+    color: #ef4444 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 }

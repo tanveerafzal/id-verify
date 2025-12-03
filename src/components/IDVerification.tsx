@@ -241,7 +241,13 @@ export const IDVerification: React.FC = () => {
         )}
 
         {currentStep.step === 'selfie' && (
-          <SelfieCapture onCapture={handleSelfieCaptured} />
+          <SelfieCapture
+            onCapture={handleSelfieCaptured}
+            onBack={() => {
+              setVerificationId(null);
+              setCurrentStep({ step: 'document' });
+            }}
+          />
         )}
 
         {currentStep.step === 'processing' && (
