@@ -103,6 +103,10 @@ export const PartnerRegister: React.FC = () => {
   return (
     <div className="partner-auth-container">
       <div className="auth-card">
+        <div className="auth-brand">
+          <div className="brand-icon">ID</div>
+          <h2>ID Verification</h2>
+        </div>
         <div className="auth-header">
           <h1>Partner Registration</h1>
           <p>Start verifying identities with our ID verification platform</p>

@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { LandingPage } from './components/LandingPage'
 import { IDVerification } from './components/IDVerification'
 import { PartnerRegister } from './components/PartnerRegister'
 import { PartnerLogin } from './components/PartnerLogin'
@@ -8,6 +9,7 @@ import { PartnerDashboard } from './components/PartnerDashboard'
 import { PartnerVerifications } from './components/PartnerVerifications'
 import { PartnerSettings } from './components/PartnerSettings'
 import { PartnerRequestVerification } from './components/PartnerRequestVerification'
+import './styles/landing.css'
 import './styles/verification.css'
 import './styles/partner.css'
 
@@ -15,7 +17,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<IDVerification />} />
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/verify" element={<IDVerification />} />
         <Route path="/partner/register" element={<PartnerRegister />} />
         <Route path="/partner/login" element={<PartnerLogin />} />
         <Route path="/partner/forgot-password" element={<PartnerForgotPassword />} />

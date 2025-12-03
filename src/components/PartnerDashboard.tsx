@@ -222,10 +222,10 @@ export const PartnerDashboard: React.FC = () => {
             </p>
             <div className="credential-item">
               <div className="credential-value">
-                <code>{window.location.origin}/?apiKey={partner.apiKey}</code>
+                <code>{window.location.origin}/verify?apiKey={partner.apiKey}</code>
                 <button
                   className="btn-copy"
-                  onClick={() => copyToClipboard(`${window.location.origin}/?apiKey=${partner.apiKey}`)}
+                  onClick={() => copyToClipboard(`${window.location.origin}/verify?apiKey=${partner.apiKey}`)}
                 >
                   Copy
                 </button>

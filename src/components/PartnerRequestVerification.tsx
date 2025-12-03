@@ -80,7 +80,7 @@ export const PartnerRequestVerification: React.FC = () => {
 
       // Generate verification link
       const baseUrl = window.location.origin;
-      const link = `${baseUrl}?verificationId=${data.data.id}`;
+      const link = `${baseUrl}/verify?verificationId=${data.data.id}`;
       setVerificationLink(link);
       setSentToEmail(formData.userEmail);
       setSuccess(true);

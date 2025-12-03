@@ -80,6 +80,10 @@ export const PartnerLogin: React.FC = () => {
   return (
     <div className="partner-auth-container">
       <div className="auth-card">
+        <div className="auth-brand">
+          <div className="brand-icon">ID</div>
+          <h2>ID Verification</h2>
+        </div>
         <div className="auth-header">
           <h1>Partner Login</h1>
           <p>Access your ID verification dashboard</p>

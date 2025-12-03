@@ -11,7 +11,8 @@
       "Bash(npm run dev:*)",
       "Bash(curl:*)",
       "Bash(npm run build:*)",
-      "Bash(dir /s \"C:\\Ultrasoft\\ultrareach.dev\\id-verify\\src\")"
+      "Bash(dir /s \"C:\\Ultrasoft\\ultrareach.dev\\id-verify\\src\")",
+      "WebFetch(domain:ultrareach360dev.vercel.app)"
     ],
     "deny": [],
     "ask": []

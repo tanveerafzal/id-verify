@@ -51,6 +51,10 @@ export const PartnerForgotPassword: React.FC = () => {
     return (
       <div className="partner-auth-container">
         <div className="auth-card">
+          <div className="auth-brand">
+            <div className="brand-icon">ID</div>
+            <h2>ID Verification</h2>
+          </div>
           <div className="auth-header">
             <h1>Check Your Email</h1>
             <p>Password reset instructions sent</p>
@@ -79,6 +83,10 @@ export const PartnerForgotPassword: React.FC = () => {
   return (
     <div className="partner-auth-container">
       <div className="auth-card">
+        <div className="auth-brand">
+          <div className="brand-icon">ID</div>
+          <h2>ID Verification</h2>
+        </div>
         <div className="auth-header">
           <h1>Reset Password</h1>
           <p>Enter your email to receive a reset link</p>

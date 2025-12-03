@@ -91,6 +91,10 @@ export const PartnerResetPassword: React.FC = () => {
     return (
       <div className="partner-auth-container">
         <div className="auth-card">
+          <div className="auth-brand">
+            <div className="brand-icon">ID</div>
+            <h2>ID Verification</h2>
+          </div>
           <div className="auth-header">
             <h1>Password Reset Successful</h1>
             <p>Your password has been updated</p>
@@ -116,6 +120,10 @@ export const PartnerResetPassword: React.FC = () => {
     return (
       <div className="partner-auth-container">
         <div className="auth-card">
+          <div className="auth-brand">
+            <div className="brand-icon">ID</div>
+            <h2>ID Verification</h2>
+          </div>
           <div className="auth-header">
             <h1>Invalid Link</h1>
             <p>This reset link is invalid or has expired</p>
@@ -144,6 +152,10 @@ export const PartnerResetPassword: React.FC = () => {
   return (
     <div className="partner-auth-container">
       <div className="auth-card">
+        <div className="auth-brand">
+          <div className="brand-icon">ID</div>
+          <h2>ID Verification</h2>
+        </div>
         <div className="auth-header">
           <h1>Set New Password</h1>
           <p>Enter your new password below</p>
