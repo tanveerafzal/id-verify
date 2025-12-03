@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { DocumentCapture } from './DocumentCapture';
 import { SelfieCapture } from './SelfieCapture';
 import { VerificationResult } from './VerificationResult';
-import { getApiUrl } from '../config/api';
+import { getApiUrl, getAssetUrl } from '../config/api';
 
 interface VerificationStep {
   step: 'document' | 'selfie' | 'processing' | 'complete';
@@ -171,7 +171,7 @@ export const IDVerification: React.FC = () => {
         <div className="partner-brand-header">
           {partnerInfo.logoUrl && (
             <img
-              src={partnerInfo.logoUrl}
+              src={getAssetUrl(partnerInfo.logoUrl)}
               alt={partnerInfo.companyName}
               className="partner-brand-logo"
             />

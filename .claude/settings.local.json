@@ -10,7 +10,8 @@
       "Bash(findstr:*)",
       "Bash(npm run dev:*)",
       "Bash(curl:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(dir /s \"C:\\Ultrasoft\\ultrareach.dev\\id-verify\\src\")"
     ],
     "deny": [],
     "ask": []

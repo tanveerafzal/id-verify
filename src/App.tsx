@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { IDVerification } from './components/IDVerification'
 import { PartnerRegister } from './components/PartnerRegister'
 import { PartnerLogin } from './components/PartnerLogin'
+import { PartnerForgotPassword } from './components/PartnerForgotPassword'
 import { PartnerDashboard } from './components/PartnerDashboard'
 import { PartnerVerifications } from './components/PartnerVerifications'
 import { PartnerSettings } from './components/PartnerSettings'
@@ -16,6 +17,7 @@ function App() {
         <Route path="/" element={<IDVerification />} />
         <Route path="/partner/register" element={<PartnerRegister />} />
         <Route path="/partner/login" element={<PartnerLogin />} />
+        <Route path="/partner/forgot-password" element={<PartnerForgotPassword />} />
         <Route path="/partner/dashboard" element={<PartnerDashboard />} />
         <Route path="/partner/verifications" element={<PartnerVerifications />} />
         <Route path="/partner/request-verification" element={<PartnerRequestVerification />} />

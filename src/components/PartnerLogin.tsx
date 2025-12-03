@@ -126,6 +126,10 @@ export const PartnerLogin: React.FC = () => {
             {loading ? 'Logging in...' : 'Login'}
           </button>
 
+          <div className="auth-links">
+            <a href="/partner/forgot-password" className="forgot-password-link">Forgot password?</a>
+          </div>
+
           <div className="auth-footer">
             Don't have an account? <a href="/partner/register">Register here</a>
           </div>

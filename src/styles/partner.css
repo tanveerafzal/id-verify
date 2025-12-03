@@ -148,6 +148,21 @@
   text-decoration: underline;
 }
 
+.auth-links {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.forgot-password-link {
+  color: #667eea;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.forgot-password-link:hover {
+  text-decoration: underline;
+}
+
 /* Partner Layout */
 .partner-layout {
   display: flex;

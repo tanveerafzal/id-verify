@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { getApiUrl } from '../config/api';
+import { getApiUrl, getAssetUrl } from '../config/api';
 
 interface PartnerLayoutProps {
   children: React.ReactNode;
@@ -66,7 +66,7 @@ export const PartnerLayout: React.FC<PartnerLayoutProps> = ({ children }) => {
           <div className="partner-branding">
             {partner?.logoUrl ? (
               <img
-                src={partner.logoUrl}
+                src={getAssetUrl(partner.logoUrl)}
                 alt={partner.companyName}
                 className="partner-logo"
               />

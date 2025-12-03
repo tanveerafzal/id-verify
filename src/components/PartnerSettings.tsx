@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PartnerLayout } from './PartnerLayout';
-import { getApiUrl } from '../config/api';
+import { getApiUrl, getAssetUrl } from '../config/api';
 
 interface Partner {
   id: string;
@@ -403,7 +403,7 @@ export const PartnerSettings: React.FC = () => {
                     <div className="logo-preview">
                       <label>Logo Preview</label>
                       <img
-                        src={logoPreview || formData.logoUrl}
+                        src={logoPreview || getAssetUrl(formData.logoUrl)}
                         alt="Company Logo"
                         className="logo-preview-img"
                       />
