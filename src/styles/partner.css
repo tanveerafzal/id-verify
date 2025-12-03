@@ -1271,8 +1271,8 @@ textarea.form-input {
 
 /* Request Verification Page */
 .request-verification-page {
-  max-width: 900px;
-  margin: 0 auto;
+  max-width: 1400px;
+  margin: 0;
   padding: 24px;
 }
 

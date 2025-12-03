@@ -25,9 +25,10 @@ export const getAssetUrl = (path: string | undefined): string | undefined => {
   }
 
   // In production, prepend the API base URL
-  // Remove trailing slash from API_BASE_URL if present
-  const baseUrl = API_BASE_URL?.replace(/\/$/, '') || '';
-  return `${baseUrl}${path.startsWith('/') ? '' : '/'}${path}`;
+  // Remove trailing slash from API_BASE_URL and ensure path starts with /
+  const baseUrl = API_BASE_URL?.replace(/\/+$/, '') || '';
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  return `${baseUrl}${cleanPath}`;
 };
 
 // Helper function to build full API URL
