@@ -7,6 +7,9 @@ interface Verification {
   id: string;
   status: string;
   type: string;
+  userName?: string;
+  userEmail?: string;
+  userPhone?: string;
   createdAt: string;
   completedAt?: string;
   results?: {
@@ -201,6 +204,7 @@ export const PartnerVerifications: React.FC = () => {
             <thead>
               <tr>
                 <th>ID</th>
+                <th>User Details</th>
                 <th>Type</th>
                 <th>Status</th>
                 <th>Risk Level</th>
@@ -217,6 +221,22 @@ export const PartnerVerifications: React.FC = () => {
                     <code className="verification-id">
                       {verification.id.substring(0, 8)}...
                     </code>
+                  </td>
+                  <td>
+                    <div className="user-details">
+                      {verification.userName && (
+                        <div className="user-name">{verification.userName}</div>
+                      )}
+                      {verification.userEmail && (
+                        <div className="user-email">{verification.userEmail}</div>
+                      )}
+                      {verification.userPhone && (
+                        <div className="user-phone">{verification.userPhone}</div>
+                      )}
+                      {!verification.userName && !verification.userEmail && !verification.userPhone && (
+                        <span className="no-data">-</span>
+                      )}
+                    </div>
                   </td>
                   <td>{verification.type}</td>
                   <td>{getStatusBadge(verification.status)}</td>

@@ -27,6 +27,9 @@ export const PartnerSettings: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string>('');
+  const [uploadingLogo, setUploadingLogo] = useState(false);
 
   const [formData, setFormData] = useState({
     companyName: '',
@@ -130,6 +133,94 @@ export const PartnerSettings: React.FC = () => {
     navigator.clipboard.writeText(text);
     setSuccess('Copied to clipboard!');
     setTimeout(() => setSuccess(''), 2000);
+  };
+
+  const handleLogoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        setError('Please select an image file');
+        return;
+      }
+
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        setError('Logo file size must be less than 5MB');
+        return;
+      }
+
+      setLogoFile(file);
+
+      // Create preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setLogoPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleLogoUpload = async () => {
+    if (!logoFile) return;
+
+    setUploadingLogo(true);
+    setError('');
+
+    const token = localStorage.getItem('partnerToken');
+    if (!token) {
+      navigate('/partner/login');
+      return;
+    }
+
+    try {
+      const uploadFormData = new FormData();
+      uploadFormData.append('logo', logoFile);
+
+      const response = await fetch(getApiUrl('/api/partners/upload-logo'), {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: uploadFormData
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to upload logo');
+      }
+
+      const data = await response.json();
+
+      // Update form data with the new logo URL
+      setFormData({
+        ...formData,
+        logoUrl: data.data.logoUrl
+      });
+
+      // Update partner state
+      if (partner) {
+        setPartner({
+          ...partner,
+          logoUrl: data.data.logoUrl
+        });
+      }
+
+      setSuccess('Logo uploaded successfully!');
+      setLogoFile(null);
+      setLogoPreview('');
+
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err) {
+      setError('Failed to upload logo');
+      console.error(err);
+    } finally {
+      setUploadingLogo(false);
+    }
+  };
+
+  const clearLogoFile = () => {
+    setLogoFile(null);
+    setLogoPreview('');
   };
 
   if (loading) {
@@ -254,25 +345,72 @@ export const PartnerSettings: React.FC = () => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="logoUrl">Logo URL</label>
-                <input
-                  type="url"
-                  id="logoUrl"
-                  name="logoUrl"
-                  value={formData.logoUrl}
-                  onChange={handleChange}
-                  placeholder="https://example.com/logo.png"
-                  className="form-input"
-                />
-                <small>Enter a URL to your company logo</small>
-              </div>
+                <label>Company Logo</label>
+                <div className="logo-upload-section">
+                  <div className="logo-upload-options">
+                    <div className="upload-option">
+                      <label htmlFor="logoUrl">Enter Logo URL</label>
+                      <input
+                        type="url"
+                        id="logoUrl"
+                        name="logoUrl"
+                        value={formData.logoUrl}
+                        onChange={handleChange}
+                        placeholder="https://example.com/logo.png"
+                        className="form-input"
+                      />
+                    </div>
 
-              {formData.logoUrl && (
-                <div className="logo-preview">
-                  <label>Logo Preview</label>
-                  <img src={formData.logoUrl} alt="Company Logo" className="logo-preview-img" />
+                    <div className="upload-divider">
+                      <span>OR</span>
+                    </div>
+
+                    <div className="upload-option">
+                      <label htmlFor="logoFile">Upload Logo File</label>
+                      <input
+                        type="file"
+                        id="logoFile"
+                        accept="image/*"
+                        onChange={handleLogoFileChange}
+                        className="file-input"
+                      />
+                      <small>Max size: 5MB. Supported formats: PNG, JPG, SVG</small>
+
+                      {logoFile && (
+                        <div className="file-selected">
+                          <span>{logoFile.name}</span>
+                          <button
+                            type="button"
+                            className="btn btn-secondary btn-sm"
+                            onClick={clearLogoFile}
+                          >
+                            Clear
+                          </button>
+                          <button
+                            type="button"
+                            className="btn btn-primary btn-sm"
+                            onClick={handleLogoUpload}
+                            disabled={uploadingLogo}
+                          >
+                            {uploadingLogo ? 'Uploading...' : 'Upload'}
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {(logoPreview || formData.logoUrl) && (
+                    <div className="logo-preview">
+                      <label>Logo Preview</label>
+                      <img
+                        src={logoPreview || formData.logoUrl}
+                        alt="Company Logo"
+                        className="logo-preview-img"
+                      />
+                    </div>
+                  )}
                 </div>
-              )}
+              </div>
 
               <button type="submit" className="btn btn-primary" disabled={saving}>
                 {saving ? 'Saving...' : 'Save Changes'}
