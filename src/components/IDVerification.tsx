@@ -26,6 +26,7 @@ export const IDVerification: React.FC = () => {
   const [result, setResult] = useState<any>(null);
   const [partnerInfo, setPartnerInfo] = useState<PartnerInfo | null>(null);
   const [verificationInfo, setVerificationInfo] = useState<VerificationInfo | null>(null);
+  const [error, setError] = useState<string>('');
 
   useEffect(() => {
     loadVerificationInfo();
@@ -141,10 +142,26 @@ export const IDVerification: React.FC = () => {
       const submitResponse = await fetch(getApiUrl(submitUrl), { method: 'POST' });
 
       const submitData = await submitResponse.json();
+
+      // Check for retry limit error
+      if (!submitResponse.ok && submitResponse.status === 429) {
+        setError(submitData.message || 'Maximum retry limit reached. Please contact the organization for a new verification link.');
+        setCurrentStep({ step: 'document' });
+        return;
+      }
+
+      if (!submitResponse.ok) {
+        setError(submitData.error || 'Verification failed. Please try again.');
+        setCurrentStep({ step: 'document' });
+        return;
+      }
+
       setResult(submitData.data);
       setCurrentStep({ step: 'complete', data: submitData.data });
     } catch (error) {
       console.error('Selfie upload failed:', error);
+      setError('An error occurred during verification. Please try again.');
+      setCurrentStep({ step: 'document' });
     }
   };
 
@@ -206,6 +223,19 @@ export const IDVerification: React.FC = () => {
       </div>
 
       <div className="verification-content">
+        {error && (
+          <div className="verification-error-alert">
+            <div className="error-icon">⚠️</div>
+            <div className="error-content">
+              <h3>Verification Error</h3>
+              <p>{error}</p>
+            </div>
+            <button className="btn-secondary" onClick={() => setError('')}>
+              Dismiss
+            </button>
+          </div>
+        )}
+
         {currentStep.step === 'document' && (
           <DocumentCapture onCapture={handleDocumentCaptured} />
         )}
