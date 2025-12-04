@@ -9,6 +9,7 @@ import { PartnerDashboard } from './components/PartnerDashboard'
 import { PartnerVerifications } from './components/PartnerVerifications'
 import { PartnerSettings } from './components/PartnerSettings'
 import { PartnerRequestVerification } from './components/PartnerRequestVerification'
+import { Roadmap } from './components/Roadmap'
 import './styles/landing.css'
 import './styles/verification.css'
 import './styles/partner.css'
@@ -27,6 +28,7 @@ function App() {
         <Route path="/partner/verifications" element={<PartnerVerifications />} />
         <Route path="/partner/request-verification" element={<PartnerRequestVerification />} />
         <Route path="/partner/settings" element={<PartnerSettings />} />
+        <Route path="/roadmap" element={<Roadmap />} />
       </Routes>
     </BrowserRouter>
   )
