@@ -1014,6 +1014,296 @@
   color: #667eea;
 }
 
+/* Verification Details Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 16px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.verification-details-modal {
+  max-width: 650px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-header h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: #6b7280;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+}
+
+.modal-close:hover {
+  color: #1f2937;
+}
+
+.modal-body {
+  padding: 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modal-loading {
+  padding: 60px 24px;
+  text-align: center;
+}
+
+.modal-loading p {
+  margin-top: 16px;
+  color: #6b7280;
+}
+
+.modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.detail-section {
+  margin-bottom: 24px;
+}
+
+.detail-section:last-child {
+  margin-bottom: 0;
+}
+
+.detail-section h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.detail-item .detail-label {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.detail-item .detail-value {
+  font-size: 15px;
+  color: #1f2937;
+  font-weight: 500;
+}
+
+.document-type-badge {
+  display: inline-block;
+  background: #e0e7ff;
+  color: #4338ca;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: capitalize;
+}
+
+.result-badge {
+  display: inline-block;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.result-badge.passed {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.result-badge.failed {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.score-value {
+  font-size: 20px !important;
+  color: #667eea !important;
+}
+
+.risk-value {
+  font-weight: 600 !important;
+}
+
+.risk-value.risk-low {
+  color: #10b981 !important;
+}
+
+.risk-value.risk-medium {
+  color: #f59e0b !important;
+}
+
+.risk-value.risk-high {
+  color: #ef4444 !important;
+}
+
+.risk-value.risk-critical {
+  color: #dc2626 !important;
+}
+
+.checks-list-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.check-item-modal {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: #f9fafb;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.check-item-modal.pass .check-icon {
+  color: #10b981;
+  font-weight: bold;
+}
+
+.check-item-modal.fail .check-icon {
+  color: #ef4444;
+  font-weight: bold;
+}
+
+.face-score {
+  margin-left: 8px;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.extracted-data-modal {
+  background: #f9fafb;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.data-row-modal {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.data-row-modal:last-child {
+  border-bottom: none;
+}
+
+.data-row-modal .data-label {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.data-row-modal .data-value {
+  font-size: 14px;
+  color: #1f2937;
+  font-weight: 500;
+}
+
+.no-data-message {
+  color: #9ca3af;
+  font-style: italic;
+  font-size: 14px;
+}
+
+.alerts-section {
+  background: #fffbeb;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #fcd34d;
+}
+
+.alerts-section h3 {
+  color: #92400e;
+}
+
+.flags-list, .warnings-list {
+  margin-top: 12px;
+}
+
+.flags-list h4, .warnings-list h4 {
+  font-size: 13px;
+  font-weight: 600;
+  color: #92400e;
+  margin-bottom: 8px;
+}
+
+.flags-list ul, .warnings-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.flag-item-modal, .warning-item-modal {
+  font-size: 13px;
+  color: #78350f;
+  padding: 4px 0;
+  text-transform: capitalize;
+}
+
+.actions-cell {
+  white-space: nowrap;
+}
+
+.actions-cell .btn {
+  margin-right: 8px;
+}
+
+.actions-cell .btn:last-child {
+  margin-right: 0;
+}
+
 .verifications-loading {
   min-height: 400px;
   display: flex;

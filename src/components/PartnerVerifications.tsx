@@ -3,6 +3,35 @@ import { useNavigate } from 'react-router-dom';
 import { PartnerLayout } from './PartnerLayout';
 import { getApiUrl } from '../config/api';
 
+interface VerificationResult {
+  passed: boolean;
+  score?: number;
+  riskLevel?: string;
+  checks?: {
+    documentAuthentic?: boolean;
+    documentExpired?: boolean;
+    documentTampered?: boolean;
+    faceMatch?: boolean;
+    faceMatchScore?: number;
+  };
+  extractedData?: {
+    fullName?: string;
+    dateOfBirth?: string;
+    documentNumber?: string;
+    expiryDate?: string;
+    issuingCountry?: string;
+  };
+  flags?: string[];
+  warnings?: string[];
+}
+
+interface Document {
+  id: string;
+  type: string;
+  side: string;
+  createdAt: string;
+}
+
 interface Verification {
   id: string;
   status: string;
@@ -12,11 +41,8 @@ interface Verification {
   userPhone?: string;
   createdAt: string;
   completedAt?: string;
-  results?: {
-    passed: boolean;
-    score?: number;
-    riskLevel?: string;
-  };
+  documents?: Document[];
+  results?: VerificationResult;
 }
 
 export const PartnerVerifications: React.FC = () => {
@@ -27,6 +53,8 @@ export const PartnerVerifications: React.FC = () => {
   const [filter, setFilter] = useState<'all' | 'completed' | 'pending'>('all');
   const [resendingId, setResendingId] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState('');
+  const [selectedVerification, setSelectedVerification] = useState<Verification | null>(null);
+  const [loadingDetails, setLoadingDetails] = useState(false);
 
   useEffect(() => {
     loadVerifications();
@@ -129,6 +157,53 @@ export const PartnerVerifications: React.FC = () => {
     } finally {
       setResendingId(null);
     }
+  };
+
+  const loadVerificationDetails = async (verificationId: string) => {
+    const token = localStorage.getItem('partnerToken');
+    if (!token) return;
+
+    setLoadingDetails(true);
+
+    try {
+      const response = await fetch(
+        getApiUrl(`/api/partners/verifications/${verificationId}`),
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        setSelectedVerification(data.data);
+      }
+    } catch (err) {
+      console.error('Failed to load verification details:', err);
+    } finally {
+      setLoadingDetails(false);
+    }
+  };
+
+  const handleViewDetails = (verification: Verification) => {
+    if (verification.status === 'COMPLETED' || verification.status === 'FAILED') {
+      loadVerificationDetails(verification.id);
+    }
+  };
+
+  const closeModal = () => {
+    setSelectedVerification(null);
+  };
+
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
   };
 
   const filteredVerifications = verifications.filter((v) => {
@@ -252,7 +327,7 @@ export const PartnerVerifications: React.FC = () => {
                       ? new Date(verification.completedAt).toLocaleDateString()
                       : '-'}
                   </td>
-                  <td>
+                  <td className="actions-cell">
                     {verification.status === 'PENDING' && (
                       <button
                         onClick={() => handleResendEmail(verification.id)}
@@ -260,6 +335,14 @@ export const PartnerVerifications: React.FC = () => {
                         className="btn btn-secondary btn-sm"
                       >
                         {resendingId === verification.id ? 'Sending...' : 'Resend Email'}
+                      </button>
+                    )}
+                    {(verification.status === 'COMPLETED' || verification.status === 'FAILED') && (
+                      <button
+                        onClick={() => handleViewDetails(verification)}
+                        className="btn btn-primary btn-sm"
+                      >
+                        View Details
                       </button>
                     )}
                   </td>
@@ -284,6 +367,215 @@ export const PartnerVerifications: React.FC = () => {
                 ? `${((verifications.filter(v => v.results?.passed).length / verifications.filter(v => v.status === 'COMPLETED').length) * 100).toFixed(0)}%`
                 : '0%'}
             </span>
+          </div>
+        </div>
+      )}
+
+      {/* Verification Details Modal */}
+      {selectedVerification && (
+        <div className="modal-overlay" onClick={closeModal}>
+          <div className="modal-content verification-details-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Verification Details</h2>
+              <button className="modal-close" onClick={closeModal}>&times;</button>
+            </div>
+
+            {loadingDetails ? (
+              <div className="modal-loading">
+                <div className="spinner" />
+                <p>Loading details...</p>
+              </div>
+            ) : (
+              <div className="modal-body">
+                {/* User Info */}
+                <div className="detail-section">
+                  <h3>User Information</h3>
+                  <div className="detail-grid">
+                    <div className="detail-item">
+                      <span className="detail-label">Name:</span>
+                      <span className="detail-value">{selectedVerification.userName || 'N/A'}</span>
+                    </div>
+                    <div className="detail-item">
+                      <span className="detail-label">Email:</span>
+                      <span className="detail-value">{selectedVerification.userEmail || 'N/A'}</span>
+                    </div>
+                    <div className="detail-item">
+                      <span className="detail-label">Phone:</span>
+                      <span className="detail-value">{selectedVerification.userPhone || 'N/A'}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Document Info */}
+                {selectedVerification.documents && selectedVerification.documents.length > 0 && (
+                  <div className="detail-section">
+                    <h3>Document Type</h3>
+                    <div className="document-type-badge">
+                      {selectedVerification.documents[0]?.type?.replace(/_/g, ' ') || 'Unknown'}
+                    </div>
+                  </div>
+                )}
+
+                {/* Verification Result */}
+                {selectedVerification.results && (
+                  <>
+                    <div className="detail-section">
+                      <h3>Verification Result</h3>
+                      <div className={`result-badge ${selectedVerification.results.passed ? 'passed' : 'failed'}`}>
+                        {selectedVerification.results.passed ? '✅ PASSED' : '❌ FAILED'}
+                      </div>
+                    </div>
+
+                    <div className="detail-section">
+                      <h3>Score & Risk</h3>
+                      <div className="detail-grid">
+                        <div className="detail-item">
+                          <span className="detail-label">Verification Score:</span>
+                          <span className="detail-value score-value">
+                            {selectedVerification.results.score
+                              ? `${Math.round(selectedVerification.results.score * 100)}%`
+                              : 'N/A'}
+                          </span>
+                        </div>
+                        <div className="detail-item">
+                          <span className="detail-label">Risk Level:</span>
+                          <span className={`detail-value risk-value risk-${selectedVerification.results.riskLevel?.toLowerCase()}`}>
+                            {selectedVerification.results.riskLevel || 'N/A'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Verification Checks */}
+                    {selectedVerification.results.checks && (
+                      <div className="detail-section">
+                        <h3>Verification Checks</h3>
+                        <div className="checks-list-modal">
+                          <div className={`check-item-modal ${selectedVerification.results.checks.documentAuthentic ? 'pass' : 'fail'}`}>
+                            <span className="check-icon">{selectedVerification.results.checks.documentAuthentic ? '✓' : '✗'}</span>
+                            <span>Document Authentic</span>
+                          </div>
+                          <div className={`check-item-modal ${!selectedVerification.results.checks.documentExpired ? 'pass' : 'fail'}`}>
+                            <span className="check-icon">{!selectedVerification.results.checks.documentExpired ? '✓' : '✗'}</span>
+                            <span>Document Not Expired</span>
+                          </div>
+                          <div className={`check-item-modal ${!selectedVerification.results.checks.documentTampered ? 'pass' : 'fail'}`}>
+                            <span className="check-icon">{!selectedVerification.results.checks.documentTampered ? '✓' : '✗'}</span>
+                            <span>No Tampering Detected</span>
+                          </div>
+                          {selectedVerification.results.checks.faceMatch !== undefined && (
+                            <div className={`check-item-modal ${selectedVerification.results.checks.faceMatch ? 'pass' : 'fail'}`}>
+                              <span className="check-icon">{selectedVerification.results.checks.faceMatch ? '✓' : '✗'}</span>
+                              <span>
+                                Face Match
+                                {selectedVerification.results.checks.faceMatchScore && (
+                                  <span className="face-score">
+                                    ({Math.round(selectedVerification.results.checks.faceMatchScore * 100)}%)
+                                  </span>
+                                )}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Extracted Information */}
+                    {selectedVerification.results.extractedData && (
+                      <div className="detail-section">
+                        <h3>Extracted Information</h3>
+                        <div className="extracted-data-modal">
+                          {selectedVerification.results.extractedData.fullName && (
+                            <div className="data-row-modal">
+                              <span className="data-label">Full Name:</span>
+                              <span className="data-value">{selectedVerification.results.extractedData.fullName}</span>
+                            </div>
+                          )}
+                          {selectedVerification.results.extractedData.dateOfBirth && (
+                            <div className="data-row-modal">
+                              <span className="data-label">Date of Birth:</span>
+                              <span className="data-value">{formatDate(selectedVerification.results.extractedData.dateOfBirth)}</span>
+                            </div>
+                          )}
+                          {selectedVerification.results.extractedData.documentNumber && (
+                            <div className="data-row-modal">
+                              <span className="data-label">Document Number:</span>
+                              <span className="data-value">{selectedVerification.results.extractedData.documentNumber}</span>
+                            </div>
+                          )}
+                          {selectedVerification.results.extractedData.expiryDate && (
+                            <div className="data-row-modal">
+                              <span className="data-label">Expiry Date:</span>
+                              <span className="data-value">{formatDate(selectedVerification.results.extractedData.expiryDate)}</span>
+                            </div>
+                          )}
+                          {selectedVerification.results.extractedData.issuingCountry && (
+                            <div className="data-row-modal">
+                              <span className="data-label">Issuing Country:</span>
+                              <span className="data-value">{selectedVerification.results.extractedData.issuingCountry}</span>
+                            </div>
+                          )}
+                          {!selectedVerification.results.extractedData.fullName &&
+                           !selectedVerification.results.extractedData.dateOfBirth &&
+                           !selectedVerification.results.extractedData.documentNumber &&
+                           !selectedVerification.results.extractedData.expiryDate &&
+                           !selectedVerification.results.extractedData.issuingCountry && (
+                            <p className="no-data-message">No data extracted from document</p>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Flags & Warnings */}
+                    {((selectedVerification.results.flags && selectedVerification.results.flags.length > 0) ||
+                      (selectedVerification.results.warnings && selectedVerification.results.warnings.length > 0)) && (
+                      <div className="detail-section alerts-section">
+                        <h3>Alerts</h3>
+                        {selectedVerification.results.flags && selectedVerification.results.flags.length > 0 && (
+                          <div className="flags-list">
+                            <h4>Flags:</h4>
+                            <ul>
+                              {selectedVerification.results.flags.map((flag, index) => (
+                                <li key={index} className="flag-item-modal">{flag.replace(/_/g, ' ')}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                        {selectedVerification.results.warnings && selectedVerification.results.warnings.length > 0 && (
+                          <div className="warnings-list">
+                            <h4>Warnings:</h4>
+                            <ul>
+                              {selectedVerification.results.warnings.map((warning, index) => (
+                                <li key={index} className="warning-item-modal">{warning}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {/* Timestamps */}
+                <div className="detail-section">
+                  <h3>Timestamps</h3>
+                  <div className="detail-grid">
+                    <div className="detail-item">
+                      <span className="detail-label">Created:</span>
+                      <span className="detail-value">{formatDate(selectedVerification.createdAt)}</span>
+                    </div>
+                    <div className="detail-item">
+                      <span className="detail-label">Completed:</span>
+                      <span className="detail-value">{formatDate(selectedVerification.completedAt)}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="modal-footer">
+              <button className="btn btn-secondary" onClick={closeModal}>Close</button>
+            </div>
           </div>
         </div>
       )}
