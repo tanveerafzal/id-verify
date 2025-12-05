@@ -18,6 +18,13 @@ interface VerificationInfo {
   userName?: string;
   userEmail?: string;
   partnerId?: string;
+  status?: string;
+}
+
+interface VerificationStatus {
+  isCompleted: boolean;
+  status: string;
+  message: string;
 }
 
 export const IDVerification: React.FC = () => {
@@ -27,6 +34,7 @@ export const IDVerification: React.FC = () => {
   const [partnerInfo, setPartnerInfo] = useState<PartnerInfo | null>(null);
   const [verificationInfo, setVerificationInfo] = useState<VerificationInfo | null>(null);
   const [error, setError] = useState<string>('');
+  const [verificationStatus, setVerificationStatus] = useState<VerificationStatus | null>(null);
 
   useEffect(() => {
     loadVerificationInfo();
@@ -43,6 +51,34 @@ export const IDVerification: React.FC = () => {
           const data = await response.json();
           const verification = data.data;
 
+          // Check if verification is already completed or failed
+          if (verification.status === 'COMPLETED') {
+            setVerificationStatus({
+              isCompleted: true,
+              status: 'COMPLETED',
+              message: 'This verification has already been completed successfully. No further action is required.'
+            });
+            return;
+          }
+
+          if (verification.status === 'FAILED') {
+            setVerificationStatus({
+              isCompleted: true,
+              status: 'FAILED',
+              message: 'This verification has failed. Please contact the organization that requested this verification for a new link.'
+            });
+            return;
+          }
+
+          if (verification.status === 'EXPIRED') {
+            setVerificationStatus({
+              isCompleted: true,
+              status: 'EXPIRED',
+              message: 'This verification link has expired. Please contact the organization that requested this verification for a new link.'
+            });
+            return;
+          }
+
           // Set the verification ID from URL parameter
           setVerificationId(verificationIdParam);
 
@@ -50,7 +86,8 @@ export const IDVerification: React.FC = () => {
           setVerificationInfo({
             userName: verification.userName,
             userEmail: verification.userEmail,
-            partnerId: verification.partnerId
+            partnerId: verification.partnerId,
+            status: verification.status
           });
 
           // Load partner info if verification has partnerId
@@ -231,42 +268,76 @@ export const IDVerification: React.FC = () => {
       </div>
 
       <div className="verification-content">
-        {error && (
-          <div className="verification-error-alert">
-            <div className="error-icon">⚠️</div>
-            <div className="error-content">
-              <h3>Verification Error</h3>
-              <p>{error}</p>
+        {/* Show status message if verification is already completed/failed/expired */}
+        {verificationStatus?.isCompleted ? (
+          <div className={`verification-status-message status-${verificationStatus.status.toLowerCase()}`}>
+            <div className="status-icon">
+              {verificationStatus.status === 'COMPLETED' && (
+                <svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M9 12l2 2 4-4" />
+                </svg>
+              )}
+              {verificationStatus.status === 'FAILED' && (
+                <svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M15 9l-6 6M9 9l6 6" />
+                </svg>
+              )}
+              {verificationStatus.status === 'EXPIRED' && (
+                <svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 6v6l4 2" />
+                </svg>
+              )}
             </div>
-            <button className="btn-secondary" onClick={() => setError('')}>
-              Dismiss
-            </button>
+            <h2>
+              {verificationStatus.status === 'COMPLETED' && 'Verification Already Completed'}
+              {verificationStatus.status === 'FAILED' && 'Verification Failed'}
+              {verificationStatus.status === 'EXPIRED' && 'Verification Expired'}
+            </h2>
+            <p>{verificationStatus.message}</p>
           </div>
-        )}
+        ) : (
+          <>
+            {error && (
+              <div className="verification-error-alert">
+                <div className="error-icon">!</div>
+                <div className="error-content">
+                  <h3>Verification Error</h3>
+                  <p>{error}</p>
+                </div>
+                <button className="btn-secondary" onClick={() => setError('')}>
+                  Dismiss
+                </button>
+              </div>
+            )}
 
-        {currentStep.step === 'document' && (
-          <DocumentCapture onCapture={handleDocumentCaptured} />
-        )}
+            {currentStep.step === 'document' && (
+              <DocumentCapture onCapture={handleDocumentCaptured} />
+            )}
 
-        {currentStep.step === 'selfie' && (
-          <SelfieCapture
-            onCapture={handleSelfieCaptured}
-            onBack={() => {
-              setVerificationId(null);
-              setCurrentStep({ step: 'document' });
-            }}
-          />
-        )}
+            {currentStep.step === 'selfie' && (
+              <SelfieCapture
+                onCapture={handleSelfieCaptured}
+                onBack={() => {
+                  setVerificationId(null);
+                  setCurrentStep({ step: 'document' });
+                }}
+              />
+            )}
 
-        {currentStep.step === 'processing' && (
-          <div className="processing-screen">
-            <div className="spinner" />
-            <p>Verifying your identity...</p>
-          </div>
-        )}
+            {currentStep.step === 'processing' && (
+              <div className="processing-screen">
+                <div className="spinner" />
+                <p>Verifying your identity...</p>
+              </div>
+            )}
 
-        {currentStep.step === 'complete' && result && (
-          <VerificationResult result={result} />
+            {currentStep.step === 'complete' && result && (
+              <VerificationResult result={result} />
+            )}
+          </>
         )}
       </div>
     </div>

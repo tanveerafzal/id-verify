@@ -728,3 +728,62 @@ body {
     print-color-adjust: exact;
   }
 }
+
+/* Verification Status Message (Already Completed/Failed/Expired) */
+.verification-status-message {
+  text-align: center;
+  padding: 60px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.verification-status-message .status-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.verification-status-message.status-completed .status-icon {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.verification-status-message.status-failed .status-icon {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.verification-status-message.status-expired .status-icon {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.verification-status-message h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.verification-status-message.status-completed h2 {
+  color: #16a34a;
+}
+
+.verification-status-message.status-failed h2 {
+  color: #dc2626;
+}
+
+.verification-status-message.status-expired h2 {
+  color: #d97706;
+}
+
+.verification-status-message p {
+  font-size: 16px;
+  color: #6b7280;
+  max-width: 400px;
+  line-height: 1.6;
+}
