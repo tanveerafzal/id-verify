@@ -9,23 +9,39 @@ console.log('[API Config] VITE_API_BASE_URL:', import.meta.env.VITE_API_BASE_URL
 console.log('[API Config] API_BASE_URL:', API_BASE_URL);
 console.log('[API Config] window.location:', typeof window !== 'undefined' ? window.location.href : 'N/A');
 
-// Helper function to resolve asset URLs (e.g., uploaded logos)
-// Converts relative paths to full URLs pointing to the API server
+// Helper function to resolve asset URLs (e.g., uploaded logos, documents)
+// Converts paths to URLs that work in both development and production
 export const getAssetUrl = (path: string | undefined): string | undefined => {
   if (!path) return undefined;
 
-  // If it's already an absolute URL, return as-is
+  // If it's an absolute URL, extract the path portion for proxy handling
   if (path.startsWith('http://') || path.startsWith('https://')) {
-    return path;
+    try {
+      const url = new URL(path);
+      // Extract just the pathname (e.g., /uploads/documents/...)
+      const relativePath = url.pathname;
+
+      // In development, use relative path so Vite proxy handles it
+      if (import.meta.env.DEV) {
+        return relativePath;
+      }
+
+      // In production, reconstruct with the correct API base URL
+      const baseUrl = API_BASE_URL?.replace(/\/+$/, '') || '';
+      return `${baseUrl}${relativePath}`;
+    } catch {
+      // If URL parsing fails, return as-is
+      return path;
+    }
   }
 
-  // In development, Vite proxy handles it
+  // For relative paths
   if (import.meta.env.DEV) {
-    return path;
+    // In development, Vite proxy handles it
+    return path.startsWith('/') ? path : `/${path}`;
   }
 
   // In production, prepend the API base URL
-  // Remove trailing slash from API_BASE_URL and ensure path starts with /
   const baseUrl = API_BASE_URL?.replace(/\/+$/, '') || '';
   const cleanPath = path.startsWith('/') ? path : `/${path}`;
   return `${baseUrl}${cleanPath}`;

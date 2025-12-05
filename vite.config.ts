@@ -24,6 +24,10 @@ export default defineConfig({
             console.log('[Vite Proxy] Request:', req.method, req.url, '→', options.target + proxyReq.path);
           });
         }
+      },
+      '/uploads': {
+        target: 'https://2c98ddbc23a8.ngrok-free.app',
+        changeOrigin: true
       }
     }
   }
