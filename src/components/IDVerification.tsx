@@ -43,6 +43,9 @@ export const IDVerification: React.FC = () => {
           const data = await response.json();
           const verification = data.data;
 
+          // Set the verification ID from URL parameter
+          setVerificationId(verificationIdParam);
+
           // Store verification info
           setVerificationInfo({
             userName: verification.userName,
@@ -78,8 +81,11 @@ export const IDVerification: React.FC = () => {
 
   const handleDocumentCaptured = async (file: File, documentType: string) => {
     try {
-      if (!verificationId) {
-        const apiKey = getApiKey();
+      const apiKey = getApiKey();
+      let currentVerificationId = verificationId;
+
+      // Only create a new verification if we don't have one from the URL
+      if (!currentVerificationId) {
         const url = apiKey ? `/api/verifications?apiKey=${apiKey}` : '/api/verifications';
 
         const createResponse = await fetch(getApiUrl(url), {
@@ -92,25 +98,27 @@ export const IDVerification: React.FC = () => {
         });
 
         const createData = await createResponse.json();
-        setVerificationId(createData.data.id);
-
-        const formData = new FormData();
-        formData.append('document', file);
-        formData.append('documentType', documentType);
-        formData.append('side', 'FRONT');
-
-        const uploadUrl = apiKey
-          ? `/api/verifications/${createData.data.id}/documents?apiKey=${apiKey}`
-          : `/api/verifications/${createData.data.id}/documents`;
-
-        const uploadResponse = await fetch(getApiUrl(uploadUrl), {
-          method: 'POST',
-          body: formData
-        });
-
-        const uploadData = await uploadResponse.json();
-        setCurrentStep({ step: 'selfie', data: uploadData.data });
+        currentVerificationId = createData.data.id;
+        setVerificationId(currentVerificationId);
       }
+
+      // Upload document to the verification (existing or newly created)
+      const formData = new FormData();
+      formData.append('document', file);
+      formData.append('documentType', documentType);
+      formData.append('side', 'FRONT');
+
+      const uploadUrl = apiKey
+        ? `/api/verifications/${currentVerificationId}/documents?apiKey=${apiKey}`
+        : `/api/verifications/${currentVerificationId}/documents`;
+
+      const uploadResponse = await fetch(getApiUrl(uploadUrl), {
+        method: 'POST',
+        body: formData
+      });
+
+      const uploadData = await uploadResponse.json();
+      setCurrentStep({ step: 'selfie', data: uploadData.data });
     } catch (error) {
       console.error('Document upload failed:', error);
     }
