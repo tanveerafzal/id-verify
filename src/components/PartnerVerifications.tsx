@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PartnerLayout } from './PartnerLayout';
-import { getApiUrl } from '../config/api';
+import { getApiUrl, getAssetUrl } from '../config/api';
 
 interface VerificationResult {
   passed: boolean;
@@ -30,6 +30,16 @@ interface Document {
   type: string;
   side: string;
   createdAt: string;
+  imageUrl?: string;
+  originalUrl?: string;
+  processedUrl?: string;
+  thumbnailUrl?: string;
+}
+
+interface Selfie {
+  id: string;
+  imageUrl?: string;
+  createdAt: string;
 }
 
 interface Verification {
@@ -42,6 +52,8 @@ interface Verification {
   createdAt: string;
   completedAt?: string;
   documents?: Document[];
+  selfie?: Selfie;
+  selfieUrl?: string;
   results?: VerificationResult;
 }
 
@@ -412,6 +424,83 @@ export const PartnerVerifications: React.FC = () => {
                     <h3>Document Type</h3>
                     <div className="document-type-badge">
                       {selectedVerification.documents[0]?.type?.replace(/_/g, ' ') || 'Unknown'}
+                    </div>
+                  </div>
+                )}
+
+                {/* Uploaded Documents */}
+                {selectedVerification.documents && selectedVerification.documents.length > 0 && (
+                  <div className="detail-section">
+                    <h3>Uploaded Documents</h3>
+                    <div className="uploaded-documents-grid">
+                      {selectedVerification.documents?.map((doc, index) => {
+                        const docUrl = doc.originalUrl || doc.processedUrl || doc.imageUrl;
+                        const thumbUrl = doc.thumbnailUrl || docUrl;
+                        return (
+                          <div key={doc.id || index} className="uploaded-document-item">
+                            <div className="document-preview">
+                              {docUrl ? (
+                                <a href={getAssetUrl(docUrl)} target="_blank" rel="noopener noreferrer">
+                                  <img
+                                    src={getAssetUrl(thumbUrl || '')}
+                                    alt={`${doc.type} - ${doc.side}`}
+                                    className="document-thumbnail"
+                                  />
+                                </a>
+                              ) : (
+                                <div className="document-placeholder">
+                                  <span>No image</span>
+                                </div>
+                              )}
+                            </div>
+                            <div className="document-info">
+                              <span className="document-label">{doc.type?.replace(/_/g, ' ')}</span>
+                              <span className="document-side">{doc.side}</span>
+                            </div>
+                            {docUrl && (
+                              <a
+                                href={getAssetUrl(docUrl)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="view-document-link"
+                              >
+                                View Full Image
+                              </a>
+                            )}
+                          </div>
+                        );
+                      })}
+
+                      {/* Selfie - shown if available */}
+                      {(selectedVerification.selfieUrl || selectedVerification.selfie?.imageUrl) && (
+                        <div className="uploaded-document-item">
+                          <div className="document-preview">
+                            <a
+                              href={getAssetUrl(selectedVerification.selfieUrl || selectedVerification.selfie?.imageUrl || '')}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              <img
+                                src={getAssetUrl(selectedVerification.selfieUrl || selectedVerification.selfie?.imageUrl || '')}
+                                alt="Selfie"
+                                className="document-thumbnail"
+                              />
+                            </a>
+                          </div>
+                          <div className="document-info">
+                            <span className="document-label">Selfie</span>
+                            <span className="document-side">Face Photo</span>
+                          </div>
+                          <a
+                            href={getAssetUrl(selectedVerification.selfieUrl || selectedVerification.selfie?.imageUrl || '')}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="view-document-link"
+                          >
+                            View Full Image
+                          </a>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}
