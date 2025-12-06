@@ -171,7 +171,7 @@ export const PartnerVerifications: React.FC = () => {
 
     try {
       const response = await fetch(
-        getApiUrl(`/api/partners/v/${verificationId}`),
+        getApiUrl(`/api/partners/verifications/${verificationId}`),
         {
           headers: {
             'Authorization': `Bearer ${token}`
