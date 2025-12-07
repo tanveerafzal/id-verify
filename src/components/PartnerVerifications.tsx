@@ -535,6 +535,17 @@ export const PartnerVerifications: React.FC = () => {
                       <div className="detail-section">
                         <h3>Extracted Information</h3>
                         <div className="extracted-data-modal">
+                          {/* Document Type from documents array (exclude SELFIE) */}
+                          {selectedVerification.documents && selectedVerification.documents.length > 0 && (
+                            <div className="data-row-modal">
+                              <span className="data-label">Document Type:</span>
+                              <span className="data-value">
+                                {selectedVerification.documents
+                                  .find(doc => doc.type !== 'SELFIE')
+                                  ?.type?.replace(/_/g, ' ') || 'Unknown'}
+                              </span>
+                            </div>
+                          )}
                           {selectedVerification.results.extractedData.fullName && (
                             <div className="data-row-modal">
                               <span className="data-label">Full Name:</span>
