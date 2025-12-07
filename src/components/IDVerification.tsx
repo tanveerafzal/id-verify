@@ -35,6 +35,7 @@ export const IDVerification: React.FC = () => {
   const [verificationInfo, setVerificationInfo] = useState<VerificationInfo | null>(null);
   const [error, setError] = useState<string>('');
   const [verificationStatus, setVerificationStatus] = useState<VerificationStatus | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     loadVerificationInfo();
@@ -47,16 +48,11 @@ export const IDVerification: React.FC = () => {
     if (verificationIdParam) {
       try {
         const response = await fetch(getApiUrl(`/api/verifications/${verificationIdParam}`));
-        console.log('Verification info response:', response);
-                console.log('Verification info response:', response);
-        
 
         if (response.ok) {
           const data = await response.json();
           const verification = data.data;
-        
-          console.log('Verification info attempts:', verification.retryCount);
-          console.log('Verification info maxAttempts:', verification.maxRetries);
+
           // Check if verification is already completed or failed
           if (verification.status === 'COMPLETED') {
             setVerificationStatus({
@@ -64,6 +60,7 @@ export const IDVerification: React.FC = () => {
               status: 'COMPLETED',
               message: 'This verification has already been completed successfully. No further action is required.'
             });
+            setIsLoading(false);
             return;
           }
 
@@ -73,6 +70,7 @@ export const IDVerification: React.FC = () => {
               status: 'FAILED',
               message: 'This verification has failed. Please contact the organization that requested this verification for a new link.'
             });
+            setIsLoading(false);
             return;
           }
 
@@ -82,6 +80,7 @@ export const IDVerification: React.FC = () => {
               status: 'EXPIRED',
               message: 'This verification link has expired. Please contact the organization that requested this verification for a new link.'
             });
+            setIsLoading(false);
             return;
           }
 
@@ -114,6 +113,7 @@ export const IDVerification: React.FC = () => {
         console.error('Failed to load verification info:', error);
       }
     }
+    setIsLoading(false);
   };
 
   // Get API key from URL query parameter
@@ -215,6 +215,20 @@ export const IDVerification: React.FC = () => {
       setCurrentStep({ step: 'document' });
     }
   };
+
+  // Show loading spinner while checking verification status
+  if (isLoading) {
+    return (
+      <div className="id-verification-container">
+        <div className="verification-content">
+          <div className="processing-screen">
+            <div className="spinner" />
+            <p>Loading verification...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="id-verification-container">
