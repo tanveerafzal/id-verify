@@ -3,9 +3,16 @@ import React, { useState, useRef, useEffect } from 'react';
 interface SelfieCaptureProps {
   onCapture: (file: File) => void;
   onBack?: () => void;
+  selectedDocumentType?: string | null;
+  detectedDocumentType?: string | null;
 }
 
-export const SelfieCapture: React.FC<SelfieCaptureProps> = ({ onCapture, onBack }) => {
+export const SelfieCapture: React.FC<SelfieCaptureProps> = ({
+  onCapture,
+  onBack,
+  selectedDocumentType,
+  detectedDocumentType
+}) => {
   const [preview, setPreview] = useState<string | null>(null);
   const [capturedFile, setCapturedFile] = useState<File | null>(null);
   const [isCamera, setIsCamera] = useState(false);
@@ -202,6 +209,17 @@ export const SelfieCapture: React.FC<SelfieCaptureProps> = ({ onCapture, onBack 
     onBack?.();
   };
 
+  // Helper function to format document type for display
+  const formatDocumentType = (type: string | null | undefined): string => {
+    if (!type) return 'Unknown';
+    return type.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  };
+
+  // Check if document types are different
+  const hasDocumentTypeMismatch = selectedDocumentType &&
+    detectedDocumentType &&
+    selectedDocumentType !== detectedDocumentType;
+
   return (
     <div className="selfie-capture">
       {onBack && (
@@ -213,6 +231,20 @@ export const SelfieCapture: React.FC<SelfieCaptureProps> = ({ onCapture, onBack 
       <p className="instructions">
         Position your face in the center of the frame. We'll verify it matches your ID.
       </p>
+
+      {/* Document Type Mismatch Warning */}
+      {hasDocumentTypeMismatch && (
+        <div className="document-type-mismatch-info">
+          <div className="info-icon">ℹ️</div>
+          <div className="info-content">
+            <strong>Document Type Notice</strong>
+            <p>
+              You selected <strong>{formatDocumentType(selectedDocumentType)}</strong>, but we detected a <strong>{formatDocumentType(detectedDocumentType)}</strong>.
+              The verification will proceed with the detected document type.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Video and Canvas - always rendered for refs to work */}
       <video

@@ -813,3 +813,44 @@ body {
   max-width: 400px;
   line-height: 1.6;
 }
+
+/* Document Type Mismatch Info */
+.document-type-mismatch-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.document-type-mismatch-info .info-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.document-type-mismatch-info .info-content {
+  flex: 1;
+}
+
+.document-type-mismatch-info .info-content strong {
+  display: block;
+  color: #1e40af;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.document-type-mismatch-info .info-content p {
+  color: #3b82f6;
+  font-size: 13px;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.document-type-mismatch-info .info-content p strong {
+  display: inline;
+  color: #1e40af;
+  font-size: 13px;
+}

@@ -36,6 +36,8 @@ export const IDVerification: React.FC = () => {
   const [error, setError] = useState<string>('');
   const [verificationStatus, setVerificationStatus] = useState<VerificationStatus | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [selectedDocumentType, setSelectedDocumentType] = useState<string | null>(null);
+  const [detectedDocumentType, setDetectedDocumentType] = useState<string | null>(null);
 
   useEffect(() => {
     loadVerificationInfo();
@@ -127,6 +129,9 @@ export const IDVerification: React.FC = () => {
       const apiKey = getApiKey();
       let currentVerificationId = verificationId;
 
+      // Store the user-selected document type
+      setSelectedDocumentType(documentType);
+
       // Only create a new verification if we don't have one from the URL
       if (!currentVerificationId) {
         const url = apiKey ? `/api/verifications?apiKey=${apiKey}` : '/api/verifications';
@@ -161,6 +166,14 @@ export const IDVerification: React.FC = () => {
       });
 
       const uploadData = await uploadResponse.json();
+
+      // Store the detected document type from the response
+      if (uploadData.data?.detection?.detectedType) {
+        setDetectedDocumentType(uploadData.data.detection.detectedType);
+      } else if (uploadData.data?.documentType) {
+        setDetectedDocumentType(uploadData.data.documentType);
+      }
+
       setCurrentStep({ step: 'selfie', data: uploadData.data });
     } catch (error) {
       console.error('Document upload failed:', error);
@@ -344,6 +357,8 @@ export const IDVerification: React.FC = () => {
                   setVerificationId(null);
                   setCurrentStep({ step: 'document' });
                 }}
+                selectedDocumentType={selectedDocumentType}
+                detectedDocumentType={detectedDocumentType}
               />
             )}
 
