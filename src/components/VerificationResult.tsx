@@ -21,10 +21,16 @@ interface VerificationResultProps {
     };
     flags: string[];
     warnings: string[];
+    canRetry?: boolean;
+    remainingRetries?: number;
+    retryCount?: number;
+    maxRetries?: number;
+    message?: string;
   };
+  onRetry?: () => void;
 }
 
-export const VerificationResult: React.FC<VerificationResultProps> = ({ result }) => {
+export const VerificationResult: React.FC<VerificationResultProps> = ({ result, onRetry }) => {
   const getRiskColor = (level: string) => {
     switch (level) {
       case 'LOW':
@@ -60,8 +66,14 @@ export const VerificationResult: React.FC<VerificationResultProps> = ({ result }
         <p className="result-message">
           {result.passed
             ? 'Your identity has been successfully verified.'
-            : 'We were unable to verify your identity. Please try again or contact support.'}
+            : result.message || 'We were unable to verify your identity. Please try again or contact support.'}
         </p>
+        {/* Show retry info if verification failed and retries are available */}
+        {!result.passed && result.canRetry && result.remainingRetries !== undefined && (
+          <p className="retry-info">
+            You have <strong>{result.remainingRetries}</strong> attempt{result.remainingRetries !== 1 ? 's' : ''} remaining.
+          </p>
+        )}
       </div>
 
       <div className="result-details">
@@ -206,9 +218,17 @@ export const VerificationResult: React.FC<VerificationResultProps> = ({ result }
             </button>
           </>
         ) : (
-          <button className="btn-primary" onClick={() => window.location.reload()}>
-            Start New Verification
-          </button>
+          <>
+            {result.canRetry && onRetry ? (
+              <button className="btn-primary btn-retry" onClick={onRetry}>
+                Retry Verification
+              </button>
+            ) : (
+              <button className="btn-secondary" onClick={() => window.close()}>
+                Close
+              </button>
+            )}
+          </>
         )}
       </div>
     </div>

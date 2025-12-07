@@ -47,10 +47,16 @@ export const IDVerification: React.FC = () => {
     if (verificationIdParam) {
       try {
         const response = await fetch(getApiUrl(`/api/verifications/${verificationIdParam}`));
+        console.log('Verification info response:', response);
+                console.log('Verification info response:', response);
+        
+
         if (response.ok) {
           const data = await response.json();
           const verification = data.data;
-
+        
+          console.log('Verification info attempts:', verification.retryCount);
+          console.log('Verification info maxAttempts:', verification.maxRetries);
           // Check if verification is already completed or failed
           if (verification.status === 'COMPLETED') {
             setVerificationStatus({
@@ -61,7 +67,7 @@ export const IDVerification: React.FC = () => {
             return;
           }
 
-          if (verification.status === 'FAILED') {
+          if (verification.status === 'FAILED' && verification.retryCount >= verification.maxRetries) {
             setVerificationStatus({
               isCompleted: true,
               status: 'FAILED',
@@ -335,7 +341,16 @@ export const IDVerification: React.FC = () => {
             )}
 
             {currentStep.step === 'complete' && result && (
-              <VerificationResult result={result} />
+              <VerificationResult
+                result={result}
+                onRetry={() => {
+                  // Reset to document capture step for retry
+                  // Keep the same verificationId to use the existing verification
+                  setCurrentStep({ step: 'document' });
+                  setResult(null);
+                  setError('');
+                }}
+              />
             )}
           </>
         )}
