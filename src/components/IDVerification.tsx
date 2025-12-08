@@ -354,7 +354,8 @@ export const IDVerification: React.FC = () => {
               <SelfieCapture
                 onCapture={handleSelfieCaptured}
                 onBack={() => {
-                  setVerificationId(null);
+                  // Keep verificationId to reuse the same verification
+                  // Documents will be replaced when user uploads a new one
                   setCurrentStep({ step: 'document' });
                 }}
                 selectedDocumentType={selectedDocumentType}
