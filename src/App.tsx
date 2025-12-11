@@ -10,9 +10,15 @@ import { PartnerVerifications } from './components/PartnerVerifications'
 import { PartnerSettings } from './components/PartnerSettings'
 import { PartnerRequestVerification } from './components/PartnerRequestVerification'
 import { Roadmap } from './components/Roadmap'
+import { AdminLogin } from './components/AdminLogin'
+import { AdminDashboard } from './components/AdminDashboard'
+import { AdminPartners } from './components/AdminPartners'
+import { AdminVerifications } from './components/AdminVerifications'
+import { AdminSettings } from './components/AdminSettings'
 import './styles/landing.css'
 import './styles/verification.css'
 import './styles/partner.css'
+import './styles/admin.css'
 
 function App() {
   return (
@@ -29,6 +35,13 @@ function App() {
         <Route path="/partner/request-verification" element={<PartnerRequestVerification />} />
         <Route path="/partner/settings" element={<PartnerSettings />} />
         <Route path="/roadmap" element={<Roadmap />} />
+
+        {/* Admin Routes */}
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/partners" element={<AdminPartners />} />
+        <Route path="/admin/verifications" element={<AdminVerifications />} />
+        <Route path="/admin/settings" element={<AdminSettings />} />
       </Routes>
     </BrowserRouter>
   )
