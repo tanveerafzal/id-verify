@@ -124,6 +124,48 @@ export const IDVerification: React.FC = () => {
     return params.get('apiKey');
   };
 
+  // Convert technical error messages to user-friendly messages
+  const getUserFriendlyError = (errorMessage: string): string => {
+    const errorLower = errorMessage.toLowerCase();
+
+    // OCR/Document reading errors
+    if (errorLower.includes('ocr') || errorLower.includes('recognize') || errorLower.includes('extraction failed')) {
+      return 'We couldn\'t read your document clearly. Please ensure good lighting and that the entire document is visible, then try again.';
+    }
+
+    // Image quality errors
+    if (errorLower.includes('blur') || errorLower.includes('blurry')) {
+      return 'The image appears to be blurry. Please hold your camera steady and ensure the document is in focus.';
+    }
+
+    if (errorLower.includes('glare') || errorLower.includes('reflection')) {
+      return 'There seems to be glare on the document. Please adjust the lighting and avoid reflections.';
+    }
+
+    // Document detection errors
+    if (errorLower.includes('no document') || errorLower.includes('document not found') || errorLower.includes('could not detect')) {
+      return 'We couldn\'t detect a document in the image. Please make sure your ID document is clearly visible in the frame.';
+    }
+
+    // File/upload errors
+    if (errorLower.includes('file') || errorLower.includes('upload') || errorLower.includes('size')) {
+      return 'There was a problem with the image file. Please try taking a new photo or uploading a different image.';
+    }
+
+    // Network/server errors
+    if (errorLower.includes('network') || errorLower.includes('timeout') || errorLower.includes('connection')) {
+      return 'Connection issue detected. Please check your internet connection and try again.';
+    }
+
+    // Face matching errors
+    if (errorLower.includes('face') && errorLower.includes('match')) {
+      return 'We couldn\'t match your selfie with the photo on your document. Please ensure both images clearly show your face.';
+    }
+
+    // Generic fallback
+    return 'We encountered an issue processing your document. Please try again with a clear, well-lit photo of your ID.';
+  };
+
   const handleDocumentCaptured = async (file: File, documentType: string) => {
     try {
       // Show document processing screen immediately
@@ -172,7 +214,8 @@ export const IDVerification: React.FC = () => {
 
       // Check for errors
       if (!uploadResponse.ok) {
-        setError(uploadData.error || 'Failed to process document. Please try again.');
+        const friendlyError = getUserFriendlyError(uploadData.error || '');
+        setError(friendlyError);
         setCurrentStep({ step: 'document' });
         return;
       }
@@ -227,7 +270,8 @@ export const IDVerification: React.FC = () => {
       }
 
       if (!submitResponse.ok) {
-        setError(submitData.error || 'Verification failed. Please try again.');
+        const friendlyError = getUserFriendlyError(submitData.error || '');
+        setError(friendlyError);
         setCurrentStep({ step: 'document' });
         return;
       }
