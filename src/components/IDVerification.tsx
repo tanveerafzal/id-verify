@@ -5,7 +5,7 @@ import { VerificationResult } from './VerificationResult';
 import { getApiUrl, getAssetUrl } from '../config/api';
 
 interface VerificationStep {
-  step: 'document' | 'selfie' | 'processing' | 'complete';
+  step: 'document' | 'document-processing' | 'selfie' | 'processing' | 'complete';
   data?: any;
 }
 
@@ -126,6 +126,9 @@ export const IDVerification: React.FC = () => {
 
   const handleDocumentCaptured = async (file: File, documentType: string) => {
     try {
+      // Show document processing screen immediately
+      setCurrentStep({ step: 'document-processing' });
+
       const apiKey = getApiKey();
       let currentVerificationId = verificationId;
 
@@ -167,6 +170,13 @@ export const IDVerification: React.FC = () => {
 
       const uploadData = await uploadResponse.json();
 
+      // Check for errors
+      if (!uploadResponse.ok) {
+        setError(uploadData.error || 'Failed to process document. Please try again.');
+        setCurrentStep({ step: 'document' });
+        return;
+      }
+
       // Store the detected document type from the response
       if (uploadData.data?.detection?.detectedType) {
         setDetectedDocumentType(uploadData.data.detection.detectedType);
@@ -177,6 +187,8 @@ export const IDVerification: React.FC = () => {
       setCurrentStep({ step: 'selfie', data: uploadData.data });
     } catch (error) {
       console.error('Document upload failed:', error);
+      setError('An error occurred while processing your document. Please try again.');
+      setCurrentStep({ step: 'document' });
     }
   };
 
@@ -348,6 +360,61 @@ export const IDVerification: React.FC = () => {
 
             {currentStep.step === 'document' && (
               <DocumentCapture onCapture={handleDocumentCaptured} />
+            )}
+
+            {currentStep.step === 'document-processing' && (
+              <div className="document-processing-screen">
+                <div className="ai-processing-animation">
+                  <div className="ai-brain">
+                    <svg viewBox="0 0 100 100" className="ai-brain-svg">
+                      {/* Brain/AI icon */}
+                      <defs>
+                        <linearGradient id="aiGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stopColor="#667eea" />
+                          <stop offset="100%" stopColor="#764ba2" />
+                        </linearGradient>
+                      </defs>
+                      {/* Central circle */}
+                      <circle cx="50" cy="50" r="30" fill="none" stroke="url(#aiGradient)" strokeWidth="2" className="pulse-ring" />
+                      <circle cx="50" cy="50" r="20" fill="none" stroke="url(#aiGradient)" strokeWidth="2" className="pulse-ring delay-1" />
+                      <circle cx="50" cy="50" r="10" fill="url(#aiGradient)" className="center-dot" />
+                      {/* Connection nodes */}
+                      <circle cx="50" cy="15" r="4" fill="#667eea" className="node node-1" />
+                      <circle cx="85" cy="50" r="4" fill="#764ba2" className="node node-2" />
+                      <circle cx="50" cy="85" r="4" fill="#667eea" className="node node-3" />
+                      <circle cx="15" cy="50" r="4" fill="#764ba2" className="node node-4" />
+                      <circle cx="78" cy="22" r="3" fill="#667eea" className="node node-5" />
+                      <circle cx="78" cy="78" r="3" fill="#764ba2" className="node node-6" />
+                      <circle cx="22" cy="78" r="3" fill="#667eea" className="node node-7" />
+                      <circle cx="22" cy="22" r="3" fill="#764ba2" className="node node-8" />
+                      {/* Connection lines */}
+                      <line x1="50" y1="20" x2="50" y2="40" stroke="#667eea" strokeWidth="1" className="connection" />
+                      <line x1="60" y1="50" x2="80" y2="50" stroke="#764ba2" strokeWidth="1" className="connection delay-1" />
+                      <line x1="50" y1="60" x2="50" y2="80" stroke="#667eea" strokeWidth="1" className="connection delay-2" />
+                      <line x1="40" y1="50" x2="20" y2="50" stroke="#764ba2" strokeWidth="1" className="connection delay-3" />
+                    </svg>
+                  </div>
+                  <div className="scanning-line"></div>
+                </div>
+                <div className="processing-text">
+                  <h2>Analyzing Your Document</h2>
+                  <p>Please wait while our AI verifies your ID document...</p>
+                  <div className="processing-steps">
+                    <div className="processing-step active">
+                      <span className="step-icon">🔍</span>
+                      <span className="step-text">Detecting document type</span>
+                    </div>
+                    <div className="processing-step">
+                      <span className="step-icon">📄</span>
+                      <span className="step-text">Extracting information</span>
+                    </div>
+                    <div className="processing-step">
+                      <span className="step-icon">✓</span>
+                      <span className="step-text">Validating authenticity</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             )}
 
             {currentStep.step === 'selfie' && (
