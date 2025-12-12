@@ -209,33 +209,6 @@ export const PartnerDashboard: React.FC = () => {
 
         <div className="dashboard-card">
           <div className="card-header">
-            <h3>Verification Link</h3>
-          </div>
-          <div className="card-content">
-            {copyMessage && (
-              <div className="success-message">
-                {copyMessage}
-              </div>
-            )}
-            <p className="text-muted" style={{ marginBottom: '12px' }}>
-              Share this link with your users to track verifications:
-            </p>
-            <div className="credential-item">
-              <div className="credential-value">
-                <code>{window.location.origin}/verify?apiKey={partner.apiKey}</code>
-                <button
-                  className="btn-copy"
-                  onClick={() => copyToClipboard(`${window.location.origin}/verify?apiKey=${partner.apiKey}`)}
-                >
-                  Copy
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="dashboard-card">
-          <div className="card-header">
             <h3>API Credentials</h3>
             <button
               className="btn-link"
@@ -245,6 +218,11 @@ export const PartnerDashboard: React.FC = () => {
             </button>
           </div>
           <div className="card-content">
+            {copyMessage && (
+              <div className="success-message">
+                {copyMessage}
+              </div>
+            )}
             {showApiCredentials ? (
               <div className="api-credentials">
                 <div className="credential-item">

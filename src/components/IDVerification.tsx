@@ -5,7 +5,7 @@ import { VerificationResult } from './VerificationResult';
 import { getApiUrl, getAssetUrl } from '../config/api';
 
 interface VerificationStep {
-  step: 'document' | 'document-processing' | 'selfie' | 'processing' | 'complete';
+  step: 'document' | 'document-processing' | 'selfie' | 'selfie-processing' | 'processing' | 'complete';
   data?: any;
 }
 
@@ -167,6 +167,9 @@ export const IDVerification: React.FC = () => {
   };
 
   const handleDocumentCaptured = async (file: File, documentType: string) => {
+    // Clear any previous error when user retries
+    setError('');
+
     try {
       // Show document processing screen immediately
       setCurrentStep({ step: 'document-processing' });
