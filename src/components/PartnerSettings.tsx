@@ -30,6 +30,14 @@ export const PartnerSettings: React.FC = () => {
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string>('');
   const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [changingPassword, setChangingPassword] = useState(false);
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
+  const [passwordError, setPasswordError] = useState('');
+  const [passwordSuccess, setPasswordSuccess] = useState('');
 
   const [formData, setFormData] = useState({
     companyName: '',
@@ -221,6 +229,71 @@ export const PartnerSettings: React.FC = () => {
   const clearLogoFile = () => {
     setLogoFile(null);
     setLogoPreview('');
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPasswordData({
+      ...passwordData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handlePasswordSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPasswordError('');
+    setPasswordSuccess('');
+
+    // Validate passwords
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      setPasswordError('New passwords do not match');
+      return;
+    }
+
+    if (passwordData.newPassword.length < 8) {
+      setPasswordError('New password must be at least 8 characters');
+      return;
+    }
+
+    const token = localStorage.getItem('partnerToken');
+    if (!token) {
+      navigate('/partner/login');
+      return;
+    }
+
+    setChangingPassword(true);
+
+    try {
+      const response = await fetch(getApiUrl('/api/partners/change-password'), {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          currentPassword: passwordData.currentPassword,
+          newPassword: passwordData.newPassword
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to change password');
+      }
+
+      setPasswordSuccess('Password changed successfully!');
+      setPasswordData({
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+      });
+
+      setTimeout(() => setPasswordSuccess(''), 3000);
+    } catch (err) {
+      setPasswordError(err instanceof Error ? err.message : 'Failed to change password');
+    } finally {
+      setChangingPassword(false);
+    }
   };
 
   if (loading) {
@@ -454,6 +527,73 @@ export const PartnerSettings: React.FC = () => {
                 <strong>Keep your credentials secure!</strong> Never share your API secret publicly or commit it to version control.
               </div>
             </div>
+          </div>
+
+          {/* Change Password */}
+          <div className="settings-section">
+            <h2>Change Password</h2>
+            <form onSubmit={handlePasswordSubmit} className="settings-form">
+              {passwordError && (
+                <div className="error-alert">
+                  {passwordError}
+                </div>
+              )}
+
+              {passwordSuccess && (
+                <div className="success-alert">
+                  {passwordSuccess}
+                </div>
+              )}
+
+              <div className="form-group">
+                <label htmlFor="currentPassword">Current Password *</label>
+                <input
+                  type="password"
+                  id="currentPassword"
+                  name="currentPassword"
+                  value={passwordData.currentPassword}
+                  onChange={handlePasswordChange}
+                  required
+                  className="form-input"
+                  autoComplete="current-password"
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="newPassword">New Password *</label>
+                <input
+                  type="password"
+                  id="newPassword"
+                  name="newPassword"
+                  value={passwordData.newPassword}
+                  onChange={handlePasswordChange}
+                  required
+                  minLength={8}
+                  className="form-input"
+                  autoComplete="new-password"
+                />
+                <small>Must be at least 8 characters</small>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="confirmPassword">Confirm New Password *</label>
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  value={passwordData.confirmPassword}
+                  onChange={handlePasswordChange}
+                  required
+                  minLength={8}
+                  className="form-input"
+                  autoComplete="new-password"
+                />
+              </div>
+
+              <button type="submit" className="btn btn-primary" disabled={changingPassword}>
+                {changingPassword ? 'Changing Password...' : 'Change Password'}
+              </button>
+            </form>
           </div>
 
           {/* Subscription Info */}
