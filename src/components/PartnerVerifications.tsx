@@ -191,9 +191,8 @@ export const PartnerVerifications: React.FC = () => {
   };
 
   const handleViewDetails = (verification: Verification) => {
-    if (verification.status === 'COMPLETED' || verification.status === 'FAILED') {
-      loadVerificationDetails(verification.id);
-    }
+    // Load details for any verification that has been started
+    loadVerificationDetails(verification.id);
   };
 
   const closeModal = () => {
