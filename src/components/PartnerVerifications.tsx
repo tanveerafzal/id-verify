@@ -665,6 +665,15 @@ export const PartnerVerifications: React.FC = () => {
             )}
 
             <div className="modal-footer">
+              {selectedVerification.status !== 'COMPLETED' && (
+                <button
+                  className="btn btn-primary"
+                  onClick={() => handleResendEmail(selectedVerification.id)}
+                  disabled={resendingId === selectedVerification.id}
+                >
+                  {resendingId === selectedVerification.id ? 'Sending...' : 'Resend Verification Email'}
+                </button>
+              )}
               <button className="btn btn-secondary" onClick={closeModal}>Close</button>
             </div>
           </div>

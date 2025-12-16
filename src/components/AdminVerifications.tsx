@@ -86,6 +86,7 @@ export const AdminVerifications: React.FC = () => {
   const [loadingDetails, setLoadingDetails] = useState(false);
   const [processingAction, setProcessingAction] = useState(false);
   const [detailsFetchedAt, setDetailsFetchedAt] = useState<number | null>(null);
+  const [resendingEmail, setResendingEmail] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('adminToken');
@@ -260,6 +261,38 @@ export const AdminVerifications: React.FC = () => {
       setError(err instanceof Error ? err.message : 'Failed to update verification');
     } finally {
       setProcessingAction(false);
+    }
+  };
+
+  const handleResendEmail = async (verificationId: string) => {
+    const token = localStorage.getItem('adminToken');
+    if (!token) return;
+
+    setResendingEmail(true);
+    setError('');
+
+    try {
+      const response = await fetch(
+        getApiUrl(`/api/admin/verifications/${verificationId}/resend-email`),
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        }
+      );
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to resend email');
+      }
+
+      setSuccessMessage('Verification email sent successfully!');
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to resend email');
+    } finally {
+      setResendingEmail(false);
     }
   };
 
@@ -767,6 +800,16 @@ export const AdminVerifications: React.FC = () => {
                       {processingAction ? 'Processing...' : '❌ Manual Fail'}
                     </button>
                   </div>
+                )}
+                {/* Resend Email Button - Show for non-completed verifications */}
+                {selectedVerification && selectedVerification.status !== 'COMPLETED' && (
+                  <button
+                    className="btn-primary"
+                    onClick={() => handleResendEmail(selectedVerification.id)}
+                    disabled={resendingEmail}
+                  >
+                    {resendingEmail ? 'Sending...' : '📧 Resend Verification Email'}
+                  </button>
                 )}
                 <button className="btn-secondary" onClick={closeModal}>Close</button>
               </div>
