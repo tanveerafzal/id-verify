@@ -118,6 +118,12 @@ export const AdminVerifications: React.FC = () => {
     const token = localStorage.getItem('adminToken');
     if (!token) return;
 
+    // First, set the basic verification data from the list to show the modal immediately
+    const basicVerification = verifications.find(v => v.id === verificationId);
+    if (basicVerification) {
+      setSelectedVerification(basicVerification);
+    }
+
     setLoadingDetails(true);
 
     try {
@@ -133,6 +139,9 @@ export const AdminVerifications: React.FC = () => {
       if (response.ok) {
         const data = await response.json();
         setSelectedVerification(data.data);
+      } else {
+        // If API fails, keep the basic data but show an error
+        console.error('Failed to load verification details: API returned', response.status);
       }
     } catch (err) {
       console.error('Failed to load verification details:', err);
