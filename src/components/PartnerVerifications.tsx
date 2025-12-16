@@ -49,6 +49,9 @@ interface Verification {
   results?: VerificationResult;
 }
 
+// URL refresh interval: refresh every 6 hours to stay ahead of 8-hour expiration
+const URL_REFRESH_INTERVAL = 6 * 60 * 60 * 1000;
+
 export const PartnerVerifications: React.FC = () => {
   const navigate = useNavigate();
   const [verifications, setVerifications] = useState<Verification[]>([]);
@@ -59,6 +62,7 @@ export const PartnerVerifications: React.FC = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [selectedVerification, setSelectedVerification] = useState<Verification | null>(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
+  const [detailsFetchedAt, setDetailsFetchedAt] = useState<number | null>(null);
 
   useEffect(() => {
     loadVerifications();
@@ -163,11 +167,13 @@ export const PartnerVerifications: React.FC = () => {
     }
   };
 
-  const loadVerificationDetails = async (verificationId: string) => {
+  const loadVerificationDetails = async (verificationId: string, isRefresh = false) => {
     const token = localStorage.getItem('partnerToken');
     if (!token) return;
 
-    setLoadingDetails(true);
+    if (!isRefresh) {
+      setLoadingDetails(true);
+    }
 
     try {
       const response = await fetch(
@@ -182,13 +188,36 @@ export const PartnerVerifications: React.FC = () => {
       if (response.ok) {
         const data = await response.json();
         setSelectedVerification(data.data);
+        setDetailsFetchedAt(Date.now());
       }
     } catch (err) {
       console.error('Failed to load verification details:', err);
     } finally {
-      setLoadingDetails(false);
+      if (!isRefresh) {
+        setLoadingDetails(false);
+      }
     }
   };
+
+  // Auto-refresh document URLs while modal is open to prevent expiration
+  useEffect(() => {
+    if (!selectedVerification?.id) {
+      setDetailsFetchedAt(null);
+      return;
+    }
+
+    const checkAndRefresh = () => {
+      if (detailsFetchedAt && Date.now() - detailsFetchedAt >= URL_REFRESH_INTERVAL) {
+        console.log('[PartnerVerifications] Refreshing document URLs to prevent expiration');
+        loadVerificationDetails(selectedVerification.id, true);
+      }
+    };
+
+    // Check every 5 minutes if refresh is needed
+    const intervalId = setInterval(checkAndRefresh, 5 * 60 * 1000);
+
+    return () => clearInterval(intervalId);
+  }, [selectedVerification?.id, detailsFetchedAt]);
 
   const handleViewDetails = (verification: Verification) => {
     // Load details for any verification that has been started
