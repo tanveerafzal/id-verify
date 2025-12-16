@@ -64,6 +64,13 @@ export const PartnerVerifications: React.FC = () => {
   const [loadingDetails, setLoadingDetails] = useState(false);
   const [detailsFetchedAt, setDetailsFetchedAt] = useState<number | null>(null);
 
+  // Edit mode state
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editedName, setEditedName] = useState('');
+  const [editedEmail, setEditedEmail] = useState('');
+  const [editedPhone, setEditedPhone] = useState('');
+  const [savingDetails, setSavingDetails] = useState(false);
+
   useEffect(() => {
     loadVerifications();
   }, []);
@@ -226,6 +233,71 @@ export const PartnerVerifications: React.FC = () => {
 
   const closeModal = () => {
     setSelectedVerification(null);
+    setIsEditMode(false);
+    setEditedName('');
+    setEditedEmail('');
+    setEditedPhone('');
+  };
+
+  const handleStartEdit = () => {
+    if (selectedVerification) {
+      setEditedName(selectedVerification.userName || '');
+      setEditedEmail(selectedVerification.userEmail || '');
+      setEditedPhone(selectedVerification.userPhone || '');
+      setIsEditMode(true);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditMode(false);
+    setEditedName('');
+    setEditedEmail('');
+    setEditedPhone('');
+  };
+
+  const handleSaveDetails = async () => {
+    if (!selectedVerification) return;
+
+    const token = localStorage.getItem('partnerToken');
+    if (!token) return;
+
+    setSavingDetails(true);
+    setError('');
+
+    try {
+      const response = await fetch(
+        getApiUrl(`/api/partners/verifications/${selectedVerification.id}/details`),
+        {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            fullName: editedName,
+            email: editedEmail,
+            phone: editedPhone
+          })
+        }
+      );
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to update details');
+      }
+
+      setSuccessMessage('User details updated successfully!');
+      setTimeout(() => setSuccessMessage(''), 3000);
+
+      // Reload verification details
+      await loadVerificationDetails(selectedVerification.id);
+      await loadVerifications();
+      setIsEditMode(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update details');
+    } finally {
+      setSavingDetails(false);
+    }
   };
 
   const formatDate = (dateString?: string) => {
@@ -421,21 +493,80 @@ export const PartnerVerifications: React.FC = () => {
               <div className="modal-body">
                 {/* User Info */}
                 <div className="detail-section">
-                  <h3>User Information</h3>
+                  <div className="section-header-with-action">
+                    <h3>User Information</h3>
+                    {!isEditMode && (
+                      <button
+                        className="btn-edit-small"
+                        onClick={handleStartEdit}
+                        title="Edit user details"
+                      >
+                        Edit
+                      </button>
+                    )}
+                  </div>
                   <div className="detail-grid">
                     <div className="detail-item">
                       <span className="detail-label">Name:</span>
-                      <span className="detail-value">{selectedVerification.userName || 'N/A'}</span>
+                      {isEditMode ? (
+                        <input
+                          type="text"
+                          className="edit-input"
+                          value={editedName}
+                          onChange={(e) => setEditedName(e.target.value)}
+                          placeholder="Full name"
+                        />
+                      ) : (
+                        <span className="detail-value">{selectedVerification.userName || 'N/A'}</span>
+                      )}
                     </div>
                     <div className="detail-item">
                       <span className="detail-label">Email:</span>
-                      <span className="detail-value">{selectedVerification.userEmail || 'N/A'}</span>
+                      {isEditMode ? (
+                        <input
+                          type="email"
+                          className="edit-input"
+                          value={editedEmail}
+                          onChange={(e) => setEditedEmail(e.target.value)}
+                          placeholder="Email address"
+                        />
+                      ) : (
+                        <span className="detail-value">{selectedVerification.userEmail || 'N/A'}</span>
+                      )}
                     </div>
                     <div className="detail-item">
                       <span className="detail-label">Phone:</span>
-                      <span className="detail-value">{selectedVerification.userPhone || 'N/A'}</span>
+                      {isEditMode ? (
+                        <input
+                          type="tel"
+                          className="edit-input"
+                          value={editedPhone}
+                          onChange={(e) => setEditedPhone(e.target.value)}
+                          placeholder="Phone number"
+                        />
+                      ) : (
+                        <span className="detail-value">{selectedVerification.userPhone || 'N/A'}</span>
+                      )}
                     </div>
                   </div>
+                  {isEditMode && (
+                    <div className="edit-actions">
+                      <button
+                        className="btn-save"
+                        onClick={handleSaveDetails}
+                        disabled={savingDetails}
+                      >
+                        {savingDetails ? 'Saving...' : 'Save Changes'}
+                      </button>
+                      <button
+                        className="btn-cancel"
+                        onClick={handleCancelEdit}
+                        disabled={savingDetails}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 {/* Document Info */}
