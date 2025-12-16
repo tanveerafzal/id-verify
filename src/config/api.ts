@@ -14,11 +14,26 @@ console.log('[API Config] window.location:', typeof window !== 'undefined' ? win
 export const getAssetUrl = (path: string | undefined): string | undefined => {
   if (!path) return undefined;
 
-  // If it's an absolute URL, extract the path portion for proxy handling
+  // If it's an absolute URL
   if (path.startsWith('http://') || path.startsWith('https://')) {
     try {
       const url = new URL(path);
-      // Extract just the pathname (e.g., /uploads/documents/...)
+
+      // Check if this is an S3 URL (signed URLs should be used as-is)
+      // S3 URLs contain amazonaws.com or s3. in the hostname
+      if (url.hostname.includes('amazonaws.com') || url.hostname.includes('s3.')) {
+        // Return S3 signed URLs unchanged - they have their own authentication
+        return path;
+      }
+
+      // Check if this is already pointing to our API server
+      const apiBaseHost = API_BASE_URL ? new URL(API_BASE_URL).hostname : '';
+      if (url.hostname === apiBaseHost || url.hostname === 'localhost') {
+        // Already correct, return as-is
+        return path;
+      }
+
+      // For other absolute URLs (e.g., old local storage URLs), extract path
       const relativePath = url.pathname;
 
       // In development, use relative path so Vite proxy handles it
