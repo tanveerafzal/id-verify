@@ -22,7 +22,12 @@ interface VerificationResult {
     documentNumber?: string;
     expiryDate?: string;
     issuingCountry?: string;
-    address?: string;
+    address?: string | {
+      street?: string;
+      city?: string;
+      state?: string;
+      country?: string;
+    };
   };
   flags?: string[];
   warnings?: string[];
@@ -647,7 +652,16 @@ export const AdminVerifications: React.FC = () => {
                             {selectedVerification.results.extractedData.address && (
                               <div className="data-row-modal">
                                 <span className="data-label">Address:</span>
-                                <span className="data-value">{selectedVerification.results.extractedData.address}</span>
+                                <span className="data-value">
+                                  {typeof selectedVerification.results.extractedData.address === 'string'
+                                    ? selectedVerification.results.extractedData.address
+                                    : [
+                                        selectedVerification.results.extractedData.address.street,
+                                        selectedVerification.results.extractedData.address.city,
+                                        selectedVerification.results.extractedData.address.state,
+                                        selectedVerification.results.extractedData.address.country
+                                      ].filter(Boolean).join(', ')}
+                                </span>
                               </div>
                             )}
                           </div>
