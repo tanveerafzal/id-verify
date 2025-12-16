@@ -138,7 +138,17 @@ export const AdminVerifications: React.FC = () => {
 
       if (response.ok) {
         const data = await response.json();
-        setSelectedVerification(data.data);
+        console.log('[AdminVerifications] API response:', data);
+
+        // Check various possible response formats
+        const verificationData = data.data?.verification || data.data || data.verification || data;
+
+        if (verificationData && verificationData.id) {
+          setSelectedVerification(verificationData);
+        } else {
+          // Keep the basic verification if API response is invalid
+          console.warn('[AdminVerifications] API returned unexpected format, keeping basic data:', data);
+        }
       } else {
         // If API fails, keep the basic data but show an error
         console.error('Failed to load verification details: API returned', response.status);
@@ -430,8 +440,8 @@ export const AdminVerifications: React.FC = () => {
               ) : (
                 <div className="modal-body">
                   {/* Status Banner */}
-                  <div className={`verification-status-banner ${selectedVerification.status.toLowerCase()}`}>
-                    <span className="status-text">Status: {selectedVerification.status}</span>
+                  <div className={`verification-status-banner ${(selectedVerification.status || 'pending').toLowerCase()}`}>
+                    <span className="status-text">Status: {selectedVerification.status || 'Unknown'}</span>
                     {selectedVerification.results && (
                       <span className={`result-text ${selectedVerification.results.passed ? 'passed' : 'failed'}`}>
                         {selectedVerification.results.passed ? '✅ PASSED' : '❌ FAILED'}
