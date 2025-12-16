@@ -118,12 +118,6 @@ export const AdminVerifications: React.FC = () => {
     const token = localStorage.getItem('adminToken');
     if (!token) return;
 
-    // First, set the basic verification data from the list to show the modal immediately
-    const basicVerification = verifications.find(v => v.id === verificationId);
-    if (basicVerification) {
-      setSelectedVerification(basicVerification);
-    }
-
     setLoadingDetails(true);
 
     try {
@@ -138,26 +132,20 @@ export const AdminVerifications: React.FC = () => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log('[AdminVerifications] API response:', data);
-
-        // Check various possible response formats
-        const verificationData = data.data?.verification || data.data || data.verification || data;
-
-        if (verificationData && verificationData.id) {
-          setSelectedVerification(verificationData);
-        } else {
-          // Keep the basic verification if API response is invalid
-          console.warn('[AdminVerifications] API returned unexpected format, keeping basic data:', data);
-        }
-      } else {
-        // If API fails, keep the basic data but show an error
-        console.error('Failed to load verification details: API returned', response.status);
+        setSelectedVerification(data.data);
       }
     } catch (err) {
       console.error('Failed to load verification details:', err);
     } finally {
       setLoadingDetails(false);
     }
+  };
+
+  const handleViewDetails = (verification: Verification) => {
+    // Set the verification from the list first (this makes modal appear immediately)
+    setSelectedVerification(verification);
+    // Then load full details from API
+    loadVerificationDetails(verification.id);
   };
 
   const handleManualPass = async (verificationId: string) => {
@@ -405,7 +393,7 @@ export const AdminVerifications: React.FC = () => {
                     <td className="actions-cell">
                       <button
                         className="btn-icon"
-                        onClick={() => loadVerificationDetails(verification.id)}
+                        onClick={() => handleViewDetails(verification)}
                         title="View Details"
                       >
                         👁️
