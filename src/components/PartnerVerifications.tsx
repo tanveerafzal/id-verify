@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PartnerLayout } from './PartnerLayout';
-import { getApiUrl } from '../config/api';
+import { getApiUrl, getAssetUrl } from '../config/api';
 
 interface VerificationResult {
   passed: boolean;
@@ -425,8 +425,10 @@ export const PartnerVerifications: React.FC = () => {
                     <h3>Uploaded Documents</h3>
                     <div className="uploaded-documents-grid">
                       {selectedVerification.documents?.map((doc, index) => {
-                        const docUrl = doc.originalUrl || doc.processedUrl || doc.imageUrl;
-                        const thumbUrl = doc.thumbnailUrl || docUrl;
+                        const rawDocUrl = doc.originalUrl || doc.processedUrl || doc.imageUrl;
+                        const rawThumbUrl = doc.thumbnailUrl || rawDocUrl;
+                        const docUrl = getAssetUrl(rawDocUrl);
+                        const thumbUrl = getAssetUrl(rawThumbUrl);
                         return (
                           <div key={doc.id || index} className="uploaded-document-item">
                             <div className="document-preview">

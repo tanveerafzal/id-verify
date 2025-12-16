@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AdminLayout } from './AdminLayout';
-import { getApiUrl } from '../config/api';
+import { getApiUrl, getAssetUrl } from '../config/api';
 
 interface VerificationResult {
   passed: boolean;
@@ -486,8 +486,10 @@ export const AdminVerifications: React.FC = () => {
                       <h3>Uploaded Documents</h3>
                       <div className="uploaded-documents-grid">
                         {selectedVerification.documents.map((doc, index) => {
-                          const docUrl = doc.originalUrl || doc.processedUrl;
-                          const thumbUrl = doc.thumbnailUrl || docUrl;
+                          const rawDocUrl = doc.originalUrl || doc.processedUrl;
+                          const rawThumbUrl = doc.thumbnailUrl || rawDocUrl;
+                          const docUrl = getAssetUrl(rawDocUrl);
+                          const thumbUrl = getAssetUrl(rawThumbUrl);
                           const isSelfie = doc.type === 'SELFIE';
                           return (
                             <div key={doc.id || index} className={`uploaded-document-item ${isSelfie ? 'selfie' : 'id-document'}`}>
