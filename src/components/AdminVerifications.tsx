@@ -55,6 +55,8 @@ interface Verification {
   status: string;
   riskLevel?: string;
   score?: number;
+  retryCount?: number;
+  maxRetries?: number;
   partner?: {
     id: string;
     companyName: string;
@@ -94,6 +96,11 @@ export const AdminVerifications: React.FC = () => {
   const [editedEmail, setEditedEmail] = useState('');
   const [editedPhone, setEditedPhone] = useState('');
   const [savingDetails, setSavingDetails] = useState(false);
+
+  // Retry count edit state
+  const [editedRetryCount, setEditedRetryCount] = useState<number>(0);
+  const [isEditingRetry, setIsEditingRetry] = useState(false);
+  const [savingRetryCount, setSavingRetryCount] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('adminToken');
@@ -413,6 +420,107 @@ export const AdminVerifications: React.FC = () => {
     setEditedName('');
     setEditedEmail('');
     setEditedPhone('');
+    setIsEditingRetry(false);
+    setEditedRetryCount(0);
+  };
+
+  const handleStartEditRetry = () => {
+    if (selectedVerification) {
+      setEditedRetryCount(selectedVerification.retryCount || 0);
+      setIsEditingRetry(true);
+    }
+  };
+
+  const handleCancelEditRetry = () => {
+    setIsEditingRetry(false);
+    setEditedRetryCount(0);
+  };
+
+  const handleSaveRetryCount = async () => {
+    if (!selectedVerification) return;
+
+    const token = localStorage.getItem('adminToken');
+    if (!token) return;
+
+    setSavingRetryCount(true);
+    setError('');
+
+    try {
+      const response = await fetch(
+        getApiUrl(`/api/admin/verifications/${selectedVerification.id}/retry-count`),
+        {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            retryCount: editedRetryCount
+          })
+        }
+      );
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to update retry count');
+      }
+
+      setSuccessMessage('Retry count updated successfully!');
+      setTimeout(() => setSuccessMessage(''), 3000);
+
+      // Reload verification details
+      await loadVerificationDetails(selectedVerification.id);
+      await loadVerifications();
+      setIsEditingRetry(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update retry count');
+    } finally {
+      setSavingRetryCount(false);
+    }
+  };
+
+  const handleResetRetryCount = async () => {
+    if (!selectedVerification) return;
+    setEditedRetryCount(0);
+    // Auto-save when reset button is clicked
+    const token = localStorage.getItem('adminToken');
+    if (!token) return;
+
+    setSavingRetryCount(true);
+    setError('');
+
+    try {
+      const response = await fetch(
+        getApiUrl(`/api/admin/verifications/${selectedVerification.id}/retry-count`),
+        {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            retryCount: 0
+          })
+        }
+      );
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to reset retry count');
+      }
+
+      setSuccessMessage('Retry count reset to 0!');
+      setTimeout(() => setSuccessMessage(''), 3000);
+
+      // Reload verification details
+      await loadVerificationDetails(selectedVerification.id);
+      await loadVerifications();
+      setIsEditingRetry(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to reset retry count');
+    } finally {
+      setSavingRetryCount(false);
+    }
   };
 
   if (loading) {
@@ -574,6 +682,73 @@ export const AdminVerifications: React.FC = () => {
                         {selectedVerification.results.passed ? '✅ PASSED' : '❌ FAILED'}
                       </span>
                     )}
+                  </div>
+
+                  {/* Retry Count Section */}
+                  <div className="detail-section retry-section">
+                    <div className="section-header-with-action">
+                      <h3>Retry Information</h3>
+                      {!isEditingRetry && (
+                        <button
+                          className="btn-edit-small"
+                          onClick={handleStartEditRetry}
+                          title="Edit retry count"
+                        >
+                          Edit
+                        </button>
+                      )}
+                    </div>
+                    <div className="retry-info">
+                      {isEditingRetry ? (
+                        <div className="retry-edit-form">
+                          <div className="retry-input-group">
+                            <label>Retry Count:</label>
+                            <input
+                              type="number"
+                              className="edit-input retry-input"
+                              value={editedRetryCount}
+                              onChange={(e) => setEditedRetryCount(Math.max(0, parseInt(e.target.value) || 0))}
+                              min={0}
+                              max={selectedVerification.maxRetries || 5}
+                            />
+                            <span className="retry-max">/ {selectedVerification.maxRetries || 5} max</span>
+                          </div>
+                          <div className="edit-actions">
+                            <button
+                              className="btn-save"
+                              onClick={handleSaveRetryCount}
+                              disabled={savingRetryCount}
+                            >
+                              {savingRetryCount ? 'Saving...' : 'Save'}
+                            </button>
+                            <button
+                              className="btn-reset"
+                              onClick={handleResetRetryCount}
+                              disabled={savingRetryCount}
+                            >
+                              Reset to 0
+                            </button>
+                            <button
+                              className="btn-cancel"
+                              onClick={handleCancelEditRetry}
+                              disabled={savingRetryCount}
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="retry-display">
+                          <span className="retry-count">
+                            {selectedVerification.retryCount || 0} / {selectedVerification.maxRetries || 5}
+                          </span>
+                          <span className="retry-label">attempts used</span>
+                          {(selectedVerification.retryCount || 0) >= (selectedVerification.maxRetries || 5) && (
+                            <span className="retry-exhausted">⚠️ Max retries reached</span>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   {/* User Info */}

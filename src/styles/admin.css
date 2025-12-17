@@ -1195,3 +1195,91 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+/* Retry Section Styles */
+.retry-section {
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.retry-info {
+  margin-top: 8px;
+}
+
+.retry-display {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.retry-count {
+  font-size: 24px;
+  font-weight: 700;
+  color: #374151;
+}
+
+.retry-label {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.retry-exhausted {
+  background: #fef2f2;
+  color: #dc2626;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.retry-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.retry-input-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.retry-input-group label {
+  font-size: 14px;
+  color: #374151;
+  font-weight: 500;
+}
+
+.retry-input {
+  width: 80px !important;
+  text-align: center;
+}
+
+.retry-max {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.btn-reset {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fcd34d;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-reset:hover:not(:disabled) {
+  background: #fde68a;
+}
+
+.btn-reset:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
