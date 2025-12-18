@@ -53,7 +53,8 @@ export const PartnerLayout: React.FC<PartnerLayoutProps> = ({ children }) => {
     { path: '/partner/dashboard', label: 'Dashboard', icon: '📊' },
     { path: '/partner/request-verification', label: 'Request Verification', icon: '➕' },
     { path: '/partner/verifications', label: 'Verifications', icon: '✓' },
-    { path: '/partner/settings', label: 'Settings', icon: '⚙️' }
+    { path: '/partner/settings', label: 'Settings', icon: '⚙️' },
+    { path: '/partner/team', label: 'Team', icon: '👥' }
   ];
 
   const isActive = (path: string) => location.pathname === path;
