@@ -16,6 +16,8 @@ export const DocumentCapture: React.FC<DocumentCaptureProps> = ({ onCapture }) =
     { value: 'DRIVERS_LICENSE', label: "Driver's License" },
     { value: 'PASSPORT', label: 'Passport' },
     { value: 'NATIONAL_ID', label: 'National ID' },
+    { value: 'RESIDENCE_PERMIT', label: 'Residence Permit' },
+    { value: 'PERMANENT_RESIDENT_CARD', label: 'Permanent Resident Card' },
     { value: 'OTHER', label: 'Other' }
   ];
 
