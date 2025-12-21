@@ -31,7 +31,7 @@ function App() {
         <Route path="/partner/register" element={<PartnerRegister />} />
         <Route path="/partner/login" element={<PartnerLogin />} />
         <Route path="/partner/forgot-password" element={<PartnerForgotPassword />} />
-        <Route path="/reset-password" element={<PartnerResetPassword />} />
+        <Route path="/partner/reset-password" element={<PartnerResetPassword />} />
         <Route path="/partner/dashboard" element={<PartnerDashboard />} />
         <Route path="/partner/verifications" element={<PartnerVerifications />} />
         <Route path="/partner/request-verification" element={<PartnerRequestVerification />} />
