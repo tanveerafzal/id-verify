@@ -13,6 +13,8 @@ interface VerificationResult {
     documentTampered?: boolean;
     faceMatch?: boolean;
     faceMatchScore?: number;
+    nameMatch?: boolean;
+    nameMatchScore?: number;
   };
   extractedData?: {
     fullName?: string;
@@ -909,6 +911,19 @@ export const PartnerVerifications: React.FC = () => {
                                 {selectedVerification.results.checks.faceMatchScore && (
                                   <span className="face-score">
                                     ({Math.round(selectedVerification.results.checks.faceMatchScore * 100)}%)
+                                  </span>
+                                )}
+                              </span>
+                            </div>
+                          )}
+                          {selectedVerification.results.checks.nameMatch !== undefined && (
+                            <div className={`check-item-modal ${selectedVerification.results.checks.nameMatch ? 'pass' : 'fail'}`}>
+                              <span className="check-icon">{selectedVerification.results.checks.nameMatch ? '✓' : '✗'}</span>
+                              <span>
+                                Name Match
+                                {selectedVerification.results.checks.nameMatchScore && (
+                                  <span className="face-score">
+                                    ({Math.round(selectedVerification.results.checks.nameMatchScore * 100)}%)
                                   </span>
                                 )}
                               </span>

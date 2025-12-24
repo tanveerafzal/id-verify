@@ -37,6 +37,7 @@ export const PartnerTeam: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Invite Modal State
   const [showInviteModal, setShowInviteModal] = useState(false);
@@ -217,6 +218,30 @@ export const PartnerTeam: React.FC = () => {
     });
   };
 
+  // Filter members based on search query
+  const filteredMembers = members.filter((member) => {
+    if (!searchQuery.trim()) return true;
+    const query = searchQuery.toLowerCase().trim();
+    return (
+      member.name.toLowerCase().includes(query) ||
+      member.email.toLowerCase().includes(query) ||
+      member.role.name.toLowerCase().includes(query) ||
+      member.status.toLowerCase().includes(query)
+    );
+  });
+
+  // Filter invitations based on search query
+  const filteredInvitations = invitations.filter((inv) => {
+    if (!searchQuery.trim()) return true;
+    const query = searchQuery.toLowerCase().trim();
+    return (
+      inv.name.toLowerCase().includes(query) ||
+      inv.email.toLowerCase().includes(query) ||
+      inv.role.name.toLowerCase().includes(query) ||
+      inv.status.toLowerCase().includes(query)
+    );
+  });
+
   if (loading) {
     return (
       <PartnerLayout>
@@ -246,15 +271,46 @@ export const PartnerTeam: React.FC = () => {
         {error && <div className="error-alert">{error}</div>}
         {success && <div className="success-alert">{success}</div>}
 
+        {/* Search */}
+        <div className="team-search-container">
+          <div className="search-box">
+            <input
+              type="text"
+              placeholder="Search by name, email, role, or status..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="search-input"
+            />
+            {searchQuery && (
+              <button
+                className="search-clear-btn"
+                onClick={() => setSearchQuery('')}
+                title="Clear search"
+              >
+                &times;
+              </button>
+            )}
+          </div>
+        </div>
+
         {/* Team Members Section */}
         <div className="team-section">
-          <h2>Team Members ({members.length})</h2>
+          <h2>Team Members ({filteredMembers.length}{searchQuery && members.length !== filteredMembers.length ? ` of ${members.length}` : ''})</h2>
 
-          {members.length === 0 ? (
+          {filteredMembers.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-icon">👥</div>
-              <h3>No team members yet</h3>
-              <p>Invite your first team member to get started</p>
+              <div className="empty-icon">{searchQuery ? '🔍' : '👥'}</div>
+              <h3>{searchQuery ? 'No matching members' : 'No team members yet'}</h3>
+              <p>{searchQuery ? `No members found for "${searchQuery}"` : 'Invite your first team member to get started'}</p>
+              {searchQuery && (
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => setSearchQuery('')}
+                  style={{ marginTop: '12px' }}
+                >
+                  Clear Search
+                </button>
+              )}
             </div>
           ) : (
             <div className="team-table-container">
@@ -269,7 +325,7 @@ export const PartnerTeam: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {members.map((member) => (
+                  {filteredMembers.map((member) => (
                     <tr key={member.id}>
                       <td>
                         <div className="member-info">
@@ -312,9 +368,16 @@ export const PartnerTeam: React.FC = () => {
         </div>
 
         {/* Pending Invitations Section */}
-        {invitations.length > 0 && (
+        {(invitations.length > 0 || (searchQuery && filteredInvitations.length === 0)) && (
           <div className="team-section">
-            <h2>Pending Invitations ({invitations.length})</h2>
+            <h2>Pending Invitations ({filteredInvitations.length}{searchQuery && invitations.length !== filteredInvitations.length ? ` of ${invitations.length}` : ''})</h2>
+            {filteredInvitations.length === 0 ? (
+              <div className="empty-state">
+                <div className="empty-icon">🔍</div>
+                <h3>No matching invitations</h3>
+                <p>No invitations found for "{searchQuery}"</p>
+              </div>
+            ) : (
             <div className="team-table-container">
               <table className="team-table">
                 <thead>
@@ -327,7 +390,7 @@ export const PartnerTeam: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {invitations.map((inv) => (
+                  {filteredInvitations.map((inv) => (
                     <tr key={inv.id}>
                       <td>
                         <div className="member-info">
@@ -364,6 +427,7 @@ export const PartnerTeam: React.FC = () => {
                 </tbody>
               </table>
             </div>
+            )}
           </div>
         )}
 
