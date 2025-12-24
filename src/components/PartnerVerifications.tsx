@@ -60,6 +60,7 @@ export const PartnerVerifications: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [filter, setFilter] = useState<'all' | 'completed' | 'pending'>('all');
+  const [searchQuery, setSearchQuery] = useState('');
   const [resendingId, setResendingId] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState('');
   const [selectedVerification, setSelectedVerification] = useState<Verification | null>(null);
@@ -420,9 +421,26 @@ export const PartnerVerifications: React.FC = () => {
   };
 
   const filteredVerifications = verifications.filter((v) => {
-    if (filter === 'all') return true;
-    if (filter === 'completed') return v.status === 'COMPLETED';
-    if (filter === 'pending') return v.status === 'PENDING' || v.status === 'IN_PROGRESS';
+    // Apply status filter
+    if (filter === 'completed' && v.status !== 'COMPLETED') return false;
+    if (filter === 'pending' && v.status !== 'PENDING' && v.status !== 'IN_PROGRESS') return false;
+
+    // Apply search filter
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim();
+      const matchesId = v.id.toLowerCase().includes(query);
+      const matchesName = v.userName?.toLowerCase().includes(query);
+      const matchesEmail = v.userEmail?.toLowerCase().includes(query);
+      const matchesPhone = v.userPhone?.toLowerCase().includes(query);
+      const matchesType = v.type?.toLowerCase().includes(query);
+      const matchesStatus = v.status?.toLowerCase().includes(query);
+      const matchesRiskLevel = v.results?.riskLevel?.toLowerCase().includes(query);
+
+      if (!matchesId && !matchesName && !matchesEmail && !matchesPhone && !matchesType && !matchesStatus && !matchesRiskLevel) {
+        return false;
+      }
+    }
+
     return true;
   });
 
@@ -457,35 +475,68 @@ export const PartnerVerifications: React.FC = () => {
         </div>
       )}
 
-      {/* Filters */}
-      <div className="verifications-filters">
-        <button
-          className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
-          onClick={() => setFilter('all')}
-        >
-          All ({verifications.length})
-        </button>
-        <button
-          className={`filter-btn ${filter === 'completed' ? 'active' : ''}`}
-          onClick={() => setFilter('completed')}
-        >
-          Completed ({verifications.filter(v => v.status === 'COMPLETED').length})
-        </button>
-        <button
-          className={`filter-btn ${filter === 'pending' ? 'active' : ''}`}
-          onClick={() => setFilter('pending')}
-        >
-          Pending ({verifications.filter(v => v.status === 'PENDING' || v.status === 'IN_PROGRESS').length})
-        </button>
+      {/* Search and Filters */}
+      <div className="verifications-search-filters">
+        <div className="search-box">
+          <input
+            type="text"
+            placeholder="Search by ID, name, email, phone, type, status, or risk level..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="search-input"
+          />
+          {searchQuery && (
+            <button
+              className="search-clear-btn"
+              onClick={() => setSearchQuery('')}
+              title="Clear search"
+            >
+              &times;
+            </button>
+          )}
+        </div>
+        <div className="verifications-filters">
+          <button
+            className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
+            onClick={() => setFilter('all')}
+          >
+            All ({verifications.length})
+          </button>
+          <button
+            className={`filter-btn ${filter === 'completed' ? 'active' : ''}`}
+            onClick={() => setFilter('completed')}
+          >
+            Completed ({verifications.filter(v => v.status === 'COMPLETED').length})
+          </button>
+          <button
+            className={`filter-btn ${filter === 'pending' ? 'active' : ''}`}
+            onClick={() => setFilter('pending')}
+          >
+            Pending ({verifications.filter(v => v.status === 'PENDING' || v.status === 'IN_PROGRESS').length})
+          </button>
+        </div>
       </div>
 
       {/* Table */}
       <div className="verifications-table-container">
         {filteredVerifications.length === 0 ? (
           <div className="empty-state">
-            <div className="empty-icon">📋</div>
-            <h3>No verifications yet</h3>
-            <p>Share your verification link to start receiving requests</p>
+            <div className="empty-icon">{searchQuery ? '🔍' : '📋'}</div>
+            <h3>{searchQuery ? 'No matching verifications' : 'No verifications yet'}</h3>
+            <p>
+              {searchQuery
+                ? `No results found for "${searchQuery}". Try adjusting your search.`
+                : 'Share your verification link to start receiving requests'}
+            </p>
+            {searchQuery && (
+              <button
+                className="btn btn-secondary"
+                onClick={() => setSearchQuery('')}
+                style={{ marginTop: '12px' }}
+              >
+                Clear Search
+              </button>
+            )}
           </div>
         ) : (
           <table className="verifications-table">
