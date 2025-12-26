@@ -278,6 +278,7 @@ export const IDVerification: React.FC = () => {
         : `/api/verifications/${verificationId}/submit`;
 
       const submitResponse = await fetch(getApiUrl(submitUrl), { method: 'POST' });
+      console.log('Submit response', submitResponse);
 
       const submitData = await submitResponse.json();
 
@@ -291,6 +292,7 @@ export const IDVerification: React.FC = () => {
       // If the response contains a valid result (even if verification failed), show the result page
       // This handles cases like face match failure where verification was processed but didn't pass
       if (submitData.data && typeof submitData.data.passed !== 'undefined') {
+        console.log('response contains a valid result');
         setResult(submitData.data);
         setCurrentStep({ step: 'complete', data: submitData.data });
         return;
@@ -300,6 +302,7 @@ export const IDVerification: React.FC = () => {
       if (!submitResponse.ok) {
         const friendlyError = getUserFriendlyError(submitData.error || '');
         setError(friendlyError);
+        console.log('friendlyError', friendlyError);
         setCurrentStep({ step: 'complete', data: submitData.data });
         return;
       }
