@@ -313,6 +313,38 @@ body {
   margin-bottom: 20px;
 }
 
+.pdf-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  background: #f9fafb;
+  border: 2px dashed #d1d5db;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.pdf-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+}
+
+.pdf-filename {
+  font-size: 16px;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 8px 0;
+  word-break: break-all;
+  text-align: center;
+}
+
+.pdf-info {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0;
+}
+
 .preview-controls {
   display: flex;
   gap: 15px;

@@ -25,11 +25,17 @@ export const DocumentCapture: React.FC<DocumentCaptureProps> = ({ onCapture }) =
     const file = event.target.files?.[0];
     if (file) {
       setCapturedFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+
+      // Handle PDF files differently - can't preview as image
+      if (file.type === 'application/pdf') {
+        setPreview('pdf');
+      } else {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setPreview(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+      }
     }
   };
 
@@ -128,12 +134,12 @@ export const DocumentCapture: React.FC<DocumentCaptureProps> = ({ onCapture }) =
             className="btn-secondary"
             onClick={() => fileInputRef.current?.click()}
           >
-            📁 Upload Photo
+            📁 Upload File
           </button>
           <input
             ref={fileInputRef}
             type="file"
-            accept="image/*"
+            accept="image/png,image/jpeg,image/jpg,image/webp,application/pdf"
             onChange={handleFileSelect}
             style={{ display: 'none' }}
           />
@@ -177,7 +183,15 @@ export const DocumentCapture: React.FC<DocumentCaptureProps> = ({ onCapture }) =
       {preview && (
         <div className="preview-section">
           <h3>Preview</h3>
-          <img src={preview} alt="Document preview" />
+          {preview === 'pdf' ? (
+            <div className="pdf-preview">
+              <div className="pdf-icon">📄</div>
+              <p className="pdf-filename">{capturedFile?.name}</p>
+              <p className="pdf-info">PDF document ready to upload</p>
+            </div>
+          ) : (
+            <img src={preview} alt="Document preview" />
+          )}
           <div className="preview-controls">
             <button className="btn-primary" onClick={handleSubmit}>
               ✓ Continue
