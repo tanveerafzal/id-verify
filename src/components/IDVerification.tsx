@@ -300,7 +300,7 @@ export const IDVerification: React.FC = () => {
       if (!submitResponse.ok) {
         const friendlyError = getUserFriendlyError(submitData.error || '');
         setError(friendlyError);
-        setCurrentStep({ step: 'document' });
+        setCurrentStep({ step: 'complete', data: submitData.data });
         return;
       }
 
