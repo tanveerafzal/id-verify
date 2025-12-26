@@ -70,6 +70,17 @@ body {
   margin-bottom: 20px;
 }
 
+.user-greeting {
+  font-size: 18px;
+  margin: 0 0 8px 0;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.user-greeting strong {
+  color: #fbbf24;
+  font-size: 20px;
+}
+
 .welcome-message {
   background: rgba(255, 255, 255, 0.15);
   border-radius: 12px;
