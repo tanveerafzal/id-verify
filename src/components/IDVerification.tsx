@@ -288,6 +288,15 @@ export const IDVerification: React.FC = () => {
         return;
       }
 
+      // If the response contains a valid result (even if verification failed), show the result page
+      // This handles cases like face match failure where verification was processed but didn't pass
+      if (submitData.data && typeof submitData.data.passed !== 'undefined') {
+        setResult(submitData.data);
+        setCurrentStep({ step: 'complete', data: submitData.data });
+        return;
+      }
+
+      // Only show error on first page if there's no valid result (e.g., server error)
       if (!submitResponse.ok) {
         const friendlyError = getUserFriendlyError(submitData.error || '');
         setError(friendlyError);
