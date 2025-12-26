@@ -4,10 +4,13 @@ interface DocumentCaptureProps {
   onCapture: (file: File, documentType: string) => void;
 }
 
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
+
 export const DocumentCapture: React.FC<DocumentCaptureProps> = ({ onCapture }) => {
   const [selectedType, setSelectedType] = useState<string>('DRIVERS_LICENSE');
   const [preview, setPreview] = useState<string | null>(null);
   const [capturedFile, setCapturedFile] = useState<File | null>(null);
+  const [fileSizeError, setFileSizeError] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isCamera, setIsCamera] = useState(false);
@@ -24,6 +27,20 @@ export const DocumentCapture: React.FC<DocumentCaptureProps> = ({ onCapture }) =
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      // Clear any previous error
+      setFileSizeError('');
+
+      // Check file size (max 5MB)
+      if (file.size > MAX_FILE_SIZE) {
+        const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+        setFileSizeError(`File size (${fileSizeMB}MB) exceeds the maximum allowed size of 5MB. Please choose a smaller file.`);
+        // Reset the file input
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
+        return;
+      }
+
       setCapturedFile(file);
 
       // Handle PDF files differently - can't preview as image
@@ -125,6 +142,13 @@ export const DocumentCapture: React.FC<DocumentCaptureProps> = ({ onCapture }) =
         </select>
       </div>
 
+      {fileSizeError && (
+        <div className="file-size-error">
+          <span className="error-icon">⚠️</span>
+          <span>{fileSizeError}</span>
+        </div>
+      )}
+
       {!preview && !isCamera && (
         <div className="capture-options">
           <button className="btn-primary" onClick={startCamera}>
@@ -201,6 +225,7 @@ export const DocumentCapture: React.FC<DocumentCaptureProps> = ({ onCapture }) =
               onClick={() => {
                 setPreview(null);
                 setCapturedFile(null);
+                setFileSizeError('');
               }}
             >
               ↻ Retake

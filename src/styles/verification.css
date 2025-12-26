@@ -206,6 +206,25 @@ body {
   border-color: #667eea;
 }
 
+.file-size-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  padding: 12px 20px;
+  border-radius: 8px;
+  margin: 20px auto;
+  max-width: 500px;
+  font-size: 14px;
+}
+
+.file-size-error .error-icon {
+  font-size: 18px;
+}
+
 .capture-options {
   display: flex;
   gap: 20px;
