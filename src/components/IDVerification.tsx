@@ -298,13 +298,19 @@ export const IDVerification: React.FC = () => {
         return;
       }
 
-      // Only show error on first page if there's no valid result (e.g., server error)
+      // If response is not OK but has data, still show the result page with the data
+      if (!submitResponse.ok && submitData.data) {
+        console.log('Response not OK but has data, showing result page');
+        setResult(submitData.data);
+        setCurrentStep({ step: 'complete', data: submitData.data });
+        return;
+      }
+
+      // Only show error on first page if there's no valid result at all (e.g., server error)
       if (!submitResponse.ok) {
         const friendlyError = getUserFriendlyError(submitData.error || '');
         setError(friendlyError);
-        console.log('friendlyError', friendlyError);
-        console.log('submitData.data.extractedName:', submitData.data.extractedName);
-        setCurrentStep({ step: 'complete', data: submitData.data });
+        setCurrentStep({ step: 'document' });
         return;
       }
 
