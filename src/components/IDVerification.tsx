@@ -359,16 +359,14 @@ export const IDVerification: React.FC = () => {
 
       <div className="verification-header">
         <h1>Identity Verification</h1>
-        
-        {verificationInfo?.userName && (
-          <p className="user-greeting">Hello, <strong>{verificationInfo.userName}</strong></p>
-        )}
-       
 
         {/* Welcome Message */}
         {partnerInfo?.companyName && (
           <div className="welcome-message">
             <p className="request-info">
+              {verificationInfo?.userName ? (
+                <>Hello <strong>{verificationInfo.userName}</strong>, </>
+              ) : null}
               <strong>{partnerInfo.companyName}</strong> has requested you to complete an identity verification.
               Please follow the steps below to verify your identity securely.
             </p>
