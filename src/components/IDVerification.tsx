@@ -54,8 +54,8 @@ export const IDVerification: React.FC = () => {
         if (response.ok) {
           const data = await response.json();
           const verification = data.data;
-          console.log('Verification data loaded:', { userName: verification.userName, fullName: verification.fullName, userEmail: verification.userEmail });
-
+          console.log('Verification data loaded:', { userName: verification.userName, fullName: verification.fullName, userEmail: verification.userEmail, status: verification.status });
+          console.log('Verification data :', { data: data});
           // Check if verification is already completed or failed
           if (verification.status === 'COMPLETED') {
             setVerificationStatus({
