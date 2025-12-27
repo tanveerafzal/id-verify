@@ -647,9 +647,12 @@ export const PartnerVerifications: React.FC = () => {
           <div className="stat-item">
             <span className="stat-label">Success Rate:</span>
             <span className="stat-value">
-              {verifications.filter(v => v.results?.passed).length > 0
-                ? `${((verifications.filter(v => v.results?.passed).length / verifications.filter(v => v.status === 'COMPLETED').length) * 100).toFixed(0)}%`
-                : '0%'}
+              {(() => {
+                const finishedVerifications = verifications.filter(v => v.status === 'COMPLETED' || v.status === 'FAILED');
+                const passedVerifications = verifications.filter(v => v.results?.passed === true);
+                if (finishedVerifications.length === 0) return 'N/A';
+                return `${((passedVerifications.length / finishedVerifications.length) * 100).toFixed(0)}%`;
+              })()}
             </span>
           </div>
         </div>
