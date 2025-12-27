@@ -818,6 +818,14 @@
   margin-bottom: 30px;
 }
 
+.page-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
 .page-header h1 {
   font-size: 28px;
   color: #1f2937;
@@ -827,6 +835,17 @@
 .page-header p {
   color: #6b7280;
   font-size: 16px;
+}
+
+.btn-refresh {
+  padding: 8px 16px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.btn-refresh:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 .verifications-search-filters {

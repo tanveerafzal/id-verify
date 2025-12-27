@@ -80,10 +80,18 @@ export const PartnerVerifications: React.FC = () => {
   const [editedRetryCount, setEditedRetryCount] = useState<number>(0);
   const [isEditingRetry, setIsEditingRetry] = useState(false);
   const [savingRetryCount, setSavingRetryCount] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     loadVerifications();
   }, []);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    setError('');
+    await loadVerifications();
+    setRefreshing(false);
+  };
 
   const loadVerifications = async () => {
     const token = localStorage.getItem('partnerToken');
@@ -461,7 +469,17 @@ export const PartnerVerifications: React.FC = () => {
     <PartnerLayout>
       <div className="verifications-page">
       <div className="page-header">
-        <h1>Verification Requests</h1>
+        <div className="page-header-top">
+          <h1>Verification Requests</h1>
+          <button
+            className="btn btn-secondary btn-refresh"
+            onClick={handleRefresh}
+            disabled={refreshing}
+            title="Refresh list"
+          >
+            {refreshing ? '↻ Refreshing...' : '↻ Refresh'}
+          </button>
+        </div>
         <p>View and manage all identity verification requests</p>
       </div>
 

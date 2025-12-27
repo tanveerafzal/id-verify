@@ -54,6 +54,7 @@ export const IDVerification: React.FC = () => {
         if (response.ok) {
           const data = await response.json();
           const verification = data.data;
+          console.log('Verification data loaded:', { userName: verification.userName, fullName: verification.fullName, userEmail: verification.userEmail });
 
           // Check if verification is already completed or failed
           if (verification.status === 'COMPLETED') {
@@ -89,9 +90,9 @@ export const IDVerification: React.FC = () => {
           // Set the verification ID from URL parameter
           setVerificationId(verificationIdParam);
 
-          // Store verification info
+          // Store verification info (check both userName and fullName fields)
           setVerificationInfo({
-            userName: verification.userName,
+            userName: verification.userName || verification.fullName,
             userEmail: verification.userEmail,
             partnerId: verification.partnerId,
             status: verification.status
