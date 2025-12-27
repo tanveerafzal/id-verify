@@ -55,6 +55,33 @@ export const IDVerification: React.FC = () => {
           const data = await response.json();
           const verification = data.data;
 
+          // Set the verification ID from URL parameter
+          setVerificationId(verificationIdParam);
+
+          // Store verification info from user object (do this first, before status checks)
+          const verificationInfoData = {
+            userName: verification.user?.fullName,
+            userEmail: verification.user?.email,
+            partnerId: verification.partnerId,
+            status: verification.status
+          };
+          console.log('Saving verification info:', verificationInfoData);
+          setVerificationInfo(verificationInfoData);
+
+          // Load partner info if verification has partnerId
+          if (verification.partnerId) {
+            const partnerResponse = await fetch(
+              getApiUrl(`/api/partners/${verification.partnerId}/public`)
+            );
+            if (partnerResponse.ok) {
+              const partnerData = await partnerResponse.json();
+              setPartnerInfo({
+                companyName: partnerData.data.companyName,
+                logoUrl: partnerData.data.logoUrl
+              });
+            }
+          }
+
           // Check if verification is already completed or failed
           if (verification.status === 'COMPLETED') {
             setVerificationStatus({
@@ -84,33 +111,6 @@ export const IDVerification: React.FC = () => {
             });
             setIsLoading(false);
             return;
-          }
-
-          // Set the verification ID from URL parameter
-          setVerificationId(verificationIdParam);
-
-          // Store verification info from user object
-          const verificationInfoData = {
-            userName: verification.user?.fullName,
-            userEmail: verification.user?.email,
-            partnerId: verification.partnerId,
-            status: verification.status
-          };
-          console.log('Saving verification info:', verificationInfoData);
-          setVerificationInfo(verificationInfoData);
-
-          // Load partner info if verification has partnerId
-          if (verification.partnerId) {
-            const partnerResponse = await fetch(
-              getApiUrl(`/api/partners/${verification.partnerId}/public`)
-            );
-            if (partnerResponse.ok) {
-              const partnerData = await partnerResponse.json();
-              setPartnerInfo({
-                companyName: partnerData.data.companyName,
-                logoUrl: partnerData.data.logoUrl
-              });
-            }
           }
         }
       } catch (error) {
@@ -358,10 +358,12 @@ export const IDVerification: React.FC = () => {
       )}
 
       <div className="verification-header">
+        <h1>Identity Verification</h1>
+        
         {verificationInfo?.userName && (
           <p className="user-greeting">Hello, <strong>{verificationInfo.userName}</strong></p>
         )}
-        <h1>Identity Verification</h1>
+       
 
         {/* Welcome Message */}
         {partnerInfo?.companyName && (
