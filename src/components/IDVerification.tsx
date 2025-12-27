@@ -45,11 +45,41 @@ export const IDVerification: React.FC = () => {
 
   const loadVerificationInfo = async () => {
     const params = new URLSearchParams(window.location.search);
-    const verificationIdParam = params.get('verificationId');
+    const encryptedRequest = params.get('verification-request');
+    const verificationIdParam = params.get('verificationId'); // Keep for backward compatibility
 
-    if (verificationIdParam) {
+    let actualVerificationId: string | null = null;
+
+    // First try to decrypt the verification-request param
+    if (encryptedRequest) {
       try {
-        const response = await fetch(getApiUrl(`/api/verifications/${verificationIdParam}`));
+        const decryptResponse = await fetch(
+          getApiUrl(`/api/verifications/decrypt?encryptedRequest=${encodeURIComponent(encryptedRequest)}`)
+        );
+        if (decryptResponse.ok) {
+          const decryptData = await decryptResponse.json();
+          actualVerificationId = decryptData.verificationId || decryptData.data?.verificationId;
+          console.log('Decrypted verification ID:', actualVerificationId);
+        } else {
+          console.error('Failed to decrypt verification request');
+          setError('Invalid verification link. Please request a new verification link.');
+          setIsLoading(false);
+          return;
+        }
+      } catch (error) {
+        console.error('Error decrypting verification request:', error);
+        setError('Failed to process verification link. Please try again.');
+        setIsLoading(false);
+        return;
+      }
+    } else if (verificationIdParam) {
+      // Fallback to direct verificationId param for backward compatibility
+      actualVerificationId = verificationIdParam;
+    }
+
+    if (actualVerificationId) {
+      try {
+        const response = await fetch(getApiUrl(`/api/verifications/${actualVerificationId}`));
 
         if (response.ok) {
           const data = await response.json();
@@ -57,7 +87,7 @@ export const IDVerification: React.FC = () => {
 
           // Use the verification ID from response (may be a child retry verification, not the parent from URL)
           setVerificationId(verification.id);
-
+          console.log('Use the verification ID from response:', verification.id);
           // Store verification info from user object (do this first, before status checks)
           const verificationInfoData = {
             userName: verification.user?.fullName,
