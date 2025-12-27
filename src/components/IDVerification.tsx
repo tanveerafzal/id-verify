@@ -61,7 +61,7 @@ export const IDVerification: React.FC = () => {
           actualVerificationId = decryptData.verificationId || decryptData.data?.verificationId;
           console.log('Decrypted verification ID:', actualVerificationId);
         } else {
-          console.error('Failed to decrypt verification request');
+          console.error('Failed to decrypt verification request',decryptResponse);
           setError('Invalid verification link. Please request a new verification link.');
           setIsLoading(false);
           return;
