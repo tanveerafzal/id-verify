@@ -55,8 +55,8 @@ export const IDVerification: React.FC = () => {
           const data = await response.json();
           const verification = data.data;
 
-          // Set the verification ID from URL parameter
-          setVerificationId(verificationIdParam);
+          // Use the verification ID from response (may be a child retry verification, not the parent from URL)
+          setVerificationId(verification.id);
 
           // Store verification info from user object (do this first, before status checks)
           const verificationInfoData = {
