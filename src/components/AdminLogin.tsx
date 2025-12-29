@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { getApiUrl } from '../config/api';
 
 export const AdminLogin: React.FC = () => {
@@ -115,6 +115,12 @@ export const AdminLogin: React.FC = () => {
             {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
+
+        <div className="auth-footer">
+          <p>
+            <Link to="/admin/forgot-password">Forgot your password?</Link>
+          </p>
+        </div>
       </div>
     </div>
   );

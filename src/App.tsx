@@ -13,6 +13,8 @@ import { PartnerTeam } from './components/PartnerTeam'
 import { PartnerAcceptInvite } from './components/PartnerAcceptInvite'
 import { Roadmap } from './components/Roadmap'
 import { AdminLogin } from './components/AdminLogin'
+import { AdminForgotPassword } from './components/AdminForgotPassword'
+import { AdminResetPassword } from './components/AdminResetPassword'
 import { AdminDashboard } from './components/AdminDashboard'
 import { AdminPartners } from './components/AdminPartners'
 import { AdminVerifications } from './components/AdminVerifications'
@@ -42,6 +44,8 @@ function App() {
 
         {/* Admin Routes */}
         <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin/forgot-password" element={<AdminForgotPassword />} />
+        <Route path="/admin/reset-password" element={<AdminResetPassword />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/partners" element={<AdminPartners />} />
         <Route path="/admin/verifications" element={<AdminVerifications />} />
