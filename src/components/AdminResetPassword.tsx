@@ -47,7 +47,7 @@ export const AdminResetPassword: React.FC = () => {
     setLoading(true);
 
     try {
-      const response = await fetch(getApiUrl('/api/admin/reset-password'), {
+      const response = await fetch(getApiUrl('/admin/reset-password'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
