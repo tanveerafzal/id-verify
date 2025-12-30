@@ -30,9 +30,15 @@ interface VerificationResultProps {
     message?: string;
   };
   onRetry?: () => void;
+  userInfo?: {
+    fullName?: string;
+    email?: string;
+  };
+  verificationId?: string;
+  onCreateAccount?: () => void;
 }
 
-export const VerificationResult: React.FC<VerificationResultProps> = ({ result, onRetry }) => {
+export const VerificationResult: React.FC<VerificationResultProps> = ({ result, onRetry, userInfo, onCreateAccount }) => {
   const getRiskColor = (level: string) => {
     switch (level) {
       case 'LOW':
@@ -229,6 +235,11 @@ export const VerificationResult: React.FC<VerificationResultProps> = ({ result, 
             <button className="btn-primary" onClick={() => window.print()}>
               Print
             </button>
+            {onCreateAccount && userInfo?.email && (
+              <button className="btn-create-account" onClick={onCreateAccount}>
+                Create Account
+              </button>
+            )}
             <button className="btn-secondary" onClick={() => window.close()}>
               Close
             </button>
@@ -239,11 +250,16 @@ export const VerificationResult: React.FC<VerificationResultProps> = ({ result, 
               <button className="btn-primary btn-retry" onClick={onRetry}>
                 Retry Verification
               </button>
-            ) : (
-              <button className="btn-secondary" onClick={() => window.close()}>
-                Close
+            ) : null}
+            {/* For testing: Show Create Account button even on failed verification */}
+            {onCreateAccount && userInfo?.email && (
+              <button className="btn-create-account" onClick={onCreateAccount}>
+                Create Account
               </button>
             )}
+            <button className="btn-secondary" onClick={() => window.close()}>
+              Close
+            </button>
           </>
         )}
       </div>

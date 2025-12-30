@@ -19,10 +19,15 @@ import { AdminDashboard } from './components/AdminDashboard'
 import { AdminPartners } from './components/AdminPartners'
 import { AdminVerifications } from './components/AdminVerifications'
 import { AdminSettings } from './components/AdminSettings'
+import { UserRegister } from './components/UserRegister'
+import { UserLogin } from './components/UserLogin'
+import { UserDashboard } from './components/UserDashboard'
+import { UserCertificate } from './components/UserCertificate'
 import './styles/landing.css'
 import './styles/verification.css'
 import './styles/partner.css'
 import './styles/admin.css'
+import './styles/user.css'
 
 function App() {
   return (
@@ -50,6 +55,12 @@ function App() {
         <Route path="/admin/partners" element={<AdminPartners />} />
         <Route path="/admin/verifications" element={<AdminVerifications />} />
         <Route path="/admin/settings" element={<AdminSettings />} />
+
+        {/* User Routes */}
+        <Route path="/user/register" element={<UserRegister />} />
+        <Route path="/user/login" element={<UserLogin />} />
+        <Route path="/user/dashboard" element={<UserDashboard />} />
+        <Route path="/user/certificate" element={<UserCertificate />} />
       </Routes>
     </BrowserRouter>
   )

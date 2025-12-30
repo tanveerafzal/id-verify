@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { DocumentCapture } from './DocumentCapture';
 import { SelfieCapture } from './SelfieCapture';
 import { VerificationResult } from './VerificationResult';
@@ -28,6 +29,7 @@ interface VerificationStatus {
 }
 
 export const IDVerification: React.FC = () => {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState<VerificationStep>({ step: 'document' });
   const [verificationId, setVerificationId] = useState<string | null>(null);
   const [result, setResult] = useState<any>(null);
@@ -355,6 +357,17 @@ export const IDVerification: React.FC = () => {
     }
   };
 
+  const handleCreateAccount = () => {
+    // Navigate to registration with verification data
+    navigate('/user/register', {
+      state: {
+        fullName: verificationInfo?.userName || result?.extractedData?.fullName || '',
+        email: verificationInfo?.userEmail || '',
+        verificationId: verificationId
+      }
+    });
+  };
+
   // Show loading spinner while checking verification status
   if (isLoading) {
     return (
@@ -649,6 +662,12 @@ export const IDVerification: React.FC = () => {
             {currentStep.step === 'complete' && result && (
               <VerificationResult
                 result={result}
+                verificationId={verificationId || undefined}
+                userInfo={{
+                  fullName: verificationInfo?.userName || result?.extractedData?.fullName,
+                  email: verificationInfo?.userEmail
+                }}
+                onCreateAccount={handleCreateAccount}
                 onRetry={() => {
                   // Reset to document capture step for retry
                   // Keep the same verificationId to use the existing verification
