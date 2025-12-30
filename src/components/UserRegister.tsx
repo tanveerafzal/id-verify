@@ -24,7 +24,7 @@ export const UserRegister: React.FC = () => {
   useEffect(() => {
     const state = location.state as LocationState;
 
-    if (!state?.email || !state?.verificationId) {
+    if (!state?.verificationId) {
       setError('Invalid registration link. Please complete identity verification first.');
       return;
     }
@@ -47,6 +47,11 @@ export const UserRegister: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+
+    if (!formData.email) {
+      setError('Email address is required');
+      return;
+    }
 
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
@@ -169,13 +174,16 @@ export const UserRegister: React.FC = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="email">Email Address</label>
+            <label htmlFor="email">Email Address {!(location.state as LocationState)?.email && '*'}</label>
             <input
               type="email"
               id="email"
               name="email"
               value={formData.email}
-              readOnly
+              onChange={handleChange}
+              readOnly={!!(location.state as LocationState)?.email}
+              required
+              placeholder={!(location.state as LocationState)?.email ? 'Enter your email address' : ''}
             />
           </div>
 

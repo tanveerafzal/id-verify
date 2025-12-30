@@ -252,7 +252,7 @@ export const VerificationResult: React.FC<VerificationResultProps> = ({ result, 
               </button>
             ) : null}
             {/* For testing: Show Create Account button even on failed verification */}
-            {onCreateAccount && userInfo?.email && (
+            {onCreateAccount && (
               <button className="btn-create-account" onClick={onCreateAccount}>
                 Create Account
               </button>
