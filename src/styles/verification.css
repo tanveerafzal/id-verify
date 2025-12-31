@@ -672,7 +672,62 @@ body {
 
 .result-actions {
   margin-top: 30px;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.result-actions button {
+  padding: 14px 28px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 150px;
+}
+
+.result-actions .btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.result-actions .btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.result-actions .btn-secondary {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.result-actions .btn-secondary:hover {
+  background: #e5e7eb;
+}
+
+.result-actions .btn-create-account {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+}
+
+.result-actions .btn-create-account:hover {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.result-actions .btn-retry {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: white;
+}
+
+.result-actions .btn-retry:hover {
+  background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.4);
 }
 
 /* Retry Info */
@@ -688,17 +743,6 @@ body {
 
 .retry-info strong {
   color: #b45309;
-}
-
-/* Retry Button */
-.btn-retry {
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-  min-width: 200px;
-}
-
-.btn-retry:hover {
-  background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
-  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.4);
 }
 
 /* Verification Error Alert */
