@@ -48,7 +48,6 @@ export const IDVerification: React.FC = () => {
   const loadVerificationInfo = async () => {
     const params = new URLSearchParams(window.location.search);
     const encryptedRequest = params.get('verification-request');
-    const verificationIdParam = params.get('verificationId'); // Keep for backward compatibility
 
     let actualVerificationId: string | null = null;
 
@@ -74,10 +73,7 @@ export const IDVerification: React.FC = () => {
         setIsLoading(false);
         return;
       }
-    } else if (verificationIdParam) {
-      // Fallback to direct verificationId param for backward compatibility
-      actualVerificationId = verificationIdParam;
-    }
+    } 
 
     if (actualVerificationId) {
       try {
