@@ -405,36 +405,41 @@ export const IDVerification: React.FC = () => {
       <div className="verification-header">
         <h1>Identity Verification</h1>
 
-        {/* Welcome Message */}
-        {partnerInfo?.companyName && (
-          <div className="welcome-message">
-            <p className="request-info">
-              {verificationInfo?.userName ? (
-                <>Hello <strong>{verificationInfo.userName}</strong>, </>
-              ) : null}
-              <strong>{partnerInfo.companyName}</strong> has requested you to complete an identity verification.
-              Please follow the steps below to verify your identity securely.
-            </p>
-          </div>
-        )}
+        {/* Only show welcome message and progress bar if we have a valid verification */}
+        {verificationId && (
+          <>
+            {/* Welcome Message */}
+            {partnerInfo?.companyName && (
+              <div className="welcome-message">
+                <p className="request-info">
+                  {verificationInfo?.userName ? (
+                    <>Hello <strong>{verificationInfo.userName}</strong>, </>
+                  ) : null}
+                  <strong>{partnerInfo.companyName}</strong> has requested you to complete an identity verification.
+                  Please follow the steps below to verify your identity securely.
+                </p>
+              </div>
+            )}
 
-        <div className="progress-bar">
-          <div
-            className={`step ${currentStep.step === 'document' ? 'active' : 'completed'}`}
-          >
-            Document
-          </div>
-          <div
-            className={`step ${currentStep.step === 'selfie' ? 'active' : currentStep.step === 'complete' ? 'completed' : ''}`}
-          >
-            Selfie
-          </div>
-          <div
-            className={`step ${currentStep.step === 'complete' ? 'active' : ''}`}
-          >
-            Complete
-          </div>
-        </div>
+            <div className="progress-bar">
+              <div
+                className={`step ${currentStep.step === 'document' ? 'active' : 'completed'}`}
+              >
+                Document
+              </div>
+              <div
+                className={`step ${currentStep.step === 'selfie' ? 'active' : currentStep.step === 'complete' ? 'completed' : ''}`}
+              >
+                Selfie
+              </div>
+              <div
+                className={`step ${currentStep.step === 'complete' ? 'active' : ''}`}
+              >
+                Complete
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       <div className="verification-content">
@@ -477,7 +482,27 @@ export const IDVerification: React.FC = () => {
           </div>
         ) : (
           <>
-            {error && (
+            {error && !verificationId && (
+              <div className="verification-error-alert verification-error-fatal">
+                <div className="error-icon">!</div>
+                <div className="error-content">
+                  <h3>Invalid Verification Link</h3>
+                  <p>{error}</p>
+                </div>
+              </div>
+            )}
+
+            {!error && !verificationId && !isLoading && (
+              <div className="verification-error-alert verification-error-fatal">
+                <div className="error-icon">!</div>
+                <div className="error-content">
+                  <h3>Missing Verification Link</h3>
+                  <p>No verification link was provided. Please use the link sent to your email to start the verification process.</p>
+                </div>
+              </div>
+            )}
+
+            {error && verificationId && (
               <div className="verification-error-alert">
                 <div className="error-icon">!</div>
                 <div className="error-content">
@@ -490,7 +515,7 @@ export const IDVerification: React.FC = () => {
               </div>
             )}
 
-            {currentStep.step === 'document' && (
+            {currentStep.step === 'document' && verificationId && (
               <DocumentCapture onCapture={handleDocumentCaptured} />
             )}
 

@@ -23,6 +23,7 @@ import { UserRegister } from './components/UserRegister'
 import { UserLogin } from './components/UserLogin'
 import { UserDashboard } from './components/UserDashboard'
 import { UserCertificate } from './components/UserCertificate'
+import { CertificateVerify } from './components/CertificateVerify'
 import './styles/landing.css'
 import './styles/verification.css'
 import './styles/partner.css'
@@ -61,6 +62,9 @@ function App() {
         <Route path="/user/login" element={<UserLogin />} />
         <Route path="/user/dashboard" element={<UserDashboard />} />
         <Route path="/user/certificate" element={<UserCertificate />} />
+
+        {/* Public Certificate Verification */}
+        <Route path="/certificate/verify/:verificationId" element={<CertificateVerify />} />
       </Routes>
     </BrowserRouter>
   )
