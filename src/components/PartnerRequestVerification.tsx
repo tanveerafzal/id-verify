@@ -78,10 +78,8 @@ export const PartnerRequestVerification: React.FC = () => {
         throw new Error(data.error || 'Failed to create verification request');
       }
 
-      // Generate verification link
-      const baseUrl = window.location.origin;
-      const link = `${baseUrl}/verify?verificationId=${data.data.id}`;
-      setVerificationLink(link);
+      // Use the verification link from the backend response (same as email link)
+      setVerificationLink(data.data.verificationLink);
       setSentToEmail(formData.userEmail);
       setSuccess(true);
 
