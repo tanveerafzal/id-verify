@@ -359,11 +359,13 @@ export const IDVerification: React.FC = () => {
 
   const handleCreateAccount = () => {
     // Navigate to registration with verification data
+    // verificationPassed is false if result is null (status screen) or if result.passed is false
     navigate('/user/register', {
       state: {
         fullName: verificationInfo?.userName || result?.extractedData?.fullName || '',
         email: verificationInfo?.userEmail || '',
-        verificationId: verificationId
+        verificationId: verificationId,
+        verificationPassed: result?.passed === true
       }
     });
   };

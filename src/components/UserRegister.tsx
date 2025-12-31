@@ -6,6 +6,7 @@ interface LocationState {
   fullName?: string;
   email?: string;
   verificationId?: string;
+  verificationPassed?: boolean;
 }
 
 export const UserRegister: React.FC = () => {
@@ -147,12 +148,16 @@ export const UserRegister: React.FC = () => {
           <p>Complete your registration to access your verified profile</p>
         </div>
 
-        <div className="verification-info-card">
+        <div className={`verification-info-card ${(location.state as LocationState)?.verificationPassed === false ? 'verification-failed' : ''}`}>
           <div className="info-header">
-            <div className="info-icon">✓</div>
-            <h4>Identity Verified</h4>
+            <div className="info-icon">{(location.state as LocationState)?.verificationPassed === false ? '!' : '✓'}</div>
+            <h4>{(location.state as LocationState)?.verificationPassed === false ? 'Verification Incomplete' : 'Identity Verified'}</h4>
           </div>
-          <p>Your identity has been successfully verified. Create a password to complete your account setup.</p>
+          <p>
+            {(location.state as LocationState)?.verificationPassed === false
+              ? 'Your identity verification was not successful. You can still create an account, but some features may be limited.'
+              : 'Your identity has been successfully verified. Create a password to complete your account setup.'}
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="auth-form">
