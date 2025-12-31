@@ -465,6 +465,13 @@ export const IDVerification: React.FC = () => {
               {verificationStatus.status === 'EXPIRED' && 'Verification Expired'}
             </h2>
             <p>{verificationStatus.message}</p>
+            {verificationStatus.status === 'FAILED' && (
+              <div className="status-actions">
+                <button className="btn-create-account" onClick={handleCreateAccount}>
+                  Create Account
+                </button>
+              </div>
+            )}
           </div>
         ) : (
           <>

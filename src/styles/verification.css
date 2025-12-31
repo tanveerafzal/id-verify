@@ -876,6 +876,27 @@ body {
   line-height: 1.6;
 }
 
+.verification-status-message .status-actions {
+  margin-top: 24px;
+}
+
+.verification-status-message .status-actions .btn-create-account {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.verification-status-message .status-actions .btn-create-account:hover {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  transform: translateY(-1px);
+}
+
 /* Document Type Mismatch Info */
 .document-type-mismatch-info {
   display: flex;
