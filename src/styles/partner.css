@@ -957,11 +957,19 @@
   letter-spacing: 0.5px;
 }
 
+.verifications-table th:last-child {
+  text-align: center;
+}
+
 .verifications-table td {
   padding: 16px;
   border-bottom: 1px solid #e5e7eb;
   font-size: 14px;
   color: #374151;
+}
+
+.verifications-table td:last-child {
+  text-align: center;
 }
 
 .verifications-table tbody tr:hover {
@@ -2791,6 +2799,7 @@ select.form-input:focus {
 .actions-cell {
   display: flex;
   gap: 8px;
+  justify-content: center;
 }
 
 .btn-sm {
