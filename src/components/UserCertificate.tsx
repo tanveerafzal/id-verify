@@ -154,6 +154,7 @@ export const UserCertificate: React.FC = () => {
             certificateNumber={generateCertificateNumber(user.verificationId || user.verification?.id)}
             documentType={user.verification?.documentType}
             issuingCountry={user.verification?.extractedData?.issuingCountry}
+            verificationId={user.verificationId || user.verification?.id}
           />
         </div>
       </main>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { QRCodeSVG } from 'qrcode.react';
 
 interface CertificateProps {
   userName: string;
@@ -7,6 +8,7 @@ interface CertificateProps {
   certificateNumber: string;
   documentType?: string;
   issuingCountry?: string;
+  verificationId?: string;
 }
 
 export const VerificationCertificate: React.FC<CertificateProps> = ({
@@ -15,7 +17,8 @@ export const VerificationCertificate: React.FC<CertificateProps> = ({
   validUntil,
   certificateNumber,
   documentType,
-  issuingCountry
+  issuingCountry,
+  verificationId
 }) => {
   const formatDate = (dateString?: string) => {
     if (!dateString) return 'N/A';
@@ -33,6 +36,11 @@ export const VerificationCertificate: React.FC<CertificateProps> = ({
 
   // Check if certificate is still valid
   const isValid = validUntil ? new Date(validUntil) > new Date() : true;
+
+  // Generate verification URL for QR code
+  const verificationUrl = verificationId
+    ? `${window.location.origin}/certificate/verify/${verificationId}`
+    : `${window.location.origin}/certificate/verify/${certificateNumber}`;
 
   return (
     <div className="certificate-container">
@@ -111,20 +119,16 @@ export const VerificationCertificate: React.FC<CertificateProps> = ({
                 <span className="number-value">{certificateNumber}</span>
               </div>
 
-              <div className="certificate-qr-placeholder">
+              <div className="certificate-qr">
                 <div className="qr-box">
-                  <svg viewBox="0 0 100 100" className="qr-pattern">
-                    <rect x="10" y="10" width="25" height="25" fill="currentColor"/>
-                    <rect x="65" y="10" width="25" height="25" fill="currentColor"/>
-                    <rect x="10" y="65" width="25" height="25" fill="currentColor"/>
-                    <rect x="40" y="40" width="20" height="20" fill="currentColor"/>
-                    <rect x="15" y="15" width="15" height="15" fill="white"/>
-                    <rect x="70" y="15" width="15" height="15" fill="white"/>
-                    <rect x="15" y="70" width="15" height="15" fill="white"/>
-                    <rect x="18" y="18" width="9" height="9" fill="currentColor"/>
-                    <rect x="73" y="18" width="9" height="9" fill="currentColor"/>
-                    <rect x="18" y="73" width="9" height="9" fill="currentColor"/>
-                  </svg>
+                  <QRCodeSVG
+                    value={verificationUrl}
+                    size={80}
+                    level="M"
+                    includeMargin={false}
+                    bgColor="transparent"
+                    fgColor="#1f2937"
+                  />
                 </div>
                 <span className="qr-label">Scan to verify</span>
               </div>
