@@ -105,6 +105,23 @@
   font-size: 13px;
 }
 
+.verification-info-card.verification-failed {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border: 1px solid #fcd34d;
+}
+
+.verification-info-card.verification-failed .info-icon {
+  background: #f59e0b;
+}
+
+.verification-info-card.verification-failed .info-header h4 {
+  color: #92400e;
+}
+
+.verification-info-card.verification-failed p {
+  color: #a16207;
+}
+
 /* User Dashboard Layout */
 .user-layout {
   display: flex;

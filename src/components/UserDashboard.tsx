@@ -188,19 +188,19 @@ export const UserDashboard: React.FC = () => {
                 <>
                   {user.verification.extractedData.documentNumber && (
                     <div className="profile-item">
-                      <span className="profile-label">Document Number</span>
+                      <span className="profile-label">Document Number </span>
                       <span className="profile-value">{user.verification.extractedData.documentNumber}</span>
                     </div>
                   )}
                   {user.verification.extractedData.dateOfBirth && (
                     <div className="profile-item">
-                      <span className="profile-label">Date of Birth</span>
+                      <span className="profile-label">Date of Birth </span>
                       <span className="profile-value">{formatDate(user.verification.extractedData.dateOfBirth)}</span>
                     </div>
                   )}
                   {user.verification.extractedData.issuingCountry && (
                     <div className="profile-item">
-                      <span className="profile-label">Issuing Country</span>
+                      <span className="profile-label">Issuing Country </span>
                       <span className="profile-value">{user.verification.extractedData.issuingCountry}</span>
                     </div>
                   )}
