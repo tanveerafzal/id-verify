@@ -120,10 +120,12 @@ export const UserDashboard: React.FC = () => {
             <span className="nav-icon">🏠</span>
             <span>Dashboard</span>
           </a>
-          <a href="/user/certificate">
-            <span className="nav-icon">📜</span>
-            <span>Certificate</span>
-          </a>
+          {user?.verification?.status === 'COMPLETED' && (
+            <a href="/user/certificate">
+              <span className="nav-icon">📜</span>
+              <span>Certificate</span>
+            </a>
+          )}
         </nav>
 
         <div className="user-sidebar-footer">
@@ -153,7 +155,13 @@ export const UserDashboard: React.FC = () => {
             {/* Welcome Card */}
             <div className="user-dashboard-card user-welcome-card">
               <h2>Welcome, {user.fullName}!</h2>
-              <p>Your identity has been successfully verified. You can view your verification details below.</p>
+              <p>
+                {user.verification?.status === 'COMPLETED'
+                  ? 'Your identity has been successfully verified. You can view your verification details below.'
+                  : user.verification?.status === 'FAILED'
+                    ? 'Your identity verification was not successful. Some features may be limited.'
+                    : 'Your account has been created. Complete identity verification to access all features.'}
+              </p>
             </div>
 
             {/* Profile Card */}
@@ -176,15 +184,25 @@ export const UserDashboard: React.FC = () => {
             {/* Verification Status Card */}
             <div className="user-dashboard-card user-verification-card">
               <h3>Verification Status</h3>
-              <div className="verification-status">
-                <div className="status-icon">✓</div>
+              <div className={`verification-status ${user.verification?.status === 'COMPLETED' ? 'status-verified' : user.verification?.status === 'FAILED' ? 'status-failed' : 'status-pending'}`}>
+                <div className="status-icon">
+                  {user.verification?.status === 'COMPLETED' ? '✓' : user.verification?.status === 'FAILED' ? '!' : '○'}
+                </div>
                 <div className="status-text">
-                  <h4>Verified</h4>
-                  <p>Your identity has been successfully verified</p>
+                  <h4>
+                    {user.verification?.status === 'COMPLETED' ? 'Verified' : user.verification?.status === 'FAILED' ? 'Not Verified' : 'Pending'}
+                  </h4>
+                  <p>
+                    {user.verification?.status === 'COMPLETED'
+                      ? 'Your identity has been successfully verified'
+                      : user.verification?.status === 'FAILED'
+                        ? 'Your identity verification was not successful'
+                        : 'Identity verification is pending'}
+                  </p>
                 </div>
               </div>
 
-              {user.verification?.extractedData && (
+              {user.verification?.status === 'COMPLETED' && user.verification?.extractedData && (
                 <>
                   {user.verification.extractedData.documentNumber && (
                     <div className="profile-item">
@@ -208,30 +226,32 @@ export const UserDashboard: React.FC = () => {
               )}
             </div>
 
-            {/* Certificate Card */}
-            <div className="user-dashboard-card user-certificate-card">
-              <h3>Verification Certificate</h3>
-              <div className="certificate-preview">
-                <div className="certificate-preview-info">
-                  <h4>Your Identity Certificate</h4>
-                  <p>
-                    Valid until: {user.verification?.extractedData?.expiryDate
-                      ? formatDate(user.verification.extractedData.expiryDate)
-                      : 'N/A'}
-                  </p>
+            {/* Certificate Card - Only show when verified */}
+            {user.verification?.status === 'COMPLETED' && (
+              <div className="user-dashboard-card user-certificate-card">
+                <h3>Verification Certificate</h3>
+                <div className="certificate-preview">
+                  <div className="certificate-preview-info">
+                    <h4>Your Identity Certificate</h4>
+                    <p>
+                      Valid until: {user.verification?.extractedData?.expiryDate
+                        ? formatDate(user.verification.extractedData.expiryDate)
+                        : 'N/A'}
+                    </p>
+                  </div>
+                  <div className="certificate-preview-badge">
+                    <span className="badge-icon">✓</span>
+                    <span>Verified</span>
+                  </div>
                 </div>
-                <div className="certificate-preview-badge">
-                  <span className="badge-icon">✓</span>
-                  <span>Verified</span>
-                </div>
+                <button
+                  className="btn-view-certificate"
+                  onClick={() => navigate('/user/certificate')}
+                >
+                  View Certificate
+                </button>
               </div>
-              <button
-                className="btn-view-certificate"
-                onClick={() => navigate('/user/certificate')}
-              >
-                View Certificate
-              </button>
-            </div>
+            )}
           </div>
         </div>
       </main>

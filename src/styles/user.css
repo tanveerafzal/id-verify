@@ -353,6 +353,40 @@
   font-size: 13px;
 }
 
+/* Verification Status - Failed */
+.user-verification-card .verification-status.status-failed {
+  background: #fef2f2;
+}
+
+.user-verification-card .verification-status.status-failed .status-icon {
+  background: #ef4444;
+}
+
+.user-verification-card .verification-status.status-failed .status-text h4 {
+  color: #991b1b;
+}
+
+.user-verification-card .verification-status.status-failed .status-text p {
+  color: #b91c1c;
+}
+
+/* Verification Status - Pending */
+.user-verification-card .verification-status.status-pending {
+  background: #fefce8;
+}
+
+.user-verification-card .verification-status.status-pending .status-icon {
+  background: #f59e0b;
+}
+
+.user-verification-card .verification-status.status-pending .status-text h4 {
+  color: #92400e;
+}
+
+.user-verification-card .verification-status.status-pending .status-text p {
+  color: #a16207;
+}
+
 /* Create Account Button on Verification Result */
 .btn-create-account {
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
