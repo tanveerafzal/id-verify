@@ -9,7 +9,17 @@ interface VerificationRequest {
   userPhone: string;
   type: string;
   webhookUrl: string;
+  allowedDocumentTypes: string[];
 }
+
+const DOCUMENT_TYPES = [
+  { value: 'DRIVERS_LICENSE', label: "Driver's License" },
+  { value: 'PASSPORT', label: 'Passport' },
+  { value: 'NATIONAL_ID', label: 'National ID Card' },
+  { value: 'RESIDENCE_PERMIT', label: 'Residence Permit' },
+  { value: 'VOTER_ID', label: 'Voter ID' },
+  { value: 'OTHER', label: 'Other' }
+];
 
 export const PartnerRequestVerification: React.FC = () => {
   const navigate = useNavigate();
@@ -18,7 +28,8 @@ export const PartnerRequestVerification: React.FC = () => {
     userEmail: '',
     userPhone: '',
     type: 'IDENTITY',
-    webhookUrl: ''
+    webhookUrl: '',
+    allowedDocumentTypes: []
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -31,6 +42,15 @@ export const PartnerRequestVerification: React.FC = () => {
       ...formData,
       [e.target.name]: e.target.value
     });
+  };
+
+  const handleDocumentTypeToggle = (docType: string) => {
+    setFormData(prev => ({
+      ...prev,
+      allowedDocumentTypes: prev.allowedDocumentTypes.includes(docType)
+        ? prev.allowedDocumentTypes.filter(t => t !== docType)
+        : [...prev.allowedDocumentTypes, docType]
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -89,7 +109,8 @@ export const PartnerRequestVerification: React.FC = () => {
         userEmail: '',
         userPhone: '',
         type: 'IDENTITY',
-        webhookUrl: ''
+        webhookUrl: '',
+        allowedDocumentTypes: []
       });
     } catch (err) {
       console.error('[RequestVerification] Error:', err);
@@ -233,6 +254,23 @@ export const PartnerRequestVerification: React.FC = () => {
                     <option value="SELFIE_ONLY">Selfie Only</option>
                     <option value="FULL_KYC">Full KYC</option>
                   </select>
+                </div>
+
+                <div className="form-group">
+                  <label>Allowed Document Types (Optional)</label>
+                  <div className="document-types-grid">
+                    {DOCUMENT_TYPES.map(docType => (
+                      <label key={docType.value} className="checkbox-label">
+                        <input
+                          type="checkbox"
+                          checked={formData.allowedDocumentTypes.includes(docType.value)}
+                          onChange={() => handleDocumentTypeToggle(docType.value)}
+                        />
+                        <span className="checkbox-text">{docType.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                  <small>Leave empty to allow all document types. Select specific types to restrict what users can upload.</small>
                 </div>
 
                 <div className="form-group">

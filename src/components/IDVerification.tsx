@@ -20,6 +20,7 @@ interface VerificationInfo {
   userEmail?: string;
   partnerId?: string;
   status?: string;
+  allowedDocumentTypes?: string[];
 }
 
 interface VerificationStatus {
@@ -91,7 +92,8 @@ export const IDVerification: React.FC = () => {
             userName: verification.user?.fullName,
             userEmail: verification.user?.email,
             partnerId: verification.partnerId,
-            status: verification.status
+            status: verification.status,
+            allowedDocumentTypes: verification.allowedDocumentTypes
           };
           console.log('Saving verification info:', verificationInfoData);
           setVerificationInfo(verificationInfoData);
@@ -512,7 +514,10 @@ export const IDVerification: React.FC = () => {
             )}
 
             {currentStep.step === 'document' && verificationId && (
-              <DocumentCapture onCapture={handleDocumentCaptured} />
+              <DocumentCapture
+                onCapture={handleDocumentCaptured}
+                allowedDocumentTypes={verificationInfo?.allowedDocumentTypes}
+              />
             )}
 
             {currentStep.step === 'document-processing' && (

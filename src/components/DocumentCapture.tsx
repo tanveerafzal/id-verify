@@ -1,13 +1,13 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 interface DocumentCaptureProps {
   onCapture: (file: File, documentType: string) => void;
+  allowedDocumentTypes?: string[];
 }
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
 
-export const DocumentCapture: React.FC<DocumentCaptureProps> = ({ onCapture }) => {
-  const [selectedType, setSelectedType] = useState<string>('DRIVERS_LICENSE');
+export const DocumentCapture: React.FC<DocumentCaptureProps> = ({ onCapture, allowedDocumentTypes }) => {
   const [preview, setPreview] = useState<string | null>(null);
   const [capturedFile, setCapturedFile] = useState<File | null>(null);
   const [fileSizeError, setFileSizeError] = useState<string>('');
@@ -15,14 +15,30 @@ export const DocumentCapture: React.FC<DocumentCaptureProps> = ({ onCapture }) =
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isCamera, setIsCamera] = useState(false);
 
-  const documentTypes = [
+  const allDocumentTypes = [
     { value: 'DRIVERS_LICENSE', label: "Driver's License" },
     { value: 'PASSPORT', label: 'Passport' },
     { value: 'NATIONAL_ID', label: 'National ID' },
     { value: 'RESIDENCE_PERMIT', label: 'Residence Permit' },
     { value: 'PERMANENT_RESIDENT_CARD', label: 'Permanent Resident Card' },
+    { value: 'VOTER_ID', label: 'Voter ID' },
     { value: 'OTHER', label: 'Other' }
   ];
+
+  // Filter document types based on allowed types (if specified)
+  const documentTypes = allowedDocumentTypes && allowedDocumentTypes.length > 0
+    ? allDocumentTypes.filter(type => allowedDocumentTypes.includes(type.value))
+    : allDocumentTypes;
+
+  // Set default selected type to first available option
+  const [selectedType, setSelectedType] = useState<string>('DRIVERS_LICENSE');
+
+  // Update selected type when allowed document types change
+  useEffect(() => {
+    if (documentTypes.length > 0 && !documentTypes.find(t => t.value === selectedType)) {
+      setSelectedType(documentTypes[0].value);
+    }
+  }, [allowedDocumentTypes]);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
