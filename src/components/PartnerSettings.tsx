@@ -12,6 +12,9 @@ interface Partner {
   logoUrl?: string;
   website?: string;
   address?: string;
+  state?: string;
+  country?: string;
+  userNotificationPref?: string;
   apiKey: string;
   apiSecret: string;
   tier: {
@@ -45,7 +48,10 @@ export const PartnerSettings: React.FC = () => {
     phone: '',
     logoUrl: '',
     website: '',
-    address: ''
+    address: '',
+    state: '',
+    country: '',
+    userNotificationPref: 'EMAIL'
   });
 
   useEffect(() => {
@@ -80,7 +86,10 @@ export const PartnerSettings: React.FC = () => {
         phone: data.data.phone || '',
         logoUrl: data.data.logoUrl || '',
         website: data.data.website || '',
-        address: data.data.address || ''
+        address: data.data.address || '',
+        state: data.data.state || '',
+        country: data.data.country || '',
+        userNotificationPref: data.data.userNotificationPref || 'EMAIL'
       });
     } catch (err) {
       setError('Failed to load profile');
@@ -130,10 +139,11 @@ export const PartnerSettings: React.FC = () => {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const target = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [target.name]: target.value
     });
   };
 
@@ -417,6 +427,34 @@ export const PartnerSettings: React.FC = () => {
                 />
               </div>
 
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="state">State/Province</label>
+                  <input
+                    type="text"
+                    id="state"
+                    name="state"
+                    value={formData.state}
+                    onChange={handleChange}
+                    placeholder="e.g., California"
+                    className="form-input"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="country">Country</label>
+                  <input
+                    type="text"
+                    id="country"
+                    name="country"
+                    value={formData.country}
+                    onChange={handleChange}
+                    placeholder="e.g., United States"
+                    className="form-input"
+                  />
+                </div>
+              </div>
+
               <div className="form-group">
                 <label>Company Logo</label>
                 <div className="logo-upload-section">
@@ -526,6 +564,52 @@ export const PartnerSettings: React.FC = () => {
               <div className="credential-warning">
                 <strong>Keep your credentials secure!</strong> Never share your API secret publicly or commit it to version control.
               </div>
+            </div>
+          </div>
+
+          {/* Notification Settings */}
+          <div className="settings-section">
+            <h2>Notification Settings</h2>
+            <p className="section-description">Choose how you want to send verification invites to users.</p>
+            <div className="notification-settings">
+              <div className="radio-group">
+                <label className="radio-label">
+                  <input
+                    type="radio"
+                    name="userNotificationPref"
+                    value="EMAIL"
+                    checked={formData.userNotificationPref === 'EMAIL'}
+                    onChange={handleChange}
+                    className="radio-input"
+                  />
+                  <span className="radio-text">
+                    <strong>Email</strong>
+                    <small>Send verification invites via email. Users will receive an email with a link to complete verification.</small>
+                  </span>
+                </label>
+                <label className="radio-label">
+                  <input
+                    type="radio"
+                    name="userNotificationPref"
+                    value="PHONE"
+                    checked={formData.userNotificationPref === 'PHONE'}
+                    onChange={handleChange}
+                    className="radio-input"
+                  />
+                  <span className="radio-text">
+                    <strong>SMS / Text Message</strong>
+                    <small>Send verification invites via text message. Users will receive an SMS with a link to complete verification.</small>
+                  </span>
+                </label>
+              </div>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleSubmit}
+                disabled={saving}
+              >
+                {saving ? 'Saving...' : 'Save Notification Settings'}
+              </button>
             </div>
           </div>
 
