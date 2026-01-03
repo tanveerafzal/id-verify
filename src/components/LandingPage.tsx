@@ -496,8 +496,8 @@ export const LandingPage: React.FC = () => {
             </div>
             <div className="footer-column">
               <h4>Company</h4>
+              <a href="#about">About Us</a>
               <a href="#contact">Contact</a>
-              <a href="#contact">About Us</a>
               <a href="#contact">Careers</a>
             </div>
             <div className="footer-column">
