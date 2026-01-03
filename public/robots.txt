@@ -1,0 +1,28 @@
+# TrustCredo ID Verification Platform
+# https://trustcredo.com
+
+User-agent: *
+Allow: /
+Allow: /partner/login
+Allow: /user/login
+
+# Disallow private/authenticated areas
+Disallow: /partner/dashboard
+Disallow: /partner/verifications
+Disallow: /partner/settings
+Disallow: /partner/api-keys
+Disallow: /user/dashboard
+Disallow: /user/certificate
+Disallow: /admin/
+
+# Disallow API endpoints
+Disallow: /api/
+
+# Disallow verification flow (private user sessions)
+Disallow: /verify?
+
+# Sitemap location
+Sitemap: https://trustcredo.com/sitemap.xml
+
+# Crawl-delay for politeness
+Crawl-delay: 1

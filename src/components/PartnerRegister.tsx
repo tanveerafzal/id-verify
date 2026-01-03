@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getApiUrl } from '../config/api';
+import { SEO } from './SEO';
 
 export const PartnerRegister: React.FC = () => {
   const navigate = useNavigate();
@@ -102,6 +103,12 @@ export const PartnerRegister: React.FC = () => {
 
   return (
     <div className="partner-auth-container">
+      <SEO
+        title="Partner Registration"
+        description="Join TrustCredo as a partner. Get access to powerful identity verification APIs, KYC solutions, and document verification tools for your business."
+        keywords="partner registration, business signup, verification API, KYC integration"
+        canonicalUrl="/partner/register"
+      />
       <div className="auth-card">
         <div className="auth-brand">
           <div className="brand-icon">ID</div>

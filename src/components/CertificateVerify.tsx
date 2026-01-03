@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { getApiUrl } from '../config/api';
+import { SEO } from './SEO';
 
 interface VerificationData {
   id: string;
@@ -110,6 +111,12 @@ export const CertificateVerify: React.FC = () => {
 
   return (
     <div className="certificate-verify-container">
+      <SEO
+        title="Verify Certificate"
+        description="Verify the authenticity of a TrustCredo identity verification certificate. Scan QR codes to confirm verification status."
+        keywords="verify certificate, identity verification, certificate validation"
+        noIndex={true}
+      />
       <div className={`verify-card ${isValid ? 'verify-valid' : 'verify-invalid'}`}>
         <div className={`verify-icon ${isValid ? 'valid' : 'invalid'}`}>
           {isValid ? (

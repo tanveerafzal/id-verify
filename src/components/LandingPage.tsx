@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { SEO } from './SEO';
 
 export const LandingPage: React.FC = () => {
   const navigate = useNavigate();
@@ -69,12 +70,18 @@ export const LandingPage: React.FC = () => {
 
   return (
     <div className="landing-page">
+      <SEO
+        title="Secure Identity Verification Platform"
+        description="TrustCredo provides fast, secure, and reliable identity verification services. AI-powered KYC, document verification, and biometric face matching trusted by businesses worldwide."
+        keywords="identity verification, KYC, document verification, ID verification, passport verification, biometric verification, face matching, digital identity, fraud prevention"
+        canonicalUrl="/"
+      />
       {/* Navigation */}
       <nav className="landing-nav">
         <div className="nav-container">
           <div className="nav-brand">
             <div className="brand-icon">ID</div>
-            <span className="brand-name">[The ID Verification Company]</span>
+            <span className="brand-name">[TrustCredo ID Verification Platform]</span>
           </div>
           <div className="nav-links">
             <a href="#features">Features</a>

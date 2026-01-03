@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getApiUrl } from '../config/api';
+import { SEO } from './SEO';
 
 export const UserLogin: React.FC = () => {
   const navigate = useNavigate();
@@ -57,6 +58,12 @@ export const UserLogin: React.FC = () => {
 
   return (
     <div className="user-auth-container">
+      <SEO
+        title="User Login"
+        description="Access your TrustCredo account. View your verified identity, download certificates, and manage your verification history."
+        keywords="user login, identity verification account, verification certificate"
+        canonicalUrl="/user/login"
+      />
       <div className="auth-card">
         <div className="auth-brand">
           <div className="brand-icon">ID</div>
