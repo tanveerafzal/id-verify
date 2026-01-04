@@ -3,7 +3,9 @@ import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
@@ -156,17 +158,19 @@ export const DocumentCapture: React.FC<DocumentCaptureProps> = ({ onCapture, all
       />
 
       <div className="document-type-selector">
-        <label className="document-type-label">Select Document Type</label>
         <Select value={selectedType} onValueChange={setSelectedType}>
-          <SelectTrigger className="w-full h-12 text-base rounded-xl border-2 border-gray-200 focus:border-[#10B981] focus:ring-[#10B981]">
+          <SelectTrigger className="w-full h-12 text-base rounded-xl">
             <SelectValue placeholder="Select document type" />
           </SelectTrigger>
-          <SelectContent className="rounded-xl">
-            {documentTypes.map(type => (
-              <SelectItem key={type.value} value={type.value} className="text-base py-3">
-                {type.label}
-              </SelectItem>
-            ))}
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Document Type</SelectLabel>
+              {documentTypes.map(type => (
+                <SelectItem key={type.value} value={type.value}>
+                  {type.label}
+                </SelectItem>
+              ))}
+            </SelectGroup>
           </SelectContent>
         </Select>
       </div>
