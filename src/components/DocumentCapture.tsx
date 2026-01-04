@@ -150,31 +150,17 @@ export const DocumentCapture: React.FC<DocumentCaptureProps> = ({ onCapture, all
 
       <div className="document-type-selector">
         <label className="document-type-label">Select Document Type</label>
-        <div className="document-type-options">
+        <select
+          value={selectedType}
+          onChange={(e) => setSelectedType(e.target.value)}
+          className="document-type-select"
+        >
           {documentTypes.map(type => (
-            <label
-              key={type.value}
-              className={`document-type-option ${selectedType === type.value ? 'selected' : ''}`}
-            >
-              <input
-                type="radio"
-                name="documentType"
-                value={type.value}
-                checked={selectedType === type.value}
-                onChange={(e) => setSelectedType(e.target.value)}
-                className="document-type-radio"
-              />
-              <span className="document-type-text">{type.label}</span>
-              <span className="document-type-check">
-                {selectedType === type.value && (
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                )}
-              </span>
-            </label>
+            <option key={type.value} value={type.value}>
+              {type.label}
+            </option>
           ))}
-        </div>
+        </select>
       </div>
 
       {fileSizeError && (

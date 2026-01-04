@@ -94,6 +94,19 @@ body {
   text-align: center;
 }
 
+/* Verification Illustration - Figma Frame */
+.verification-illustration {
+  width: 180px;
+  height: auto;
+  margin: 0 auto 24px;
+}
+
+.verification-illustration img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
 .verification-header h1 {
   font-size: 24px;
   font-weight: 700;
@@ -268,9 +281,11 @@ body {
   font-size: 14px;
 }
 
-.document-type-selector select {
+.document-type-selector select,
+.document-type-select {
   width: 100%;
   padding: 14px 16px;
+  padding-right: 48px;
   border: 2px solid #E5E7EB;
   border-radius: 12px;
   font-size: 16px;
@@ -283,12 +298,19 @@ body {
   background-repeat: no-repeat;
   background-position: right 12px center;
   background-size: 20px;
+  font-weight: 500;
 }
 
-.document-type-selector select:focus {
+.document-type-selector select:focus,
+.document-type-select:focus {
   outline: none;
   border-color: #10B981;
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+}
+
+.document-type-selector select:hover,
+.document-type-select:hover {
+  border-color: #10B981;
 }
 
 /* Document Type Radio Buttons - Figma Style */
