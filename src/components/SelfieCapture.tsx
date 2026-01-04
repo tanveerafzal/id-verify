@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Button } from '@/design-system';
+import { Button } from '@/components/ui/button';
 
 interface SelfieCaptureProps {
   onCapture: (file: File) => void;
@@ -224,7 +224,7 @@ export const SelfieCapture: React.FC<SelfieCaptureProps> = ({
   return (
     <div className="selfie-capture">
       {onBack && (
-        <Button variant="ghost" onClick={handleBack} className="btn-back">
+        <Button variant="ghost" onClick={handleBack} className="absolute top-0 left-0">
           ← Back to Document
         </Button>
       )}
@@ -272,8 +272,7 @@ export const SelfieCapture: React.FC<SelfieCaptureProps> = ({
               Please upload a selfie photo instead:
             </p>
             <Button
-              variant="primary"
-              fullWidth
+              className="w-full"
               onClick={() => fileInputRef.current?.click()}
             >
               Upload Selfie Photo
@@ -288,9 +287,8 @@ export const SelfieCapture: React.FC<SelfieCaptureProps> = ({
             />
             <Button
               variant="secondary"
-              fullWidth
+              className="w-full mt-3"
               onClick={startCamera}
-              className="mt-3"
             >
               Try Camera Again
             </Button>
@@ -360,7 +358,6 @@ export const SelfieCapture: React.FC<SelfieCaptureProps> = ({
 
           <div className="camera-controls">
             <Button
-              variant="primary"
               size="lg"
               onClick={startCountdown}
               disabled={countdown !== null}
@@ -386,10 +383,10 @@ export const SelfieCapture: React.FC<SelfieCaptureProps> = ({
           <h3>Review Your Selfie</h3>
           <img src={preview} alt="Selfie preview" />
           <div className="preview-controls">
-            <Button variant="primary" fullWidth onClick={handleSubmit}>
+            <Button className="w-full" onClick={handleSubmit}>
               Submit
             </Button>
-            <Button variant="secondary" fullWidth onClick={retake}>
+            <Button variant="secondary" className="w-full" onClick={retake}>
               Retake
             </Button>
           </div>

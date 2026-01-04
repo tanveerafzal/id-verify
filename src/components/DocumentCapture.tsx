@@ -1,5 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Button } from '@/design-system';
+import { Button } from '@/components/ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 interface DocumentCaptureProps {
   onCapture: (file: File, documentType: string) => void;
@@ -150,17 +157,18 @@ export const DocumentCapture: React.FC<DocumentCaptureProps> = ({ onCapture, all
 
       <div className="document-type-selector">
         <label className="document-type-label">Select Document Type</label>
-        <select
-          value={selectedType}
-          onChange={(e) => setSelectedType(e.target.value)}
-          className="document-type-select"
-        >
-          {documentTypes.map(type => (
-            <option key={type.value} value={type.value}>
-              {type.label}
-            </option>
-          ))}
-        </select>
+        <Select value={selectedType} onValueChange={setSelectedType}>
+          <SelectTrigger className="w-full h-12 text-base rounded-xl border-2 border-gray-200 focus:border-[#10B981] focus:ring-[#10B981]">
+            <SelectValue placeholder="Select document type" />
+          </SelectTrigger>
+          <SelectContent className="rounded-xl">
+            {documentTypes.map(type => (
+              <SelectItem key={type.value} value={type.value} className="text-base py-3">
+                {type.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {fileSizeError && (
@@ -172,12 +180,12 @@ export const DocumentCapture: React.FC<DocumentCaptureProps> = ({ onCapture, all
 
       {!preview && !isCamera && (
         <div className="capture-options">
-          <Button variant="primary" fullWidth onClick={startCamera}>
+          <Button className="w-full" onClick={startCamera}>
             Use Camera
           </Button>
           <Button
             variant="secondary"
-            fullWidth
+            className="w-full"
             onClick={() => fileInputRef.current?.click()}
           >
             Upload File
@@ -216,7 +224,7 @@ export const DocumentCapture: React.FC<DocumentCaptureProps> = ({ onCapture, all
             />
           </div>
           <div className="camera-controls">
-            <Button variant="primary" onClick={capturePhoto}>
+            <Button onClick={capturePhoto}>
               Capture
             </Button>
             <Button variant="secondary" onClick={stopCamera}>
@@ -239,12 +247,12 @@ export const DocumentCapture: React.FC<DocumentCaptureProps> = ({ onCapture, all
             <img src={preview} alt="Document preview" />
           )}
           <div className="preview-controls">
-            <Button variant="primary" fullWidth onClick={handleSubmit}>
+            <Button className="w-full" onClick={handleSubmit}>
               Continue
             </Button>
             <Button
               variant="secondary"
-              fullWidth
+              className="w-full"
               onClick={() => {
                 setPreview(null);
                 setCapturedFile(null);

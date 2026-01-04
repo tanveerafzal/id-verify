@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '@/design-system';
+import { Button } from '@/components/ui/button';
 
 interface VerificationResultProps {
   result: {
@@ -233,11 +233,11 @@ export const VerificationResult: React.FC<VerificationResultProps> = ({ result, 
       <div className="result-actions">
         {result.passed ? (
           <>
-            <Button variant="primary" onClick={() => window.print()}>
+            <Button onClick={() => window.print()}>
               Print
             </Button>
             {onCreateAccount && userInfo?.email && (
-              <Button variant="success" onClick={onCreateAccount}>
+              <Button onClick={onCreateAccount}>
                 Create Account
               </Button>
             )}
@@ -248,12 +248,12 @@ export const VerificationResult: React.FC<VerificationResultProps> = ({ result, 
         ) : (
           <>
             {result.canRetry && onRetry ? (
-              <Button variant="primary" onClick={onRetry}>
+              <Button onClick={onRetry}>
                 Retry Verification
               </Button>
             ) : null}
             {onCreateAccount && (
-              <Button variant="success" onClick={onCreateAccount}>
+              <Button onClick={onCreateAccount}>
                 Create Account
               </Button>
             )}

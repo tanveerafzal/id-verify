@@ -4,7 +4,7 @@ import { DocumentCapture } from './DocumentCapture';
 import { SelfieCapture } from './SelfieCapture';
 import { VerificationResult } from './VerificationResult';
 import { getApiUrl, getAssetUrl } from '../config/api';
-import { Button } from '@/design-system';
+import { Button } from '@/components/ui/button';
 
 interface VerificationStep {
   step: 'document' | 'document-processing' | 'selfie' | 'selfie-processing' | 'processing' | 'complete';
@@ -478,7 +478,7 @@ export const IDVerification: React.FC = () => {
             <p>{verificationStatus.message}</p>
             {verificationStatus.status === 'FAILED' && (
               <div className="status-actions">
-                <Button variant="success" onClick={handleCreateAccount}>
+                <Button onClick={handleCreateAccount}>
                   Create Account
                 </Button>
               </div>
