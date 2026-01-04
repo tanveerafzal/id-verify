@@ -4,6 +4,7 @@ import { DocumentCapture } from './DocumentCapture';
 import { SelfieCapture } from './SelfieCapture';
 import { VerificationResult } from './VerificationResult';
 import { getApiUrl, getAssetUrl } from '../config/api';
+import { Button } from '@/design-system';
 
 interface VerificationStep {
   step: 'document' | 'document-processing' | 'selfie' | 'selfie-processing' | 'processing' | 'complete';
@@ -472,9 +473,9 @@ export const IDVerification: React.FC = () => {
             <p>{verificationStatus.message}</p>
             {verificationStatus.status === 'FAILED' && (
               <div className="status-actions">
-                <button className="btn-create-account" onClick={handleCreateAccount}>
+                <Button variant="success" onClick={handleCreateAccount}>
                   Create Account
-                </button>
+                </Button>
               </div>
             )}
           </div>
@@ -507,9 +508,9 @@ export const IDVerification: React.FC = () => {
                   <h3>Verification Error</h3>
                   <p>{error}</p>
                 </div>
-                <button className="btn-secondary" onClick={() => setError('')}>
+                <Button variant="secondary" size="sm" onClick={() => setError('')}>
                   Dismiss
-                </button>
+                </Button>
               </div>
             )}
 

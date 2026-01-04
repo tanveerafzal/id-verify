@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from '@/design-system';
 
 interface VerificationResultProps {
   result: {
@@ -232,34 +233,33 @@ export const VerificationResult: React.FC<VerificationResultProps> = ({ result, 
       <div className="result-actions">
         {result.passed ? (
           <>
-            <button className="btn-primary" onClick={() => window.print()}>
+            <Button variant="primary" onClick={() => window.print()}>
               Print
-            </button>
+            </Button>
             {onCreateAccount && userInfo?.email && (
-              <button className="btn-create-account" onClick={onCreateAccount}>
+              <Button variant="success" onClick={onCreateAccount}>
                 Create Account
-              </button>
+              </Button>
             )}
-            <button className="btn-secondary" onClick={() => window.close()}>
+            <Button variant="secondary" onClick={() => window.close()}>
               Close
-            </button>
+            </Button>
           </>
         ) : (
           <>
             {result.canRetry && onRetry ? (
-              <button className="btn-primary btn-retry" onClick={onRetry}>
+              <Button variant="primary" onClick={onRetry}>
                 Retry Verification
-              </button>
+              </Button>
             ) : null}
-            {/* For testing: Show Create Account button even on failed verification */}
             {onCreateAccount && (
-              <button className="btn-create-account" onClick={onCreateAccount}>
+              <Button variant="success" onClick={onCreateAccount}>
                 Create Account
-              </button>
+              </Button>
             )}
-            <button className="btn-secondary" onClick={() => window.close()}>
+            <Button variant="secondary" onClick={() => window.close()}>
               Close
-            </button>
+            </Button>
           </>
         )}
       </div>

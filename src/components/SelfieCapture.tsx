@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { Button } from '@/design-system';
 
 interface SelfieCaptureProps {
   onCapture: (file: File) => void;
@@ -223,9 +224,9 @@ export const SelfieCapture: React.FC<SelfieCaptureProps> = ({
   return (
     <div className="selfie-capture">
       {onBack && (
-        <button className="btn-back" onClick={handleBack}>
+        <Button variant="ghost" onClick={handleBack} className="btn-back">
           ← Back to Document
-        </button>
+        </Button>
       )}
       <h2>Take a Selfie</h2>
       <p className="instructions">
@@ -270,12 +271,13 @@ export const SelfieCapture: React.FC<SelfieCaptureProps> = ({
             <p style={{ marginBottom: '20px', color: '#374151' }}>
               Please upload a selfie photo instead:
             </p>
-            <button
-              className="btn-primary"
+            <Button
+              variant="primary"
+              fullWidth
               onClick={() => fileInputRef.current?.click()}
             >
-              📁 Upload Selfie Photo
-            </button>
+              Upload Selfie Photo
+            </Button>
             <input
               ref={fileInputRef}
               type="file"
@@ -284,13 +286,14 @@ export const SelfieCapture: React.FC<SelfieCaptureProps> = ({
               onChange={handleFileSelect}
               style={{ display: 'none' }}
             />
-            <button
-              className="btn-secondary"
+            <Button
+              variant="secondary"
+              fullWidth
               onClick={startCamera}
-              style={{ marginTop: '10px' }}
+              className="mt-3"
             >
-              🔄 Try Camera Again
-            </button>
+              Try Camera Again
+            </Button>
           </div>
         </div>
       )}
@@ -356,13 +359,14 @@ export const SelfieCapture: React.FC<SelfieCaptureProps> = ({
           </div>
 
           <div className="camera-controls">
-            <button
-              className="btn-primary btn-capture"
+            <Button
+              variant="primary"
+              size="lg"
               onClick={startCountdown}
               disabled={countdown !== null}
             >
               {countdown !== null ? 'Capturing...' : 'Take Photo'}
-            </button>
+            </Button>
           </div>
 
           <div className="selfie-tips">
@@ -382,12 +386,12 @@ export const SelfieCapture: React.FC<SelfieCaptureProps> = ({
           <h3>Review Your Selfie</h3>
           <img src={preview} alt="Selfie preview" />
           <div className="preview-controls">
-            <button className="btn-primary" onClick={handleSubmit}>
-              ✓ Submit
-            </button>
-            <button className="btn-secondary" onClick={retake}>
-              ↻ Retake
-            </button>
+            <Button variant="primary" fullWidth onClick={handleSubmit}>
+              Submit
+            </Button>
+            <Button variant="secondary" fullWidth onClick={retake}>
+              Retake
+            </Button>
           </div>
         </div>
       )}

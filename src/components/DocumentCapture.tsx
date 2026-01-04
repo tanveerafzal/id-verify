@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { Button } from '@/design-system';
 
 interface DocumentCaptureProps {
   onCapture: (file: File, documentType: string) => void;
@@ -148,14 +149,32 @@ export const DocumentCapture: React.FC<DocumentCaptureProps> = ({ onCapture, all
       />
 
       <div className="document-type-selector">
-        <label>Document Type:</label>
-        <select value={selectedType} onChange={(e) => setSelectedType(e.target.value)}>
+        <label className="document-type-label">Select Document Type</label>
+        <div className="document-type-options">
           {documentTypes.map(type => (
-            <option key={type.value} value={type.value}>
-              {type.label}
-            </option>
+            <label
+              key={type.value}
+              className={`document-type-option ${selectedType === type.value ? 'selected' : ''}`}
+            >
+              <input
+                type="radio"
+                name="documentType"
+                value={type.value}
+                checked={selectedType === type.value}
+                onChange={(e) => setSelectedType(e.target.value)}
+                className="document-type-radio"
+              />
+              <span className="document-type-text">{type.label}</span>
+              <span className="document-type-check">
+                {selectedType === type.value && (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                )}
+              </span>
+            </label>
           ))}
-        </select>
+        </div>
       </div>
 
       {fileSizeError && (
@@ -167,15 +186,16 @@ export const DocumentCapture: React.FC<DocumentCaptureProps> = ({ onCapture, all
 
       {!preview && !isCamera && (
         <div className="capture-options">
-          <button className="btn-primary" onClick={startCamera}>
-            📷 Use Camera
-          </button>
-          <button
-            className="btn-secondary"
+          <Button variant="primary" fullWidth onClick={startCamera}>
+            Use Camera
+          </Button>
+          <Button
+            variant="secondary"
+            fullWidth
             onClick={() => fileInputRef.current?.click()}
           >
-            📁 Upload File
-          </button>
+            Upload File
+          </Button>
           <input
             ref={fileInputRef}
             type="file"
@@ -210,12 +230,12 @@ export const DocumentCapture: React.FC<DocumentCaptureProps> = ({ onCapture, all
             />
           </div>
           <div className="camera-controls">
-            <button className="btn-primary" onClick={capturePhoto}>
+            <Button variant="primary" onClick={capturePhoto}>
               Capture
-            </button>
-            <button className="btn-secondary" onClick={stopCamera}>
+            </Button>
+            <Button variant="secondary" onClick={stopCamera}>
               Cancel
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -233,19 +253,20 @@ export const DocumentCapture: React.FC<DocumentCaptureProps> = ({ onCapture, all
             <img src={preview} alt="Document preview" />
           )}
           <div className="preview-controls">
-            <button className="btn-primary" onClick={handleSubmit}>
-              ✓ Continue
-            </button>
-            <button
-              className="btn-secondary"
+            <Button variant="primary" fullWidth onClick={handleSubmit}>
+              Continue
+            </Button>
+            <Button
+              variant="secondary"
+              fullWidth
               onClick={() => {
                 setPreview(null);
                 setCapturedFile(null);
                 setFileSizeError('');
               }}
             >
-              ↻ Retake
-            </button>
+              Retake
+            </Button>
           </div>
         </div>
       )}
