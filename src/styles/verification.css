@@ -281,8 +281,8 @@ body {
   font-size: 14px;
 }
 
-.document-type-selector select,
-.document-type-select {
+/* Native select styles - only applies to native select elements, not shadcn */
+.document-type-selector > select {
   width: 100%;
   padding: 14px 16px;
   padding-right: 48px;
@@ -301,15 +301,13 @@ body {
   font-weight: 500;
 }
 
-.document-type-selector select:focus,
-.document-type-select:focus {
+.document-type-selector > select:focus {
   outline: none;
   border-color: #10B981;
   box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
 }
 
-.document-type-selector select:hover,
-.document-type-select:hover {
+.document-type-selector > select:hover {
   border-color: #10B981;
 }
 

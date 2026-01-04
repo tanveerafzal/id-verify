@@ -78,8 +78,19 @@
   --ring: 160 84% 39%;
 }
 
-* {
+*,
+::before,
+::after {
   border-color: hsl(var(--border));
+}
+
+/* Ensure shadcn select dropdown has solid background */
+[data-radix-popper-content-wrapper] {
+  z-index: 50 !important;
+}
+
+[data-radix-select-content] {
+  background-color: hsl(var(--popover)) !important;
 }
 
 body {
@@ -88,8 +99,8 @@ body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-/* Ensure smooth transitions for theme changes */
-* {
+/* Ensure smooth transitions for theme changes - excluding radix elements */
+*:not([data-radix-popper-content-wrapper]):not([data-radix-select-viewport]):not([data-state]) {
   transition-property: background-color, border-color, color;
   transition-duration: 150ms;
   transition-timing-function: ease;

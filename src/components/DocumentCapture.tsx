@@ -159,10 +159,10 @@ export const DocumentCapture: React.FC<DocumentCaptureProps> = ({ onCapture, all
 
       <div className="document-type-selector">
         <Select value={selectedType} onValueChange={setSelectedType}>
-          <SelectTrigger className="w-full h-12 text-base rounded-xl">
+          <SelectTrigger className="w-full h-12 text-base rounded-xl bg-white border-gray-200">
             <SelectValue placeholder="Select document type" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent position="popper" sideOffset={4} className="bg-white">
             <SelectGroup>
               <SelectLabel>Document Type</SelectLabel>
               {documentTypes.map(type => (
