@@ -1,5 +1,9 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { LandingPage } from './components/LandingPage'
+import { CareersPage } from './components/CareersPage'
+import { TermsOfService } from './components/TermsOfService'
+import { PrivacyPolicy } from './components/PrivacyPolicy'
+import { TestDriveVerifiedPage } from './components/TestDriveVerifiedPage'
 import { IDVerification } from './components/IDVerification'
 import { PartnerRegister } from './components/PartnerRegister'
 import { PartnerLogin } from './components/PartnerLogin'
@@ -35,6 +39,10 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/careers" element={<CareersPage />} />
+        <Route path="/terms" element={<TermsOfService />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/services/test-drive-verified" element={<TestDriveVerifiedPage />} />
         <Route path="/verify" element={<IDVerification />} />
         <Route path="/partner/register" element={<PartnerRegister />} />
         <Route path="/partner/login" element={<PartnerLogin />} />

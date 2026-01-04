@@ -1,9 +1,33 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SEO } from './SEO';
 
 export const LandingPage: React.FC = () => {
   const navigate = useNavigate();
+  const [loginDropdownOpen, setLoginDropdownOpen] = useState(false);
+  const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const servicesDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setLoginDropdownOpen(false);
+      }
+      if (servicesDropdownRef.current && !servicesDropdownRef.current.contains(event.target as Node)) {
+        setServicesDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const services = [
+    { name: 'Digital ID Wallets', path: '/services/digital-id-wallets', description: 'Secure digital identity storage' },
+    { name: 'Age Verification', path: '/services/age-verification', description: 'Compliant age verification' },
+    { name: 'Test Drive Verified', path: '/services/test-drive-verified', description: 'Pre-verify test drive customers' },
+  ];
 
   const features = [
     {
@@ -40,20 +64,20 @@ export const LandingPage: React.FC = () => {
 
   const pricingTiers = [
     {
-      name: 'Free',
+      name: 'Starter',
       price: '$0',
       period: '/month',
-      verifications: '100 verifications/month',
+      verifications: 'First 100 verifications free',
       features: ['Document verification', 'Face matching', 'Basic support', 'API access'],
       highlighted: false,
-      buttonText: 'Get Started Free'
+      buttonText: 'Get Started'
     },
     {
       name: 'Professional',
       price: '$99',
       period: '/month',
       verifications: '1,000 verifications/month',
-      features: ['Everything in Free', 'Priority support', 'Webhooks', 'Advanced analytics'],
+      features: ['Everything in Starter', 'Priority support', 'Webhooks', 'Advanced analytics'],
       highlighted: true,
       buttonText: 'Start Free Trial'
     },
@@ -80,20 +104,81 @@ export const LandingPage: React.FC = () => {
       <nav className="landing-nav">
         <div className="nav-container">
           <div className="nav-brand">
-            <div className="brand-icon">ID</div>
-            <span className="brand-name">[TrustCredo ID Verification Platform]</span>
+            <img src="/website-logo-horizontal.png" alt="TrustCredo" className="nav-logo" />
           </div>
           <div className="nav-links">
             <a href="#features">Features</a>
-            <a href="#solutions">Solutions</a>
+            <div className="services-dropdown" ref={servicesDropdownRef}>
+              <button
+                className="nav-link-dropdown"
+                onClick={() => setServicesDropdownOpen(!servicesDropdownOpen)}
+              >
+                Services
+                <svg
+                  className={`dropdown-arrow ${servicesDropdownOpen ? 'open' : ''}`}
+                  width="10"
+                  height="10"
+                  viewBox="0 0 12 12"
+                  fill="none"
+                >
+                  <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+              {servicesDropdownOpen && (
+                <div className="services-dropdown-menu">
+                  {services.map((service, index) => (
+                    <button
+                      key={index}
+                      onClick={() => { navigate(service.path); setServicesDropdownOpen(false); }}
+                    >
+                      <strong>{service.name}</strong>
+                      <span>{service.description}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
             <a href="#pricing">Pricing</a>
             <a href="#about">About</a>
             <a href="#contact">Contact</a>
           </div>
           <div className="nav-actions">
-            <button className="btn-nav-secondary" onClick={() => navigate('/partner/login')}>
-              Login
-            </button>
+            <div className="login-dropdown" ref={dropdownRef}>
+              <button
+                className="btn-nav-secondary"
+                onClick={() => setLoginDropdownOpen(!loginDropdownOpen)}
+              >
+                Login
+                <svg
+                  className={`dropdown-arrow ${loginDropdownOpen ? 'open' : ''}`}
+                  width="12"
+                  height="12"
+                  viewBox="0 0 12 12"
+                  fill="none"
+                >
+                  <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+              {loginDropdownOpen && (
+                <div className="login-dropdown-menu">
+                  <button onClick={() => { navigate('/partner/login'); setLoginDropdownOpen(false); }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                      <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                    Partner Login
+                  </button>
+                  <button onClick={() => { navigate('/user/login'); setLoginDropdownOpen(false); }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                      <circle cx="8.5" cy="7" r="4"/>
+                      <path d="M20 8v6M23 11h-6"/>
+                    </svg>
+                    User Login
+                  </button>
+                </div>
+              )}
+            </div>
             <button className="btn-nav-primary" onClick={() => navigate('/partner/register')}>
               Get Started
             </button>
@@ -150,6 +235,40 @@ export const LandingPage: React.FC = () => {
                   <span className="check">✓</span> Not Expired
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Trusted By Section */}
+      <section className="trusted-by-section">
+        <div className="section-container">
+          <p className="trusted-label">Trusted by innovative companies worldwide</p>
+          <div className="trusted-logos">
+            <div className="trusted-logo">
+              <svg viewBox="0 0 120 40" fill="currentColor">
+                <text x="10" y="28" fontSize="18" fontWeight="700">AutoMax</text>
+              </svg>
+            </div>
+            <div className="trusted-logo">
+              <svg viewBox="0 0 120 40" fill="currentColor">
+                <text x="10" y="28" fontSize="18" fontWeight="700">FinSecure</text>
+              </svg>
+            </div>
+            <div className="trusted-logo">
+              <svg viewBox="0 0 120 40" fill="currentColor">
+                <text x="10" y="28" fontSize="18" fontWeight="700">RentEasy</text>
+              </svg>
+            </div>
+            <div className="trusted-logo">
+              <svg viewBox="0 0 120 40" fill="currentColor">
+                <text x="10" y="28" fontSize="18" fontWeight="700">CarHub</text>
+              </svg>
+            </div>
+            <div className="trusted-logo">
+              <svg viewBox="0 0 120 40" fill="currentColor">
+                <text x="10" y="28" fontSize="18" fontWeight="700">TrustBank</text>
+              </svg>
             </div>
           </div>
         </div>
@@ -463,6 +582,202 @@ export const LandingPage: React.FC = () => {
         </div>
       </section>
 
+      {/* Testimonials Section */}
+      <section className="testimonials-section">
+        <div className="section-container">
+          <div className="section-header">
+            <h2>What Our Customers Say</h2>
+            <p>See how businesses are using TrustCredo to streamline their verification process</p>
+          </div>
+          <div className="testimonials-grid">
+            <div className="testimonial-card">
+              <div className="testimonial-stars">
+                <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+              </div>
+              <p className="testimonial-text">
+                "TrustCredo reduced our customer onboarding time by 80%. The verification process is seamless and our customers love how quick it is."
+              </p>
+              <div className="testimonial-author">
+                <div className="author-avatar">JD</div>
+                <div className="author-info">
+                  <strong>James Davidson</strong>
+                  <span>CEO, AutoMax Dealerships</span>
+                </div>
+              </div>
+            </div>
+            <div className="testimonial-card">
+              <div className="testimonial-stars">
+                <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+              </div>
+              <p className="testimonial-text">
+                "The API integration was incredibly smooth. We went from evaluation to production in less than a week. Outstanding developer experience."
+              </p>
+              <div className="testimonial-author">
+                <div className="author-avatar">SM</div>
+                <div className="author-info">
+                  <strong>Sarah Mitchell</strong>
+                  <span>CTO, FinSecure Inc.</span>
+                </div>
+              </div>
+            </div>
+            <div className="testimonial-card">
+              <div className="testimonial-stars">
+                <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+              </div>
+              <p className="testimonial-text">
+                "We've processed over 50,000 verifications with 99.8% accuracy. TrustCredo has become an essential part of our security infrastructure."
+              </p>
+              <div className="testimonial-author">
+                <div className="author-avatar">MK</div>
+                <div className="author-info">
+                  <strong>Michael Kim</strong>
+                  <span>VP Security, RentEasy</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Security & Compliance Section */}
+      <section className="security-section">
+        <div className="section-container">
+          <div className="section-header">
+            <h2>Enterprise-Grade Security</h2>
+            <p>Your data is protected with industry-leading security standards</p>
+          </div>
+          <div className="security-badges">
+            <div className="security-badge">
+              <div className="badge-icon">
+                <svg viewBox="0 0 48 48" fill="none">
+                  <circle cx="24" cy="24" r="20" stroke="currentColor" strokeWidth="3"/>
+                  <path d="M24 14V24L30 28" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+                  <text x="24" y="40" textAnchor="middle" fontSize="6" fill="currentColor">SOC 2</text>
+                </svg>
+              </div>
+              <strong>SOC 2 Type II</strong>
+              <p>Certified compliant</p>
+            </div>
+            <div className="security-badge">
+              <div className="badge-icon">
+                <svg viewBox="0 0 48 48" fill="none">
+                  <path d="M24 4L6 12V22C6 33 14 42 24 44C34 42 42 33 42 22V12L24 4Z" stroke="currentColor" strokeWidth="3"/>
+                  <path d="M18 24L22 28L30 20" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <strong>GDPR</strong>
+              <p>Fully compliant</p>
+            </div>
+            <div className="security-badge">
+              <div className="badge-icon">
+                <svg viewBox="0 0 48 48" fill="none">
+                  <rect x="8" y="16" width="32" height="24" rx="4" stroke="currentColor" strokeWidth="3"/>
+                  <path d="M16 16V12C16 8 20 4 24 4C28 4 32 8 32 12V16" stroke="currentColor" strokeWidth="3"/>
+                  <circle cx="24" cy="28" r="4" fill="currentColor"/>
+                </svg>
+              </div>
+              <strong>256-bit SSL</strong>
+              <p>End-to-end encryption</p>
+            </div>
+            <div className="security-badge">
+              <div className="badge-icon">
+                <svg viewBox="0 0 48 48" fill="none">
+                  <circle cx="24" cy="24" r="20" stroke="currentColor" strokeWidth="3"/>
+                  <text x="24" y="20" textAnchor="middle" fontSize="8" fontWeight="bold" fill="currentColor">ISO</text>
+                  <text x="24" y="32" textAnchor="middle" fontSize="6" fill="currentColor">27001</text>
+                </svg>
+              </div>
+              <strong>ISO 27001</strong>
+              <p>Information security</p>
+            </div>
+            <div className="security-badge">
+              <div className="badge-icon">
+                <svg viewBox="0 0 48 48" fill="none">
+                  <path d="M24 4L6 12V22C6 33 14 42 24 44C34 42 42 33 42 22V12L24 4Z" stroke="currentColor" strokeWidth="3"/>
+                  <text x="24" y="28" textAnchor="middle" fontSize="8" fontWeight="bold" fill="currentColor">CCPA</text>
+                </svg>
+              </div>
+              <strong>CCPA</strong>
+              <p>Privacy compliant</p>
+            </div>
+          </div>
+          <div className="security-features">
+            <div className="security-feature">
+              <span className="feature-check">✓</span>
+              <span>Data encrypted at rest and in transit</span>
+            </div>
+            <div className="security-feature">
+              <span className="feature-check">✓</span>
+              <span>Regular third-party security audits</span>
+            </div>
+            <div className="security-feature">
+              <span className="feature-check">✓</span>
+              <span>99.99% uptime SLA available</span>
+            </div>
+            <div className="security-feature">
+              <span className="feature-check">✓</span>
+              <span>Data residency options available</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Integration Partners Section */}
+      <section className="integrations-section">
+        <div className="section-container">
+          <div className="section-header">
+            <h2>Seamless Integrations</h2>
+            <p>Connect TrustCredo with your existing tools and workflows</p>
+          </div>
+          <div className="integrations-grid">
+            <div className="integration-card">
+              <div className="integration-icon">
+                <svg viewBox="0 0 48 48" fill="currentColor">
+                  <rect x="4" y="4" width="40" height="40" rx="8" fill="#1a73e8" opacity="0.1"/>
+                  <text x="24" y="30" textAnchor="middle" fontSize="12" fontWeight="bold" fill="#1a73e8">API</text>
+                </svg>
+              </div>
+              <strong>REST API</strong>
+              <p>Full-featured RESTful API with comprehensive documentation</p>
+            </div>
+            <div className="integration-card">
+              <div className="integration-icon">
+                <svg viewBox="0 0 48 48" fill="currentColor">
+                  <rect x="4" y="4" width="40" height="40" rx="8" fill="#10b981" opacity="0.1"/>
+                  <path d="M14 24L20 30L34 18" stroke="#10b981" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <strong>Webhooks</strong>
+              <p>Real-time notifications for verification events</p>
+            </div>
+            <div className="integration-card">
+              <div className="integration-icon">
+                <svg viewBox="0 0 48 48" fill="currentColor">
+                  <rect x="4" y="4" width="40" height="40" rx="8" fill="#8b5cf6" opacity="0.1"/>
+                  <text x="24" y="30" textAnchor="middle" fontSize="12" fontWeight="bold" fill="#8b5cf6">SDK</text>
+                </svg>
+              </div>
+              <strong>SDKs</strong>
+              <p>Native SDKs for JavaScript, Python, and more</p>
+            </div>
+            <div className="integration-card">
+              <div className="integration-icon">
+                <svg viewBox="0 0 48 48" fill="currentColor">
+                  <rect x="4" y="4" width="40" height="40" rx="8" fill="#f59e0b" opacity="0.1"/>
+                  <rect x="12" y="16" width="24" height="16" rx="2" stroke="#f59e0b" strokeWidth="3"/>
+                  <circle cx="24" cy="24" r="4" fill="#f59e0b"/>
+                </svg>
+              </div>
+              <strong>White Label</strong>
+              <p>Custom branding for seamless user experience</p>
+            </div>
+          </div>
+          <div className="integration-cta">
+            <p>Need a custom integration? <button className="text-link" onClick={() => navigate('/partner/register')}>Talk to our team</button></p>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="cta-section">
         <div className="section-container">
@@ -483,8 +798,7 @@ export const LandingPage: React.FC = () => {
       <footer id="contact" className="landing-footer">
         <div className="footer-container">
           <div className="footer-brand">
-            <div className="brand-icon">ID</div>
-            <span className="brand-name">[The ID verification Company]</span>
+            <img src="/website-logo-horizontal-light.png" alt="TrustCredo" className="footer-logo" />
             <p>Secure identity verification for modern businesses</p>
           </div>
           <div className="footer-links">
@@ -498,14 +812,39 @@ export const LandingPage: React.FC = () => {
               <h4>Company</h4>
               <a href="#about">About Us</a>
               <a href="#contact">Contact</a>
-              <a href="#contact">Careers</a>
+              <a href="/careers">Careers</a>
             </div>
             <div className="footer-column">
               <h4>Legal</h4>
-              <a href="#contact">Privacy Policy</a>
-              <a href="#contact">Terms of Service</a>
-              <a href="#contact">GDPR</a>
+              <a href="/privacy">Privacy Policy</a>
+              <a href="/terms">Terms of Service</a>
+              <a href="/privacy">GDPR</a>
             </div>
+          </div>
+        </div>
+        <div className="footer-social">
+          <h4>Follow Us</h4>
+          <div className="social-links">
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+              </svg>
+            </a>
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+              </svg>
+            </a>
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
+            </a>
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+              </svg>
+            </a>
           </div>
         </div>
         <div className="footer-bottom">
