@@ -404,7 +404,7 @@ export const IDVerification: React.FC = () => {
       <div className="verification-header">
         {/* Verification Illustration */}
         <div className="verification-illustration">
-          <img src="/verification-illustration.png" alt="Identity Verification" />
+          <img src="/verification-illustration.svg" alt="Identity Verification" />
         </div>
 
         <h1>Identity Verification</h1>
