@@ -10,11 +10,10 @@ interface SEOProps {
   noIndex?: boolean;
 }
 
-const BASE_URL = 'https://trustcredo.com';
 const DEFAULT_TITLE = 'TrustCredo - Secure Identity Verification Platform';
 const DEFAULT_DESCRIPTION = 'TrustCredo provides fast, secure, and reliable identity verification services. Verify IDs, passports, and documents with AI-powered KYC solutions.';
 const DEFAULT_KEYWORDS = 'identity verification, KYC, document verification, ID verification, passport verification, biometric verification, face matching';
-const DEFAULT_IMAGE = `${BASE_URL}/og-image.png`;
+const DEFAULT_IMAGE = '/og-image.png';
 
 export const SEO: React.FC<SEOProps> = ({
   title,
@@ -26,7 +25,7 @@ export const SEO: React.FC<SEOProps> = ({
   noIndex = false
 }) => {
   const fullTitle = title ? `${title} | TrustCredo` : DEFAULT_TITLE;
-  const fullCanonicalUrl = canonicalUrl ? `${BASE_URL}${canonicalUrl}` : BASE_URL;
+  const fullCanonicalUrl = canonicalUrl || '/';
 
   return (
     <Helmet>
