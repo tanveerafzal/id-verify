@@ -198,7 +198,7 @@ export const LandingPage: React.FC = () => {
             <button className="btn-hero-primary" onClick={() => navigate('/partner/register')}>
               Start Free Trial
             </button>
-            <button className="btn-hero-secondary" onClick={() => navigate('/verify')}>
+            <button className="btn-hero-secondary" onClick={() => window.open('https://verify.trustcredo.com/verify?verification-request=KajLfFLOjraHyS1BgQr3DjfWhSX48cRa4H7WtUDk0ZwtkjZdOGGj_ZbaT7KHuOGENW3OYOa3GShs6JWbLnZ82G0Icus', '_blank')}>
               Try Demo
             </button>
           </div>
@@ -806,7 +806,7 @@ export const LandingPage: React.FC = () => {
               <h4>Product</h4>
               <a href="#features">Features</a>
               <a href="#pricing">Pricing</a>
-              <a href="/verify">Demo</a>
+              <a href="https://verify.trustcredo.com/verify?verification-request=KajLfFLOjraHyS1BgQr3DjfWhSX48cRa4H7WtUDk0ZwtkjZdOGGj_ZbaT7KHuOGENW3OYOa3GShs6JWbLnZ82G0Icus" target="_blank" rel="noopener noreferrer">Demo</a>
             </div>
             <div className="footer-column">
               <h4>Company</h4>
