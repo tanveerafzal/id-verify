@@ -124,7 +124,7 @@ export const TestDriveVerifiedPage: React.FC = () => {
             <button className="btn-primary-large" onClick={() => navigate('/partner/register')}>
               Schedule a Demo
             </button>
-            <button className="btn-secondary-large" onClick={() => navigate('/verify')}>
+            <button className="btn-secondary-large" onClick={() => window.open('https://verify.trustcredo.com/verify?verification-request=KajLfFLOjraHyS1BgQr3DjfWhSX48cRa4H7WtUDk0ZwtkjZdOGGj_ZbaT7KHuOGENW3OYOa3GShs6JWbLnZ82G0Icus', '_blank')}>
               Try It Free
             </button>
           </div>
@@ -294,7 +294,7 @@ export const TestDriveVerifiedPage: React.FC = () => {
               Schedule a Demo
               <span className="btn-note">See it in action in 15 minutes</span>
             </button>
-            <button className="btn-cta-secondary" onClick={() => navigate('/verify')}>
+            <button className="btn-cta-secondary" onClick={() => window.open('https://verify.trustcredo.com/verify?verification-request=KajLfFLOjraHyS1BgQr3DjfWhSX48cRa4H7WtUDk0ZwtkjZdOGGj_ZbaT7KHuOGENW3OYOa3GShs6JWbLnZ82G0Icus', '_blank')}>
               Start Free Trial
               <span className="btn-note">No credit card required</span>
             </button>
