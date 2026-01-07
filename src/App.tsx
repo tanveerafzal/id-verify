@@ -4,6 +4,9 @@ import { CareersPage } from './components/CareersPage'
 import { TermsOfService } from './components/TermsOfService'
 import { PrivacyPolicy } from './components/PrivacyPolicy'
 import { TestDriveVerifiedPage } from './components/TestDriveVerifiedPage'
+import { AgeVerificationPage } from './components/AgeVerificationPage'
+import { DigitalIDWalletsPage } from './components/DigitalIDWalletsPage'
+import { SMSVerificationPage } from './components/SMSVerificationPage'
 import { IDVerification } from './components/IDVerification'
 import { PartnerRegister } from './components/PartnerRegister'
 import { PartnerLogin } from './components/PartnerLogin'
@@ -43,6 +46,9 @@ function App() {
         <Route path="/terms" element={<TermsOfService />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/services/test-drive-verified" element={<TestDriveVerifiedPage />} />
+        <Route path="/services/age-verification" element={<AgeVerificationPage />} />
+        <Route path="/services/digital-id-wallets" element={<DigitalIDWalletsPage />} />
+        <Route path="/services/sms-verification" element={<SMSVerificationPage />} />
         <Route path="/verify" element={<IDVerification />} />
         <Route path="/partner/register" element={<PartnerRegister />} />
         <Route path="/partner/login" element={<PartnerLogin />} />

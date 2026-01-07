@@ -611,7 +611,7 @@ export const PartnerVerifications: React.FC = () => {
                       ? new Date(verification.completedAt).toLocaleDateString()
                       : '-'}
                   </td>
-                  <td className="actions-cell">
+                  <td>
                     {verification.status === 'PENDING' && (
                       <button
                         onClick={() => handleResendEmail(verification.id)}

@@ -112,7 +112,7 @@ export const PartnerRegister: React.FC = () => {
       <div className="auth-card">
         <div className="auth-brand">
           <div className="brand-icon">ID</div>
-          <h2>[The ID verification Company]</h2>
+          <h2>TrustCredo - ID Verification Platform</h2>
         </div>
         <div className="auth-header">
           <h1>Partner Registration</h1>

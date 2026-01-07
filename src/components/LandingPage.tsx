@@ -26,6 +26,7 @@ export const LandingPage: React.FC = () => {
   const services = [
     { name: 'Digital ID Wallets', path: '/services/digital-id-wallets', description: 'Secure digital identity storage' },
     { name: 'Age Verification', path: '/services/age-verification', description: 'Compliant age verification' },
+    { name: 'SMS Verification', path: '/services/sms-verification', description: 'OTP phone verification for KYC' },
     { name: 'Test Drive Verified', path: '/services/test-drive-verified', description: 'Pre-verify test drive customers' },
   ];
 
