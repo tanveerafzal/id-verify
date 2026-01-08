@@ -289,6 +289,48 @@ export const PartnerDashboard: React.FC = () => {
         </div>
       </div>
 
+      {/* Verification Link Section */}
+      <div className="verification-link-section">
+        <div className="dashboard-card full-width">
+          <div className="card-header">
+            <h3>General Verification Link</h3>
+          </div>
+          <div className="card-content">
+            <p className="link-description">
+              Share this link with your customers to start the ID verification process.
+              This link is unique to your company and will show your branding.
+            </p>
+            {copyMessage && (
+              <div className="success-message">
+                {copyMessage}
+              </div>
+            )}
+            <div className="verification-link-box">
+              <code className="verification-link">
+                {`https://verify.trustcredo.com/verify?partner=${partner.apiKey}`}
+              </code>
+              <div className="link-actions">
+                <button
+                  className="btn-copy"
+                  onClick={() => copyToClipboard(`https://verify.trustcredo.com/verify?partner=${partner.apiKey}`)}
+                >
+                  Copy Link
+                </button>
+                <button
+                  className="btn-secondary"
+                  onClick={() => window.open(`https://verify.trustcredo.com/verify?partner=${partner.apiKey}`, '_blank')}
+                >
+                  Test Link
+                </button>
+              </div>
+            </div>
+            <p className="link-note">
+              <strong>Tip:</strong> You can also use our API to create custom verification requests with specific user details.
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Features Section */}
       <div className="features-section">
         <h2>Current Plan Features</h2>

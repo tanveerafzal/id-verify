@@ -567,6 +567,39 @@ export const PartnerSettings: React.FC = () => {
             </div>
           </div>
 
+          {/* General Verification Link */}
+          <div className="settings-section">
+            <h2>General Verification Link</h2>
+            <p className="section-description">
+              Share this link with your customers to start the ID verification process.
+              This link is unique to your company and will show your branding.
+            </p>
+            <div className="verification-link-box">
+              <code className="verification-link">
+                {`https://verify.trustcredo.com/verify?partner=${partner.apiKey}`}
+              </code>
+              <div className="link-actions">
+                <button
+                  type="button"
+                  className="btn btn-secondary btn-sm"
+                  onClick={() => copyToClipboard(`https://verify.trustcredo.com/verify?partner=${partner.apiKey}`)}
+                >
+                  Copy Link
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-primary btn-sm"
+                  onClick={() => window.open(`https://verify.trustcredo.com/verify?partner=${partner.apiKey}`, '_blank')}
+                >
+                  Test Link
+                </button>
+              </div>
+            </div>
+            <p className="link-note">
+              <strong>Tip:</strong> You can also use our API to create custom verification requests with specific user details.
+            </p>
+          </div>
+
           {/* Notification Settings */}
           <div className="settings-section">
             <h2>Notification Settings</h2>
