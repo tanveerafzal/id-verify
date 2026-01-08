@@ -1228,3 +1228,455 @@ body {
 .powered-by a:hover {
   text-decoration: underline;
 }
+
+/* ============================================
+   DEALER VERIFICATION RESULT & CERTIFICATE
+   ============================================ */
+.dealer-verification-result {
+  padding: 24px;
+}
+
+.dealer-verification-result .result-header {
+  text-align: center;
+  padding: 32px 24px;
+  border-radius: 16px;
+  margin-bottom: 24px;
+}
+
+.dealer-verification-result .result-header.success {
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+}
+
+.dealer-verification-result .result-header.failure {
+  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+}
+
+.dealer-verification-result .result-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  margin: 0 auto 16px;
+}
+
+.dealer-verification-result .result-header.success .result-icon {
+  background: #10b981;
+  color: white;
+}
+
+.dealer-verification-result .result-header.failure .result-icon {
+  background: #ef4444;
+  color: white;
+}
+
+.dealer-verification-result .result-header h2 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #1f2937;
+}
+
+.dealer-verification-result .result-message {
+  color: #4b5563;
+  font-size: 15px;
+}
+
+.dealer-verification-result .retry-info {
+  margin-top: 12px;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+/* Certificate Wrapper */
+.certificate-wrapper {
+  margin-bottom: 24px;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Dealer Certificate */
+.dealer-certificate {
+  background: white;
+  padding: 8px;
+}
+
+.dealer-certificate .certificate-border {
+  border: 3px solid #10b981;
+  border-radius: 8px;
+  padding: 4px;
+  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+}
+
+.dealer-certificate .certificate-inner {
+  border: 1px solid #d1fae5;
+  border-radius: 6px;
+  padding: 24px;
+  background: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.dealer-certificate .certificate-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.dealer-certificate .certificate-logo {
+  margin-bottom: 12px;
+}
+
+.dealer-certificate .logo-icon {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.dealer-certificate .certificate-header h1 {
+  font-size: 18px;
+  color: #1f2937;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.dealer-certificate .certificate-subtitle {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.dealer-certificate .validity-badge {
+  display: inline-block;
+  padding: 6px 20px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+}
+
+.dealer-certificate .validity-badge.valid {
+  background: #10b981;
+  color: white;
+}
+
+.dealer-certificate .certificate-body {
+  text-align: center;
+}
+
+.dealer-certificate .certificate-statement {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+.dealer-certificate .certificate-name {
+  font-size: 24px;
+  color: #1f2937;
+  font-weight: 700;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.dealer-certificate .certificate-details {
+  margin: 20px 0;
+  padding: 16px;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+.dealer-certificate .details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  text-align: left;
+}
+
+@media (max-width: 480px) {
+  .dealer-certificate .details-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dealer-certificate .detail-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dealer-certificate .detail-label {
+  font-size: 11px;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dealer-certificate .detail-value {
+  font-size: 14px;
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.dealer-certificate .verification-score {
+  margin-top: 16px;
+  padding: 12px;
+  background: #f9fafb;
+  border-radius: 8px;
+  display: inline-block;
+}
+
+.dealer-certificate .score-label {
+  font-size: 11px;
+  color: #6b7280;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.dealer-certificate .score-value {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.dealer-certificate .risk-level {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+.dealer-certificate .certificate-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.dealer-certificate .certificate-seal {
+  flex-shrink: 0;
+}
+
+.dealer-certificate .seal-inner {
+  width: 60px;
+  height: 60px;
+  border: 2px solid #10b981;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f0fdf4 0%, #d1fae5 100%);
+}
+
+.dealer-certificate .seal-icon {
+  font-size: 20px;
+  color: #10b981;
+  font-weight: bold;
+}
+
+.dealer-certificate .seal-text {
+  font-size: 8px;
+  color: #10b981;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.dealer-certificate .certificate-number {
+  text-align: center;
+  flex: 1;
+}
+
+.dealer-certificate .number-label {
+  display: block;
+  font-size: 10px;
+  color: #9ca3af;
+  text-transform: uppercase;
+}
+
+.dealer-certificate .number-value {
+  font-size: 12px;
+  color: #1f2937;
+  font-family: monospace;
+}
+
+.dealer-certificate .certificate-qr {
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.dealer-certificate .qr-box {
+  padding: 6px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+.dealer-certificate .qr-label {
+  display: block;
+  font-size: 9px;
+  color: #9ca3af;
+  margin-top: 4px;
+}
+
+/* Certificate Decorations */
+.dealer-certificate .certificate-decoration {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border: 2px solid #d1fae5;
+}
+
+.dealer-certificate .certificate-decoration.top-left {
+  top: 8px;
+  left: 8px;
+  border-right: none;
+  border-bottom: none;
+  border-radius: 8px 0 0 0;
+}
+
+.dealer-certificate .certificate-decoration.top-right {
+  top: 8px;
+  right: 8px;
+  border-left: none;
+  border-bottom: none;
+  border-radius: 0 8px 0 0;
+}
+
+.dealer-certificate .certificate-decoration.bottom-left {
+  bottom: 8px;
+  left: 8px;
+  border-right: none;
+  border-top: none;
+  border-radius: 0 0 0 8px;
+}
+
+.dealer-certificate .certificate-decoration.bottom-right {
+  bottom: 8px;
+  right: 8px;
+  border-left: none;
+  border-top: none;
+  border-radius: 0 0 8px 0;
+}
+
+/* Download Options */
+.download-options {
+  background: #f9fafb;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.download-options h3 {
+  font-size: 16px;
+  color: #1f2937;
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+.download-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.download-btn .btn-icon {
+  font-size: 18px;
+}
+
+/* Result Actions */
+.dealer-verification-result .result-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.dealer-verification-result .result-details {
+  margin-bottom: 24px;
+}
+
+.dealer-verification-result .detail-card {
+  background: #f9fafb;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.dealer-verification-result .detail-card h3 {
+  font-size: 16px;
+  color: #1f2937;
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+.dealer-verification-result .checks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dealer-verification-result .check-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: white;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.dealer-verification-result .check-item.pass .check-icon {
+  color: #10b981;
+}
+
+.dealer-verification-result .check-item.fail .check-icon {
+  color: #ef4444;
+}
+
+.dealer-verification-result .check-icon {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+/* Print styles */
+@media print {
+  .download-options,
+  .result-actions,
+  .result-header {
+    display: none !important;
+  }
+
+  .certificate-wrapper {
+    box-shadow: none;
+    margin: 0;
+  }
+
+  .dealer-certificate {
+    padding: 0;
+  }
+}

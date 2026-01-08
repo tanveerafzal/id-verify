@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DocumentCapture } from './DocumentCapture';
 import { SelfieCapture } from './SelfieCapture';
-import { VerificationResult } from './VerificationResult';
+import { DealerVerificationResult } from './DealerVerificationResult';
 import { getApiUrl, getAssetUrl } from '../config/api';
 import { Button } from '@/components/ui/button';
 
@@ -522,7 +522,7 @@ export const DealerVerification: React.FC = () => {
             {currentStep.step === 'document' && verificationId && (
               <DocumentCapture
                 onCapture={handleDocumentCaptured}
-                allowedDocumentTypes={verificationInfo?.allowedDocumentTypes}
+                allowedDocumentTypes={['DRIVERS_LICENSE']}
               />
             )}
 
@@ -701,14 +701,14 @@ export const DealerVerification: React.FC = () => {
             )}
 
             {currentStep.step === 'complete' && result && (
-              <VerificationResult
+              <DealerVerificationResult
                 result={result}
                 verificationId={verificationId || undefined}
                 userInfo={{
                   fullName: verificationInfo?.userName || result?.extractedData?.fullName,
                   email: verificationInfo?.userEmail
                 }}
-                onCreateAccount={handleCreateAccount}
+                partnerName={partnerInfo?.companyName}
                 onRetry={() => {
                   // Reset to document capture step for retry
                   // Keep the same verificationId to use the existing verification

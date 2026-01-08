@@ -307,25 +307,25 @@ export const PartnerDashboard: React.FC = () => {
             )}
             <div className="verification-link-box">
               <code className="verification-link">
-                {`https://verify.trustcredo.com/verify?partner=${partner.apiKey}`}
+                {`https://verify.trustcredo.com/verify?apiKey=${partner.apiKey}`}
               </code>
               <div className="link-actions">
                 <button
                   className="btn-copy"
-                  onClick={() => copyToClipboard(`https://verify.trustcredo.com/verify?partner=${partner.apiKey}`)}
+                  onClick={() => copyToClipboard(`https://verify.trustcredo.com/verify?apiKey=${partner.apiKey}`)}
                 >
                   Copy Link
                 </button>
                 <button
                   className="btn-secondary"
-                  onClick={() => window.open(`https://verify.trustcredo.com/verify?partner=${partner.apiKey}`, '_blank')}
+                  onClick={() => window.open(`https://verify.trustcredo.com/verify?apiKey=${partner.apiKey}`, '_blank')}
                 >
                   Test Link
                 </button>
               </div>
             </div>
             <p className="link-note">
-              <strong>Tip:</strong> You can also use our API to create custom verification requests with specific user details.
+              <strong>Tip:</strong> For personalized verification links with user details pre-filled, use the "Request Verification" feature or API to generate links in the format: <code>?verification-request=&lt;encrypted-token&gt;</code>
             </p>
           </div>
         </div>
