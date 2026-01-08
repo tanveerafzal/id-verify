@@ -8,6 +8,7 @@ import { AgeVerificationPage } from './components/AgeVerificationPage'
 import { DigitalIDWalletsPage } from './components/DigitalIDWalletsPage'
 import { SMSVerificationPage } from './components/SMSVerificationPage'
 import { IDVerification } from './components/IDVerification'
+import { DealerVerification } from './components/DealerVerification'
 import { PartnerRegister } from './components/PartnerRegister'
 import { PartnerLogin } from './components/PartnerLogin'
 import { PartnerForgotPassword } from './components/PartnerForgotPassword'
@@ -50,6 +51,7 @@ function App() {
         <Route path="/services/digital-id-wallets" element={<DigitalIDWalletsPage />} />
         <Route path="/services/sms-verification" element={<SMSVerificationPage />} />
         <Route path="/verify" element={<IDVerification />} />
+        <Route path="/dealer-verify" element={<DealerVerification />} />
         <Route path="/partner/register" element={<PartnerRegister />} />
         <Route path="/partner/login" element={<PartnerLogin />} />
         <Route path="/partner/forgot-password" element={<PartnerForgotPassword />} />
