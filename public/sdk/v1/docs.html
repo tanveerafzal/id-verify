@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TrustCredo SDK Documentation</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #1f2937;
+      background: #f9fafb;
+    }
+    .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+    header { text-align: center; margin-bottom: 48px; }
+    header h1 { font-size: 32px; margin-bottom: 8px; }
+    header p { color: #6b7280; font-size: 18px; }
+    .badge { display: inline-block; background: #10b981; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-bottom: 16px; }
+    section { background: white; border-radius: 12px; padding: 32px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    h2 { font-size: 24px; margin-bottom: 16px; color: #111827; }
+    h3 { font-size: 18px; margin: 24px 0 12px 0; color: #374151; }
+    p { margin-bottom: 16px; color: #4b5563; }
+    pre { background: #1f2937; color: #e5e7eb; padding: 20px; border-radius: 8px; overflow-x: auto; margin: 16px 0; font-size: 14px; }
+    code { font-family: 'Monaco', 'Consolas', monospace; }
+    .inline-code { background: #f3f4f6; padding: 2px 8px; border-radius: 4px; font-size: 14px; color: #dc2626; }
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+    th, td { text-align: left; padding: 12px; border-bottom: 1px solid #e5e7eb; }
+    th { background: #f9fafb; font-weight: 600; }
+    .note { background: #fef3c7; border: 1px solid #fde68a; padding: 16px; border-radius: 8px; margin: 16px 0; }
+    .note strong { color: #92400e; }
+    .success { background: #d1fae5; border-color: #a7f3d0; }
+    .success strong { color: #065f46; }
+    ul { margin: 16px 0 16px 24px; }
+    li { margin-bottom: 8px; }
+    .step-number { display: inline-flex; width: 28px; height: 28px; background: #10b981; color: white; border-radius: 50%; align-items: center; justify-content: center; font-weight: 600; margin-right: 12px; font-size: 14px; }
+    .demo-btn { display: inline-block; background: #10b981; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-top: 16px; }
+    .demo-btn:hover { background: #059669; }
+    footer { text-align: center; padding: 32px; color: #6b7280; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <span class="badge">SDK v1.0.0</span>
+      <h1>TrustCredo Verification SDK</h1>
+      <p>Embed identity verification into your website in minutes</p>
+    </header>
+
+    <!-- Quick Start -->
+    <section>
+      <h2>Quick Start</h2>
+      <p>Get up and running with just 3 lines of code:</p>
+
+      <h3><span class="step-number">1</span>Include the SDK</h3>
+      <pre><code>&lt;script src="https://verify.trustcredo.com/sdk/v1/trustcredo.js"&gt;&lt;/script&gt;</code></pre>
+
+      <h3><span class="step-number">2</span>Initialize with your API key</h3>
+      <pre><code>&lt;script&gt;
+  TrustCredo.init({
+    apiKey: 'YOUR_API_KEY',
+    onSuccess: function(result) {
+      console.log('Verification successful!', result);
+      // Handle successful verification
+    },
+    onFailure: function(result) {
+      console.log('Verification failed', result);
+      // Handle failed verification
+    },
+    onClose: function() {
+      console.log('User closed the modal');
+    }
+  });
+&lt;/script&gt;</code></pre>
+
+      <h3><span class="step-number">3</span>Trigger verification</h3>
+      <pre><code>&lt;button onclick="TrustCredo.startVerification()"&gt;
+  Verify Identity
+&lt;/button&gt;</code></pre>
+
+      <div class="note success">
+        <strong>That's it!</strong> The SDK will handle the entire verification flow in a modal overlay.
+      </div>
+    </section>
+
+    <!-- Complete Example -->
+    <section>
+      <h2>Complete Example</h2>
+      <p>Here's a full working example you can copy and paste:</p>
+
+      <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;title&gt;Identity Verification&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Welcome!&lt;/h1&gt;
+  &lt;p&gt;Please verify your identity to continue.&lt;/p&gt;
+
+  &lt;button id="verify-btn"&gt;Verify My Identity&lt;/button&gt;
+  &lt;div id="status"&gt;&lt;/div&gt;
+
+  &lt;!-- Include TrustCredo SDK --&gt;
+  &lt;script src="https://verify.trustcredo.com/sdk/v1/trustcredo.js"&gt;&lt;/script&gt;
+
+  &lt;script&gt;
+    // Initialize the SDK
+    TrustCredo.init({
+      apiKey: 'YOUR_API_KEY',
+
+      // Called when verification is ready
+      onReady: function(data) {
+        console.log('Verification ready:', data.verificationId);
+      },
+
+      // Called on successful verification
+      onSuccess: function(result) {
+        document.getElementById('status').innerHTML =
+          '&lt;p style="color: green"&gt;Verified: ' + result.extractedData.fullName + '&lt;/p&gt;';
+
+        // Send verification ID to your backend
+        fetch('/api/verification-complete', {
+          method: 'POST',
+          body: JSON.stringify({ verificationId: result.verificationId })
+        });
+      },
+
+      // Called when verification fails
+      onFailure: function(result) {
+        document.getElementById('status').innerHTML =
+          '&lt;p style="color: red"&gt;Verification failed. ' +
+          (result.canRetry ? 'Please try again.' : '') + '&lt;/p&gt;';
+      },
+
+      // Called on errors
+      onError: function(error) {
+        console.error('Error:', error.code, error.message);
+      },
+
+      // Called when user closes modal
+      onClose: function() {
+        console.log('Modal closed');
+      }
+    });
+
+    // Start verification when button clicked
+    document.getElementById('verify-btn').onclick = function() {
+      TrustCredo.startVerification({
+        userId: 'user_123',           // Your internal user ID
+        userEmail: 'user@example.com', // User's email
+        userName: 'John Doe'           // User's name (optional)
+      });
+    };
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+    </section>
+
+    <!-- Configuration Options -->
+    <section>
+      <h2>Configuration Options</h2>
+      <p>Pass these options to <code class="inline-code">TrustCredo.init()</code>:</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Option</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code class="inline-code">apiKey</code></td>
+            <td>string</td>
+            <td>-</td>
+            <td><strong>Required.</strong> Your TrustCredo API key</td>
+          </tr>
+          <tr>
+            <td><code class="inline-code">theme</code></td>
+            <td>string</td>
+            <td>'light'</td>
+            <td>'light' or 'dark'</td>
+          </tr>
+          <tr>
+            <td><code class="inline-code">showBranding</code></td>
+            <td>boolean</td>
+            <td>true</td>
+            <td>Show TrustCredo branding in footer</td>
+          </tr>
+          <tr>
+            <td><code class="inline-code">allowedDocumentTypes</code></td>
+            <td>array</td>
+            <td>null</td>
+            <td>Restrict document types (see below)</td>
+          </tr>
+          <tr>
+            <td><code class="inline-code">onReady</code></td>
+            <td>function</td>
+            <td>-</td>
+            <td>Called when verification is initialized</td>
+          </tr>
+          <tr>
+            <td><code class="inline-code">onSuccess</code></td>
+            <td>function</td>
+            <td>-</td>
+            <td>Called on successful verification</td>
+          </tr>
+          <tr>
+            <td><code class="inline-code">onFailure</code></td>
+            <td>function</td>
+            <td>-</td>
+            <td>Called when verification fails</td>
+          </tr>
+          <tr>
+            <td><code class="inline-code">onError</code></td>
+            <td>function</td>
+            <td>-</td>
+            <td>Called on errors</td>
+          </tr>
+          <tr>
+            <td><code class="inline-code">onClose</code></td>
+            <td>function</td>
+            <td>-</td>
+            <td>Called when user closes modal</td>
+          </tr>
+          <tr>
+            <td><code class="inline-code">onStepChange</code></td>
+            <td>function</td>
+            <td>-</td>
+            <td>Called when verification step changes</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Allowed Document Types</h3>
+      <pre><code>TrustCredo.init({
+  apiKey: 'YOUR_API_KEY',
+  allowedDocumentTypes: [
+    'DRIVERS_LICENSE',
+    'PASSPORT',
+    'NATIONAL_ID',
+    'RESIDENCE_PERMIT',
+    'PERMANENT_RESIDENT_CARD',
+    'VOTER_ID'
+  ]
+});</code></pre>
+    </section>
+
+    <!-- User Data -->
+    <section>
+      <h2>Pre-filling User Data</h2>
+      <p>Pass user information to <code class="inline-code">startVerification()</code> to pre-fill data and link verifications to your users:</p>
+
+      <pre><code>TrustCredo.startVerification({
+  userId: 'user_123',           // Your internal user ID (for tracking)
+  userEmail: 'user@example.com', // User's email address
+  userName: 'John Doe'           // User's full name
+});</code></pre>
+
+      <div class="note">
+        <strong>Tip:</strong> Always pass a <code class="inline-code">userId</code> to link the verification to your user records.
+      </div>
+    </section>
+
+    <!-- Callback Data -->
+    <section>
+      <h2>Callback Data</h2>
+
+      <h3>onSuccess Result</h3>
+      <pre><code>{
+  verificationId: "ver_abc123...",
+  passed: true,
+  score: 0.95,
+  extractedData: {
+    fullName: "John Doe",
+    dateOfBirth: "1990-01-15",
+    documentNumber: "D1234567",
+    expiryDate: "2028-01-15",
+    issuingCountry: "US"
+  }
+}</code></pre>
+
+      <h3>onFailure Result</h3>
+      <pre><code>{
+  verificationId: "ver_abc123...",
+  passed: false,
+  score: 0.45,
+  canRetry: true,
+  remainingRetries: 2
+}</code></pre>
+
+      <h3>onError Data</h3>
+      <pre><code>{
+  code: "DOCUMENT_UPLOAD_FAILED",
+  message: "We couldn't read your document clearly..."
+}</code></pre>
+
+      <h3>Error Codes</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Code</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code class="inline-code">MISSING_API_KEY</code></td><td>API key not provided</td></tr>
+          <tr><td><code class="inline-code">INIT_FAILED</code></td><td>Failed to initialize verification</td></tr>
+          <tr><td><code class="inline-code">DOCUMENT_UPLOAD_FAILED</code></td><td>Document upload failed</td></tr>
+          <tr><td><code class="inline-code">SELFIE_UPLOAD_FAILED</code></td><td>Selfie upload failed</td></tr>
+          <tr><td><code class="inline-code">VERIFICATION_FAILED</code></td><td>Verification processing failed</td></tr>
+          <tr><td><code class="inline-code">RETRY_LIMIT_EXCEEDED</code></td><td>Maximum retries reached</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Methods -->
+    <section>
+      <h2>SDK Methods</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Method</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code class="inline-code">TrustCredo.init(options)</code></td>
+            <td>Initialize the SDK with configuration</td>
+          </tr>
+          <tr>
+            <td><code class="inline-code">TrustCredo.startVerification(userData)</code></td>
+            <td>Start the verification flow</td>
+          </tr>
+          <tr>
+            <td><code class="inline-code">TrustCredo.close()</code></td>
+            <td>Programmatically close the modal</td>
+          </tr>
+          <tr>
+            <td><code class="inline-code">TrustCredo.isInitialized()</code></td>
+            <td>Check if SDK is initialized</td>
+          </tr>
+          <tr>
+            <td><code class="inline-code">TrustCredo.getVersion()</code></td>
+            <td>Get SDK version</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Server-side Verification -->
+    <section>
+      <h2>Server-side Verification</h2>
+      <p>Always verify the result on your server using the verification ID:</p>
+
+      <pre><code>// Your server endpoint
+app.post('/api/verification-complete', async (req, res) => {
+  const { verificationId } = req.body;
+
+  // Verify with TrustCredo API
+  const response = await fetch(
+    `https://api.trustcredo.com/api/verifications/${verificationId}`,
+    {
+      headers: {
+        'Authorization': `Bearer ${process.env.TRUSTCREDO_API_SECRET}`
+      }
+    }
+  );
+
+  const verification = await response.json();
+
+  if (verification.data.status === 'COMPLETED' && verification.data.passed) {
+    // Update user as verified in your database
+    await db.users.update(userId, { isVerified: true });
+  }
+
+  res.json({ success: true });
+});</code></pre>
+
+      <div class="note">
+        <strong>Important:</strong> Never trust client-side verification results alone. Always verify on your server.
+      </div>
+    </section>
+
+    <!-- Webhooks -->
+    <section>
+      <h2>Webhooks (Recommended)</h2>
+      <p>Set up webhooks in your TrustCredo dashboard to receive real-time verification updates:</p>
+
+      <pre><code>// Webhook endpoint
+app.post('/webhooks/trustcredo', (req, res) => {
+  const { event, data } = req.body;
+
+  switch(event) {
+    case 'verification.completed':
+      // Handle successful verification
+      updateUserVerificationStatus(data.userId, 'verified');
+      break;
+
+    case 'verification.failed':
+      // Handle failed verification
+      updateUserVerificationStatus(data.userId, 'failed');
+      break;
+  }
+
+  res.status(200).send('OK');
+});</code></pre>
+    </section>
+
+    <!-- Support -->
+    <section>
+      <h2>Need Help?</h2>
+      <ul>
+        <li>Email: <a href="mailto:support@trustcredo.com">support@trustcredo.com</a></li>
+        <li>Documentation: <a href="https://docs.trustcredo.com">docs.trustcredo.com</a></li>
+        <li>Dashboard: <a href="https://verify.trustcredo.com/partner/dashboard">Partner Dashboard</a></li>
+      </ul>
+    </section>
+
+    <footer>
+      <p>&copy; 2024 TrustCredo. All rights reserved.</p>
+    </footer>
+  </div>
+</body>
+</html>
