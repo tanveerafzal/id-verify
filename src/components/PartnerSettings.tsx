@@ -15,6 +15,7 @@ interface Partner {
   state?: string;
   country?: string;
   userNotificationPref?: string;
+  webhookUrl?: string;
   apiKey: string;
   apiSecret: string;
   tier: {
@@ -51,7 +52,8 @@ export const PartnerSettings: React.FC = () => {
     address: '',
     state: '',
     country: '',
-    userNotificationPref: 'EMAIL'
+    userNotificationPref: 'EMAIL',
+    webhookUrl: ''
   });
 
   useEffect(() => {
@@ -89,7 +91,8 @@ export const PartnerSettings: React.FC = () => {
         address: data.data.address || '',
         state: data.data.state || '',
         country: data.data.country || '',
-        userNotificationPref: data.data.userNotificationPref || 'EMAIL'
+        userNotificationPref: data.data.userNotificationPref || 'EMAIL',
+        webhookUrl: data.data.webhookUrl || ''
       });
     } catch (err) {
       setError('Failed to load profile');
@@ -642,6 +645,84 @@ export const PartnerSettings: React.FC = () => {
                 disabled={saving}
               >
                 {saving ? 'Saving...' : 'Save Notification Settings'}
+              </button>
+            </div>
+          </div>
+
+          {/* Webhook Settings */}
+          <div className="settings-section">
+            <h2>Webhook Settings</h2>
+            <p className="section-description">
+              Configure a webhook URL to receive real-time notifications when verifications are completed.
+              We'll send a POST request to this URL with the verification result.
+            </p>
+            <div className="webhook-settings">
+              <div className="form-group">
+                <label htmlFor="webhookUrl">Webhook URL</label>
+                <input
+                  type="url"
+                  id="webhookUrl"
+                  name="webhookUrl"
+                  value={formData.webhookUrl}
+                  onChange={handleChange}
+                  placeholder="https://your-server.com/webhook/verification"
+                  className="form-input"
+                />
+                <small>Enter the URL where you want to receive verification results. Must be HTTPS.</small>
+              </div>
+              <div className="webhook-info">
+                <h4>Webhook Headers</h4>
+                <p className="webhook-note">Each webhook request includes these headers for verification:</p>
+                <ul className="webhook-headers-list">
+                  <li><code>X-Webhook-Signature</code> - HMAC-SHA256 signature of the payload using your API Secret</li>
+                  <li><code>X-Webhook-Timestamp</code> - ISO 8601 timestamp of when the webhook was sent</li>
+                </ul>
+                <h4>Payload Example</h4>
+                <pre className="code-block">
+{`{
+  "event": "verification.completed",
+  "timestamp": "2024-01-15T10:30:00Z",
+  "verificationId": "abc123",
+  "data": {
+    "passed": true,
+    "score": 0.95,
+    "riskLevel": "LOW",
+    "checks": {
+      "documentAuthentic": true,
+      "faceMatch": true,
+      "nameMatch": true
+    },
+    "extractedData": {
+      "fullName": "John Doe",
+      "dateOfBirth": "1990-01-15"
+    },
+    "user": {
+      "fullName": "John Doe",
+      "email": "john@example.com"
+    }
+  }
+}`}
+                </pre>
+                <h4>Signature Verification (Node.js)</h4>
+                <pre className="code-block">
+{`const crypto = require('crypto');
+
+function verifySignature(payload, signature, apiSecret) {
+  const expected = crypto
+    .createHmac('sha256', apiSecret)
+    .update(JSON.stringify(payload))
+    .digest('hex');
+  return signature === expected;
+}`}
+                </pre>
+              </div>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleSubmit}
+                disabled={saving}
+              >
+                {saving ? 'Saving...' : 'Save Webhook Settings'}
               </button>
             </div>
           </div>
