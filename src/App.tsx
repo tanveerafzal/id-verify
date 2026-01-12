@@ -21,6 +21,8 @@ import { PartnerRequestVerification } from './components/PartnerRequestVerificat
 import { PartnerTeam } from './components/PartnerTeam'
 import { PartnerAcceptInvite } from './components/PartnerAcceptInvite'
 import { Roadmap } from './components/Roadmap'
+import { DocsPage } from './components/DocsPage'
+import { SDKTestPage } from './components/SDKTestPage'
 import { AdminLogin } from './components/AdminLogin'
 import { AdminForgotPassword } from './components/AdminForgotPassword'
 import { AdminResetPassword } from './components/AdminResetPassword'
@@ -65,6 +67,8 @@ function App() {
         <Route path="/partner/team" element={<PartnerTeam />} />
         <Route path="/partner/accept-invite" element={<PartnerAcceptInvite />} />
         <Route path="/roadmap" element={<Roadmap />} />
+        <Route path="/docs" element={<DocsPage />} />
+        <Route path="/sdk-test" element={<SDKTestPage />} />
 
         {/* Admin Routes */}
         <Route path="/admin/login" element={<AdminLogin />} />

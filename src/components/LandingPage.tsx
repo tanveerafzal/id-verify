@@ -5,9 +5,9 @@ import { SEO } from './SEO';
 export const LandingPage: React.FC = () => {
   const navigate = useNavigate();
   const [loginDropdownOpen, setLoginDropdownOpen] = useState(false);
-  const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false);
+  // const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const servicesDropdownRef = useRef<HTMLDivElement>(null);
+  // const servicesDropdownRef = useRef<HTMLDivElement>(null);
 
   // Close dropdowns when clicking outside
   useEffect(() => {
@@ -15,83 +15,20 @@ export const LandingPage: React.FC = () => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setLoginDropdownOpen(false);
       }
-      if (servicesDropdownRef.current && !servicesDropdownRef.current.contains(event.target as Node)) {
-        setServicesDropdownOpen(false);
-      }
+      // if (servicesDropdownRef.current && !servicesDropdownRef.current.contains(event.target as Node)) {
+      //   setServicesDropdownOpen(false);
+      // }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const services = [
-    { name: 'Digital ID Wallets', path: '/services/digital-id-wallets', description: 'Secure digital identity storage' },
-    { name: 'Age Verification', path: '/services/age-verification', description: 'Compliant age verification' },
-    { name: 'SMS Verification', path: '/services/sms-verification', description: 'OTP phone verification for KYC' },
-    { name: 'Test Drive Verified', path: '/services/test-drive-verified', description: 'Pre-verify test drive customers' },
-  ];
-
-  const features = [
-    {
-      icon: '🔐',
-      title: 'Secure Verification',
-      description: 'Bank-grade security with encrypted document processing and secure data handling.'
-    },
-    {
-      icon: '⚡',
-      title: 'Fast Processing',
-      description: 'Get verification results in seconds with our advanced AI-powered document analysis.'
-    },
-    {
-      icon: '🌍',
-      title: 'Global Coverage',
-      description: 'Support for passports, driver\'s licenses, and national IDs from 190+ countries.'
-    },
-    {
-      icon: '🎯',
-      title: 'High Accuracy',
-      description: '99.9% accuracy rate with advanced face matching and document authenticity checks.'
-    },
-    {
-      icon: '🔗',
-      title: 'Easy Integration',
-      description: 'Simple REST API and webhook support for seamless integration with your applications.'
-    },
-    {
-      icon: '📊',
-      title: 'Real-time Dashboard',
-      description: 'Monitor verifications, track usage, and manage your account from one dashboard.'
-    }
-  ];
-
-  const pricingTiers = [
-    {
-      name: 'Starter',
-      price: '$0',
-      period: '/month',
-      verifications: 'First 100 verifications free',
-      features: ['Document verification', 'Face matching', 'Basic support', 'API access'],
-      highlighted: false,
-      buttonText: 'Get Started'
-    },
-    {
-      name: 'Professional',
-      price: '$99',
-      period: '/month',
-      verifications: '1,000 verifications/month',
-      features: ['Everything in Starter', 'Priority support', 'Webhooks', 'Advanced analytics'],
-      highlighted: true,
-      buttonText: 'Start Free Trial'
-    },
-    {
-      name: 'Enterprise',
-      price: 'Custom',
-      period: '',
-      verifications: 'Unlimited verifications',
-      features: ['Everything in Pro', 'Dedicated support', 'Custom integration', 'SLA guarantee'],
-      highlighted: false,
-      buttonText: 'Contact Sales'
-    }
-  ];
+  // const services = [
+  //   { name: 'Digital ID Wallets', path: '/services/digital-id-wallets', description: 'Secure digital identity storage' },
+  //   { name: 'Age Verification', path: '/services/age-verification', description: 'Compliant age verification' },
+  //   { name: 'SMS Verification', path: '/services/sms-verification', description: 'OTP phone verification for KYC' },
+  //   { name: 'Test Drive Verified', path: '/services/test-drive-verified', description: 'Pre-verify test drive customers' },
+  // ];
 
   return (
     <div className="landing-page">
@@ -108,7 +45,7 @@ export const LandingPage: React.FC = () => {
             <img src="/website-logo-horizontal.png" alt="TrustCredo" className="nav-logo" />
           </div>
           <div className="nav-links">
-            <a href="#features">Features</a>
+            {/* Services dropdown - temporarily hidden
             <div className="services-dropdown" ref={servicesDropdownRef}>
               <button
                 className="nav-link-dropdown"
@@ -139,7 +76,9 @@ export const LandingPage: React.FC = () => {
                 </div>
               )}
             </div>
-            <a href="#pricing">Pricing</a>
+            */}
+            <a href="/docs">Docs</a>
+            <a href="/sdk-test">SDK</a>
             <a href="#about">About</a>
             <a href="#contact">Contact</a>
           </div>
@@ -241,7 +180,7 @@ export const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Trusted By Section */}
+      {/* Trusted By Section  temporarily hidden
       <section className="trusted-by-section">
         <div className="section-container">
           <p className="trusted-label">Trusted by innovative companies worldwide</p>
@@ -274,26 +213,7 @@ export const LandingPage: React.FC = () => {
           </div>
         </div>
       </section>
-
-      {/* Features Section */}
-      <section id="features" className="features-section">
-        <div className="section-container">
-          <div className="section-header">
-            <h2>Powerful Features</h2>
-            <p>Everything you need to verify identities securely and efficiently</p>
-          </div>
-          <div className="features-grid">
-            {features.map((feature, index) => (
-              <div key={index} className="feature-card">
-                <div className="feature-icon">{feature.icon}</div>
-                <h3>{feature.title}</h3>
-                <p>{feature.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
+    */}
       {/* How It Works Section */}
       <section className="how-it-works-section">
         <div className="section-container">
@@ -323,7 +243,7 @@ export const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Solutions Section */}
+      {/* Solutions Section - temporarily hidden
       <section id="solutions" className="solutions-section">
         <div className="section-container">
           <div className="section-header">
@@ -331,7 +251,6 @@ export const LandingPage: React.FC = () => {
             <p>Tailored identity verification solutions for every industry need</p>
           </div>
           <div className="solutions-grid">
-            {/* Digital ID Wallets */}
             <div className="solution-card">
               <div className="solution-icon">
                 <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -359,7 +278,6 @@ export const LandingPage: React.FC = () => {
               </button>
             </div>
 
-            {/* Age Verification */}
             <div className="solution-card featured">
               <div className="solution-badge">Popular</div>
               <div className="solution-icon">
@@ -386,7 +304,6 @@ export const LandingPage: React.FC = () => {
               </button>
             </div>
 
-            {/* Test Drive Verified */}
             <div className="solution-card">
               <div className="solution-icon">
                 <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -418,44 +335,9 @@ export const LandingPage: React.FC = () => {
           </div>
         </div>
       </section>
+      */}
 
-      {/* Pricing Section */}
-      <section id="pricing" className="pricing-section">
-        <div className="section-container">
-          <div className="section-header">
-            <h2>Simple Pricing</h2>
-            <p>Choose the plan that fits your needs. Start free, upgrade anytime.</p>
-          </div>
-          <div className="pricing-grid">
-            {pricingTiers.map((tier, index) => (
-              <div key={index} className={`pricing-card ${tier.highlighted ? 'highlighted' : ''}`}>
-                {tier.highlighted && <div className="popular-badge">Most Popular</div>}
-                <h3>{tier.name}</h3>
-                <div className="price">
-                  <span className="price-value">{tier.price}</span>
-                  <span className="price-period">{tier.period}</span>
-                </div>
-                <p className="verifications">{tier.verifications}</p>
-                <ul className="feature-list">
-                  {tier.features.map((feature, fIndex) => (
-                    <li key={fIndex}>
-                      <span className="check">✓</span> {feature}
-                    </li>
-                  ))}
-                </ul>
-                <button
-                  className={tier.highlighted ? 'btn-pricing-primary' : 'btn-pricing-secondary'}
-                  onClick={() => navigate('/partner/register')}
-                >
-                  {tier.buttonText}
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* About Section */}
+      {/* About Section - temporarily hidden
       <section id="about" className="about-section">
         <div className="section-container">
           <div className="section-header">
@@ -582,8 +464,9 @@ export const LandingPage: React.FC = () => {
           </div>
         </div>
       </section>
+      */}
 
-      {/* Testimonials Section */}
+      {/* Testimonials Section - temporarily hidden
       <section className="testimonials-section">
         <div className="section-container">
           <div className="section-header">
@@ -639,8 +522,9 @@ export const LandingPage: React.FC = () => {
           </div>
         </div>
       </section>
+      */}
 
-      {/* Security & Compliance Section */}
+      {/* Security & Compliance Section - temporarily hidden
       <section className="security-section">
         <div className="section-container">
           <div className="section-header">
@@ -722,6 +606,7 @@ export const LandingPage: React.FC = () => {
           </div>
         </div>
       </section>
+      */}
 
       {/* Integration Partners Section */}
       <section className="integrations-section">
@@ -805,8 +690,8 @@ export const LandingPage: React.FC = () => {
           <div className="footer-links">
             <div className="footer-column">
               <h4>Product</h4>
-              <a href="#features">Features</a>
-              <a href="#pricing">Pricing</a>
+              <a href="/docs">Documentation</a>
+              <a href="/sdk-test">SDK</a>
               <a href="https://verify.trustcredo.com/verify?verification-request=KajLfFLOjraHyS1BgQr3DjfWhSX48cRa4H7WtUDk0ZwtkjZdOGGj_ZbaT7KHuOGENW3OYOa3GShs6JWbLnZ82G0Icus" target="_blank" rel="noopener noreferrer">Demo</a>
             </div>
             <div className="footer-column">
