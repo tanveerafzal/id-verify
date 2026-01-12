@@ -2,32 +2,50 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SEO } from './SEO';
 
+interface IDVInstance {
+  init: (config: { apiKey: string; environment?: string; debug?: boolean }) => void;
+  start: (options?: {
+    onReady?: () => void;
+    onStart?: () => void;
+    onComplete?: (result: unknown) => void;
+    onError?: (error: unknown) => void;
+    onClose?: (reason: string) => void;
+    user?: { id?: string; email?: string; name?: string };
+  }) => Promise<unknown>;
+  close: () => void;
+  isInitialized: () => boolean;
+  isOpen: () => boolean;
+  getVersion: () => string;
+}
+
 declare global {
   interface Window {
-    TrustCredo: {
-      init: (config: {
-        partnerId: string;
-        onComplete?: (result: unknown) => void;
-        onError?: (error: unknown) => void;
-        onClose?: () => void;
-      }) => void;
-      startVerification: () => void;
+    IDV: {
+      IDV: IDVInstance;
+      default: IDVInstance;
     };
   }
 }
 
 export const SDKTestPage: React.FC = () => {
   const navigate = useNavigate();
-  const [partnerId, setPartnerId] = useState('');
+  const [partnerId, setPartnerId] = useState('bc1982d4-3cc7-4f3f-8a97-760e13a37e36');
   const [testResult, setTestResult] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [sdkLoaded, setSdkLoaded] = useState(false);
   const [sdkError, setSdkError] = useState<string | null>(null);
 
+  // Get the IDV instance from the SDK namespace
+  const getIDV = (): IDVInstance | null => {
+    if (window.IDV?.IDV) return window.IDV.IDV;
+    if (window.IDV?.default) return window.IDV.default;
+    return null;
+  };
+
   // Load SDK script
   useEffect(() => {
     const checkSdkAvailable = () => {
-      if (window.TrustCredo) {
+      if (getIDV()) {
         setSdkLoaded(true);
         setSdkError(null);
         return true;
@@ -65,7 +83,7 @@ export const SDKTestPage: React.FC = () => {
     // Timeout after 10 seconds
     const timeout = setTimeout(() => {
       clearInterval(pollInterval);
-      if (!window.TrustCredo) {
+      if (!getIDV()) {
         setSdkError('SDK failed to initialize. Please refresh the page.');
       }
     }, 10000);
@@ -76,9 +94,9 @@ export const SDKTestPage: React.FC = () => {
     };
   }, []);
 
-  const handleTest = () => {
+  const handleTest = async () => {
     if (!partnerId.trim()) {
-      setTestResult('Please enter your Partner ID');
+      setTestResult('Please enter your Partner ID (API Key)');
       return;
     }
 
@@ -87,7 +105,8 @@ export const SDKTestPage: React.FC = () => {
       return;
     }
 
-    if (!window.TrustCredo) {
+    const idv = getIDV();
+    if (!idv) {
       setTestResult('SDK not available. Please refresh the page.');
       return;
     }
@@ -96,31 +115,44 @@ export const SDKTestPage: React.FC = () => {
     setTestResult(null);
 
     try {
-      // Initialize SDK with partner ID
-      window.TrustCredo.init({
-        partnerId: partnerId,
+      // Initialize SDK with API key
+      idv.init({
+        apiKey: partnerId,
+        environment: 'production',
+        debug: true
+      });
+
+      // Start the verification flow
+      const result = await idv.start({
+        onReady: () => {
+          console.log('IDV Ready');
+        },
+        onStart: () => {
+          console.log('IDV Started');
+        },
         onComplete: (result) => {
           console.log('Verification complete:', result);
-          setTestResult(`Verification completed! Result: ${JSON.stringify(result, null, 2)}`);
+          setTestResult(`Verification completed!\n\n${JSON.stringify(result, null, 2)}`);
           setIsLoading(false);
         },
         onError: (error) => {
           console.error('Verification error:', error);
-          setTestResult(`Verification error: ${JSON.stringify(error)}`);
+          setTestResult(`Verification error:\n\n${JSON.stringify(error, null, 2)}`);
           setIsLoading(false);
         },
-        onClose: () => {
-          console.log('Verification closed');
-          setTestResult('Verification modal was closed by user.');
+        onClose: (reason) => {
+          console.log('Verification closed:', reason);
+          if (reason === 'user_closed') {
+            setTestResult('Verification was closed by user.');
+          }
           setIsLoading(false);
         }
       });
 
-      // Start the verification flow
-      window.TrustCredo.startVerification();
+      console.log('Verification result:', result);
     } catch (error) {
       console.error('SDK error:', error);
-      setTestResult(`SDK error: ${error}`);
+      setTestResult(`SDK error:\n\n${JSON.stringify(error, null, 2)}`);
       setIsLoading(false);
     }
   };
@@ -132,11 +164,17 @@ export const SDKTestPage: React.FC = () => {
   const sdkCodeHtml = `<!-- Add to your HTML -->
 <script src="https://sdk.trustcredo.com/sdk/idv.min.js"></script>`;
 
-  const sdkCodeJs = `// Initialize TrustCredo SDK
-TrustCredo.init({
-  partnerId: '${partnerId || 'YOUR_PARTNER_ID'}',
+  const sdkCodeJs = `// Initialize IDV SDK
+IDV.init({
+  apiKey: '${partnerId || 'YOUR_API_KEY'}',
+  environment: 'production',
+  debug: false
+});
+
+// Start verification (returns a Promise)
+IDV.start({
   onComplete: (result) => {
-    if (result.passed) {
+    if (result.status === 'passed') {
       console.log('Verification successful!', result);
       // Handle successful verification
     } else {
@@ -147,19 +185,14 @@ TrustCredo.init({
   onError: (error) => {
     console.error('Verification error:', error);
   },
-  onClose: () => {
-    console.log('User closed verification');
+  onClose: (reason) => {
+    console.log('User closed verification:', reason);
   }
-});
-
-// Call this to start verification (e.g., on button click)
-document.getElementById('verify-btn').onclick = () => {
-  TrustCredo.startVerification();
-};`;
+});`;
 
   const iframeCode = `<!-- Embed verification directly -->
 <iframe
-  src="https://verify.trustcredo.com/embed?partnerId=${partnerId || 'YOUR_PARTNER_ID'}"
+  src="https://sdk.trustcredo.com/verify?api-key=${partnerId || 'YOUR_API_KEY'}"
   width="100%"
   height="700"
   frameborder="0"
@@ -208,7 +241,7 @@ console.log('Verification ID:', data.id);`;
             <a href="/docs">Docs</a>
             <a href="/sdk-test" className="active">SDK</a>
             <a href="/#about">About</a>
-            <a href="/#contact">Contact</a>
+            <a href="/#contact-us">Contact Us</a>
           </div>
           <div className="nav-actions">
             <button className="btn-nav-secondary" onClick={() => navigate('/partner/login')}>
@@ -232,7 +265,7 @@ console.log('Verification ID:', data.id);`;
           {/* Test Panel */}
           <div className="test-panel">
             <h2>Quick Test</h2>
-            <p>Enter your Partner ID to test the verification flow using the SDK</p>
+            <p>Enter your API Key to test the verification flow using the SDK</p>
 
             <div className="sdk-status">
               <span className={`status-indicator ${sdkLoaded ? 'loaded' : 'loading'}`}></span>
@@ -247,16 +280,16 @@ console.log('Verification ID:', data.id);`;
 
             <div className="test-form">
               <div className="form-group">
-                <label htmlFor="partnerId">Partner ID</label>
+                <label htmlFor="partnerId">API Key</label>
                 <input
                   type="text"
                   id="partnerId"
                   value={partnerId}
                   onChange={(e) => setPartnerId(e.target.value)}
-                  placeholder="Enter your Partner ID (API Key)"
+                  placeholder="Enter your API Key"
                   className="form-input"
                 />
-                <small>Find your Partner ID in your dashboard under Settings</small>
+                <small>Find your API Key in your dashboard under Settings</small>
               </div>
 
               <button
@@ -264,7 +297,7 @@ console.log('Verification ID:', data.id);`;
                 onClick={handleTest}
                 disabled={isLoading || !sdkLoaded}
               >
-                {isLoading ? 'Starting Verification...' : 'Start Verification'}
+                {isLoading ? 'Verification in Progress...' : 'Start Verification'}
               </button>
 
               {testResult && (

@@ -28,7 +28,7 @@ export const DocsPage: React.FC = () => {
             <a href="/docs" className="active">Docs</a>
             <a href="/sdk-test">SDK</a>
             <a href="/#about">About</a>
-            <a href="/#contact">Contact</a>
+            <a href="/#contact-us">Contact Us</a>
           </div>
           <div className="nav-actions">
             <button className="btn-nav-secondary" onClick={() => navigate('/partner/login')}>
@@ -253,18 +253,25 @@ function verifySignature(payload, signature, apiSecret) {
             <h2>SDK Usage</h2>
             <p>Initialize and start verification:</p>
             <div className="code-block">
-              <pre>{`TrustCredo.init({
-  partnerId: 'your-partner-id',
+              <pre>{`// Initialize the SDK
+IDV.init({
+  apiKey: 'your-api-key',
+  environment: 'production',
+  debug: false
+});
+
+// Start verification (returns a Promise)
+IDV.start({
   onComplete: (result) => {
     console.log('Verification result:', result);
   },
   onError: (error) => {
     console.error('Verification error:', error);
+  },
+  onClose: (reason) => {
+    console.log('Modal closed:', reason);
   }
-});
-
-// Start verification
-TrustCredo.startVerification();`}</pre>
+});`}</pre>
             </div>
           </section>
 
@@ -272,6 +279,8 @@ TrustCredo.startVerification();`}</pre>
             <h2>SDK Events</h2>
             <p>Available callback events:</p>
             <ul>
+              <li><code>onReady</code> - Called when the SDK is ready</li>
+              <li><code>onStart</code> - Called when verification starts</li>
               <li><code>onComplete</code> - Called when verification finishes</li>
               <li><code>onError</code> - Called when an error occurs</li>
               <li><code>onClose</code> - Called when user closes the modal</li>

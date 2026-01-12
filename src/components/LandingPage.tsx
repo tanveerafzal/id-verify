@@ -80,7 +80,7 @@ export const LandingPage: React.FC = () => {
             <a href="/docs">Docs</a>
             <a href="/sdk-test">SDK</a>
             <a href="#about">About</a>
-            <a href="#contact">Contact</a>
+            <a href="#contact-us">Contact Us</a>
           </div>
           <div className="nav-actions">
             <div className="login-dropdown" ref={dropdownRef}>
@@ -664,6 +664,77 @@ export const LandingPage: React.FC = () => {
         </div>
       </section>
 
+      {/* Contact Us Section */}
+      <section id="contact-us" className="contact-us-section">
+        <div className="section-container">
+          <div className="section-header">
+            <h2>Contact Us</h2>
+            <p>Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>
+          </div>
+          <div className="contact-content">
+            <div className="contact-info">
+              <div className="contact-item">
+                <div className="contact-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                  </svg>
+                </div>
+                <div className="contact-details">
+                  <h4>Email</h4>
+                  <a href="mailto:support@trustcredo.com">support@trustcredo.com</a>
+                </div>
+              </div>
+              <div className="contact-item">
+                <div className="contact-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+                    <circle cx="12" cy="10" r="3"/>
+                  </svg>
+                </div>
+                <div className="contact-details">
+                  <h4>Location</h4>
+                  <p>Toronto, Ontario, Canada</p>
+                </div>
+              </div>
+              <div className="contact-item">
+                <div className="contact-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
+                  </svg>
+                </div>
+                <div className="contact-details">
+                  <h4>Sales</h4>
+                  <a href="mailto:sales@trustcredo.com">sales@trustcredo.com</a>
+                </div>
+              </div>
+            </div>
+            <div className="contact-form-container">
+              <form className="contact-form" onSubmit={(e) => { e.preventDefault(); alert('Thank you for your message! We will get back to you soon.'); }}>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="contact-name">Name</label>
+                    <input type="text" id="contact-name" placeholder="Your name" required />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="contact-email">Email</label>
+                    <input type="email" id="contact-email" placeholder="your@email.com" required />
+                  </div>
+                </div>
+                <div className="form-group">
+                  <label htmlFor="contact-subject">Subject</label>
+                  <input type="text" id="contact-subject" placeholder="How can we help?" required />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="contact-message">Message</label>
+                  <textarea id="contact-message" rows={5} placeholder="Your message..." required></textarea>
+                </div>
+                <button type="submit" className="btn-contact-submit">Send Message</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="cta-section">
         <div className="section-container">
@@ -681,7 +752,7 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* Footer */}
-      <footer id="contact" className="landing-footer">
+      <footer className="landing-footer">
         <div className="footer-container">
           <div className="footer-brand">
             <img src="/website-logo-horizontal-light.png" alt="TrustCredo" className="footer-logo" />
@@ -697,7 +768,7 @@ export const LandingPage: React.FC = () => {
             <div className="footer-column">
               <h4>Company</h4>
               <a href="#about">About Us</a>
-              <a href="#contact">Contact</a>
+              <a href="#contact-us">Contact Us</a>
               <a href="/careers">Careers</a>
             </div>
             <div className="footer-column">
