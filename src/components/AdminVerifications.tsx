@@ -754,87 +754,89 @@ export const AdminVerifications: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* User Info */}
-                  <div className="detail-section">
-                    <div className="section-header-with-action">
-                      <h3>User Information</h3>
-                      {!isEditMode && (
-                        <button
-                          className="btn-edit-small"
-                          onClick={handleStartEdit}
-                          title="Edit user details"
-                        >
-                          Edit
-                        </button>
+                  {/* User Info - Only show if name or email is provided */}
+                  {(selectedVerification.userName || selectedVerification.user?.fullName || selectedVerification.userEmail || selectedVerification.user?.email) && (
+                    <div className="detail-section">
+                      <div className="section-header-with-action">
+                        <h3>User Information</h3>
+                        {!isEditMode && (
+                          <button
+                            className="btn-edit-small"
+                            onClick={handleStartEdit}
+                            title="Edit user details"
+                          >
+                            Edit
+                          </button>
+                        )}
+                      </div>
+                      <div className="detail-grid">
+                        <div className="detail-item">
+                          <span className="detail-label">Name:</span>
+                          {isEditMode ? (
+                            <input
+                              type="text"
+                              className="edit-input"
+                              value={editedName}
+                              onChange={(e) => setEditedName(e.target.value)}
+                              placeholder="Full name"
+                            />
+                          ) : (
+                            <span className="detail-value">
+                              {selectedVerification.userName || selectedVerification.user?.fullName || 'N/A'}
+                            </span>
+                          )}
+                        </div>
+                        <div className="detail-item">
+                          <span className="detail-label">Email:</span>
+                          {isEditMode ? (
+                            <input
+                              type="email"
+                              className="edit-input"
+                              value={editedEmail}
+                              onChange={(e) => setEditedEmail(e.target.value)}
+                              placeholder="Email address"
+                            />
+                          ) : (
+                            <span className="detail-value">
+                              {selectedVerification.userEmail || selectedVerification.user?.email || 'N/A'}
+                            </span>
+                          )}
+                        </div>
+                        <div className="detail-item">
+                          <span className="detail-label">Phone:</span>
+                          {isEditMode ? (
+                            <input
+                              type="tel"
+                              className="edit-input"
+                              value={editedPhone}
+                              onChange={(e) => setEditedPhone(e.target.value)}
+                              placeholder="Phone number"
+                            />
+                          ) : (
+                            <span className="detail-value">{selectedVerification.userPhone || 'N/A'}</span>
+                          )}
+                        </div>
+                      </div>
+                      {isEditMode && (
+                        <div className="edit-actions">
+                          <button
+                            className="btn-save"
+                            onClick={handleSaveDetails}
+                            disabled={savingDetails}
+                          >
+                            {savingDetails ? 'Saving...' : 'Save Changes'}
+                          </button>
+                          <button
+                            className="btn-cancel"
+                            onClick={handleCancelEdit}
+                            disabled={savingDetails}
+                          >
+                            Cancel
+                          </button>
+                        </div>
                       )}
                     </div>
-                    <div className="detail-grid">
-                      <div className="detail-item">
-                        <span className="detail-label">Name:</span>
-                        {isEditMode ? (
-                          <input
-                            type="text"
-                            className="edit-input"
-                            value={editedName}
-                            onChange={(e) => setEditedName(e.target.value)}
-                            placeholder="Full name"
-                          />
-                        ) : (
-                          <span className="detail-value">
-                            {selectedVerification.userName || selectedVerification.user?.fullName || 'N/A'}
-                          </span>
-                        )}
-                      </div>
-                      <div className="detail-item">
-                        <span className="detail-label">Email:</span>
-                        {isEditMode ? (
-                          <input
-                            type="email"
-                            className="edit-input"
-                            value={editedEmail}
-                            onChange={(e) => setEditedEmail(e.target.value)}
-                            placeholder="Email address"
-                          />
-                        ) : (
-                          <span className="detail-value">
-                            {selectedVerification.userEmail || selectedVerification.user?.email || 'N/A'}
-                          </span>
-                        )}
-                      </div>
-                      <div className="detail-item">
-                        <span className="detail-label">Phone:</span>
-                        {isEditMode ? (
-                          <input
-                            type="tel"
-                            className="edit-input"
-                            value={editedPhone}
-                            onChange={(e) => setEditedPhone(e.target.value)}
-                            placeholder="Phone number"
-                          />
-                        ) : (
-                          <span className="detail-value">{selectedVerification.userPhone || 'N/A'}</span>
-                        )}
-                      </div>
-                    </div>
-                    {isEditMode && (
-                      <div className="edit-actions">
-                        <button
-                          className="btn-save"
-                          onClick={handleSaveDetails}
-                          disabled={savingDetails}
-                        >
-                          {savingDetails ? 'Saving...' : 'Save Changes'}
-                        </button>
-                        <button
-                          className="btn-cancel"
-                          onClick={handleCancelEdit}
-                          disabled={savingDetails}
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    )}
-                  </div>
+                  )}
 
                   {/* Partner Info */}
                   <div className="detail-section">
@@ -903,6 +905,70 @@ export const AdminVerifications: React.FC = () => {
                             </div>
                           );
                         })}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Extracted Information */}
+                  {selectedVerification.results?.extractedData && (
+                    <div className="detail-section">
+                      <h3>Extracted Information</h3>
+                      <div className="extracted-data-modal">
+                        {selectedVerification.documents && selectedVerification.documents.length > 0 && (
+                          <div className="data-row-modal">
+                            <span className="data-label">Document Type:</span>
+                            <span className="data-value">
+                              {selectedVerification.documents
+                                .find(doc => doc.type !== 'SELFIE')
+                                ?.type?.replace(/_/g, ' ') || 'Unknown'}
+                            </span>
+                          </div>
+                        )}
+                        {selectedVerification.results.extractedData.fullName && (
+                          <div className="data-row-modal">
+                            <span className="data-label">Full Name:</span>
+                            <span className="data-value">{selectedVerification.results.extractedData.fullName}</span>
+                          </div>
+                        )}
+                        {selectedVerification.results.extractedData.dateOfBirth && (
+                          <div className="data-row-modal">
+                            <span className="data-label">Date of Birth:</span>
+                            <span className="data-value">{formatDate(selectedVerification.results.extractedData.dateOfBirth)}</span>
+                          </div>
+                        )}
+                        {selectedVerification.results.extractedData.documentNumber && (
+                          <div className="data-row-modal">
+                            <span className="data-label">Document Number:</span>
+                            <span className="data-value">{selectedVerification.results.extractedData.documentNumber}</span>
+                          </div>
+                        )}
+                        {selectedVerification.results.extractedData.expiryDate && (
+                          <div className="data-row-modal">
+                            <span className="data-label">Expiry Date:</span>
+                            <span className="data-value">{formatDate(selectedVerification.results.extractedData.expiryDate)}</span>
+                          </div>
+                        )}
+                        {selectedVerification.results.extractedData.issuingCountry && (
+                          <div className="data-row-modal">
+                            <span className="data-label">Issuing Country:</span>
+                            <span className="data-value">{selectedVerification.results.extractedData.issuingCountry}</span>
+                          </div>
+                        )}
+                        {selectedVerification.results.extractedData.address && (
+                          <div className="data-row-modal">
+                            <span className="data-label">Address:</span>
+                            <span className="data-value">
+                              {typeof selectedVerification.results.extractedData.address === 'string'
+                                ? selectedVerification.results.extractedData.address
+                                : [
+                                    selectedVerification.results.extractedData.address.street,
+                                    selectedVerification.results.extractedData.address.city,
+                                    selectedVerification.results.extractedData.address.state,
+                                    selectedVerification.results.extractedData.address.country
+                                  ].filter(Boolean).join(', ')}
+                            </span>
+                          </div>
+                        )}
                       </div>
                     </div>
                   )}
@@ -983,70 +1049,6 @@ export const AdminVerifications: React.FC = () => {
                                       ({Math.round(selectedVerification.results.checks.livenessScore * 100)}%)
                                     </span>
                                   )}
-                                </span>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Extracted Information */}
-                      {selectedVerification.results.extractedData && (
-                        <div className="detail-section">
-                          <h3>Extracted Information</h3>
-                          <div className="extracted-data-modal">
-                            {selectedVerification.documents && selectedVerification.documents.length > 0 && (
-                              <div className="data-row-modal">
-                                <span className="data-label">Document Type:</span>
-                                <span className="data-value">
-                                  {selectedVerification.documents
-                                    .find(doc => doc.type !== 'SELFIE')
-                                    ?.type?.replace(/_/g, ' ') || 'Unknown'}
-                                </span>
-                              </div>
-                            )}
-                            {selectedVerification.results.extractedData.fullName && (
-                              <div className="data-row-modal">
-                                <span className="data-label">Full Name:</span>
-                                <span className="data-value">{selectedVerification.results.extractedData.fullName}</span>
-                              </div>
-                            )}
-                            {selectedVerification.results.extractedData.dateOfBirth && (
-                              <div className="data-row-modal">
-                                <span className="data-label">Date of Birth:</span>
-                                <span className="data-value">{formatDate(selectedVerification.results.extractedData.dateOfBirth)}</span>
-                              </div>
-                            )}
-                            {selectedVerification.results.extractedData.documentNumber && (
-                              <div className="data-row-modal">
-                                <span className="data-label">Document Number:</span>
-                                <span className="data-value">{selectedVerification.results.extractedData.documentNumber}</span>
-                              </div>
-                            )}
-                            {selectedVerification.results.extractedData.expiryDate && (
-                              <div className="data-row-modal">
-                                <span className="data-label">Expiry Date:</span>
-                                <span className="data-value">{formatDate(selectedVerification.results.extractedData.expiryDate)}</span>
-                              </div>
-                            )}
-                            {selectedVerification.results.extractedData.issuingCountry && (
-                              <div className="data-row-modal">
-                                <span className="data-label">Issuing Country:</span>
-                                <span className="data-value">{selectedVerification.results.extractedData.issuingCountry}</span>
-                              </div>
-                            )}
-                            {selectedVerification.results.extractedData.address && (
-                              <div className="data-row-modal">
-                                <span className="data-label">Address:</span>
-                                <span className="data-value">
-                                  {typeof selectedVerification.results.extractedData.address === 'string'
-                                    ? selectedVerification.results.extractedData.address
-                                    : [
-                                        selectedVerification.results.extractedData.address.street,
-                                        selectedVerification.results.extractedData.address.city,
-                                        selectedVerification.results.extractedData.address.state,
-                                        selectedVerification.results.extractedData.address.country
-                                      ].filter(Boolean).join(', ')}
                                 </span>
                               </div>
                             )}
