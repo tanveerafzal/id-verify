@@ -680,27 +680,20 @@ export const PartnerSettings: React.FC = () => {
                 <h4>Payload Example</h4>
                 <pre className="code-block">
 {`{
-  "event": "verification.completed",
-  "timestamp": "2024-01-15T10:30:00Z",
-  "verificationId": "abc123",
-  "data": {
+  "verificationId": "abc123-...",
+  "status": "passed",
+  "result": {
     "passed": true,
-    "score": 0.95,
-    "riskLevel": "LOW",
-    "checks": {
-      "documentAuthentic": true,
-      "faceMatch": true,
-      "nameMatch": true
-    },
-    "extractedData": {
-      "fullName": "John Doe",
-      "dateOfBirth": "1990-01-15"
-    },
-    "user": {
-      "fullName": "John Doe",
-      "email": "john@example.com"
-    }
-  }
+    "riskLevel": "LOW"
+  },
+  "extractedData": {
+    "fullName": "John Doe",
+    "dateOfBirth": "1990-01-15",
+    "documentNumber": "XXXXXX1234",
+    "expiryDate": "2030-01-15"
+  },
+  "completedAt": "2024-01-15T10:30:00Z",
+  "duration": 95000
 }`}
                 </pre>
                 <h4>Signature Verification (Node.js)</h4>
