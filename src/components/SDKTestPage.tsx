@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SEO } from './SEO';
+import { SDK_URL, VERIFY_URL, SDK_TEST_API_KEY } from '../config/api';
 
 interface IDVInstance {
   init: (config: { apiKey: string; environment?: string; debug?: boolean }) => void;
@@ -29,7 +30,7 @@ declare global {
 
 export const SDKTestPage: React.FC = () => {
   const navigate = useNavigate();
-  const [partnerId, setPartnerId] = useState('bc1982d4-3cc7-4f3f-8a97-760e13a37e36');
+  const [partnerId, setPartnerId] = useState(SDK_TEST_API_KEY);
   const [testResult, setTestResult] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [sdkLoaded, setSdkLoaded] = useState(false);
@@ -58,11 +59,11 @@ export const SDKTestPage: React.FC = () => {
       return;
     }
 
-    const existingScript = document.querySelector('script[src="https://sdk.trustcredo.com/sdk/idv.min.js"]');
+    const existingScript = document.querySelector(`script[src="${SDK_URL}"]`);
 
     if (!existingScript) {
       const script = document.createElement('script');
-      script.src = 'https://sdk.trustcredo.com/sdk/idv.min.js';
+      script.src = SDK_URL;
       script.async = true;
 
       script.onerror = () => {
@@ -162,7 +163,7 @@ export const SDKTestPage: React.FC = () => {
   };
 
   const sdkCodeHtml = `<!-- Add to your HTML -->
-<script src="https://sdk.trustcredo.com/sdk/idv.min.js"></script>`;
+<script src="${SDK_URL}"></script>`;
 
   const sdkCodeJs = `// Initialize IDV SDK
 IDV.init({
@@ -192,7 +193,7 @@ IDV.start({
 
   const iframeCode = `<!-- Embed verification directly -->
 <iframe
-  src="https://sdk.trustcredo.com/verify?api-key=${partnerId || 'YOUR_API_KEY'}"
+  src="${VERIFY_URL}?api-key=${partnerId || 'YOUR_API_KEY'}"
   width="100%"
   height="700"
   frameborder="0"

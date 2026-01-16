@@ -64,6 +64,7 @@ export const PartnerVerifications: React.FC = () => {
   const [filter, setFilter] = useState<'all' | 'completed' | 'pending'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [resendingId, setResendingId] = useState<string | null>(null);
+  const [resendingWebhookId, setResendingWebhookId] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState('');
   const [selectedVerification, setSelectedVerification] = useState<Verification | null>(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
@@ -189,6 +190,45 @@ export const PartnerVerifications: React.FC = () => {
       setError(err instanceof Error ? err.message : 'Failed to resend email');
     } finally {
       setResendingId(null);
+    }
+  };
+
+  const handleResendWebhook = async (verificationId: string) => {
+    const token = localStorage.getItem('partnerToken');
+
+    if (!token) {
+      navigate('/partner/login');
+      return;
+    }
+
+    setResendingWebhookId(verificationId);
+    setError('');
+    setSuccessMessage('');
+
+    try {
+      const response = await fetch(
+        getApiUrl(`/api/partners/verifications/${verificationId}/resend-webhook`),
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to resend webhook');
+      }
+
+      setSuccessMessage('Webhook sent successfully!');
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (err) {
+      console.error('Resend webhook error:', err);
+      setError(err instanceof Error ? err.message : 'Failed to resend webhook');
+    } finally {
+      setResendingWebhookId(null);
     }
   };
 
@@ -1068,6 +1108,15 @@ export const PartnerVerifications: React.FC = () => {
                   disabled={resendingId === selectedVerification.id}
                 >
                   {resendingId === selectedVerification.id ? 'Sending...' : 'Resend Verification Email'}
+                </button>
+              )}
+              {(selectedVerification.status === 'COMPLETED' || selectedVerification.status === 'FAILED') && (
+                <button
+                  className="btn btn-primary"
+                  onClick={() => handleResendWebhook(selectedVerification.id)}
+                  disabled={resendingWebhookId === selectedVerification.id}
+                >
+                  {resendingWebhookId === selectedVerification.id ? 'Sending...' : 'Resend Webhook'}
                 </button>
               )}
               <button className="btn btn-secondary" onClick={closeModal}>Close</button>

@@ -1,6 +1,16 @@
 // API configuration
 // Base URL should be just the server URL without /api/v1
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+// SDK Configuration
+export const SDK_URL = import.meta.env.VITE_SDK_URL || 'https://sdk.trustcredo.com/sdk/idv.min.js';
+export const VERIFY_URL = import.meta.env.VITE_VERIFY_URL || 'https://verify.trustcredo.com/verify';
+export const SDK_TEST_API_KEY = import.meta.env.VITE_SDK_TEST_API_KEY || '';
+
+// Helper to build verification URL with API key
+export const getVerifyUrl = (apiKey: string): string => {
+  return `${VERIFY_URL}?apiKey=${apiKey}`;
+};
 
 console.log('[API Config] Environment:', import.meta.env.MODE);
 console.log('[API Config] DEV mode:', import.meta.env.DEV);

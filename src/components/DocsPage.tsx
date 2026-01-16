@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SEO } from './SEO';
+import { SDK_URL } from '../config/api';
 
 export const DocsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -245,7 +246,7 @@ function verifySignature(payload, signature, apiSecret) {
             <h2>SDK Installation</h2>
             <p>Add the TrustCredo SDK to your website:</p>
             <div className="code-block">
-              <pre>{`<script src="https://sdk.trustcredo.com/sdk/idv.min.js"></script>`}</pre>
+              <pre>{`<script src="${SDK_URL}"></script>`}</pre>
             </div>
           </section>
 

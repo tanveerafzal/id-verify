@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PartnerLayout } from './PartnerLayout';
-import { getApiUrl } from '../config/api';
+import { getApiUrl, getVerifyUrl } from '../config/api';
 
 interface Partner {
   id: string;
@@ -307,18 +307,18 @@ export const PartnerDashboard: React.FC = () => {
             )}
             <div className="verification-link-box">
               <code className="verification-link">
-                {`https://verify.trustcredo.com/verify?apiKey=${partner.apiKey}`}
+                {getVerifyUrl(partner.apiKey)}
               </code>
               <div className="link-actions">
                 <button
                   className="btn-copy"
-                  onClick={() => copyToClipboard(`https://verify.trustcredo.com/verify?apiKey=${partner.apiKey}`)}
+                  onClick={() => copyToClipboard(getVerifyUrl(partner.apiKey))}
                 >
                   Copy Link
                 </button>
                 <button
                   className="btn-secondary"
-                  onClick={() => window.open(`https://verify.trustcredo.com/verify?apiKey=${partner.apiKey}`, '_blank')}
+                  onClick={() => window.open(getVerifyUrl(partner.apiKey), '_blank')}
                 >
                   Test Link
                 </button>
