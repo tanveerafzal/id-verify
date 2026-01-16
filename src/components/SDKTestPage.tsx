@@ -45,8 +45,12 @@ export const SDKTestPage: React.FC = () => {
 
   // Load SDK script
   useEffect(() => {
+    console.log('[SDKTestPage] SDK_URL:', SDK_URL);
+
     const checkSdkAvailable = () => {
-      if (getIDV()) {
+      const idv = getIDV();
+      if (idv) {
+        console.log('[SDKTestPage] SDK is available');
         setSdkLoaded(true);
         setSdkError(null);
         return true;
@@ -59,19 +63,28 @@ export const SDKTestPage: React.FC = () => {
       return;
     }
 
-    const existingScript = document.querySelector(`script[src="${SDK_URL}"]`);
+    // Look for any existing IDV script (with old or new URL)
+    const existingScript = document.querySelector('script[src*="idv.min.js"]');
 
     if (!existingScript) {
+      console.log('[SDKTestPage] Loading SDK from:', SDK_URL);
       const script = document.createElement('script');
       script.src = SDK_URL;
       script.async = true;
 
-      script.onerror = () => {
+      script.onload = () => {
+        console.log('[SDKTestPage] SDK script loaded');
+      };
+
+      script.onerror = (e) => {
+        console.error('[SDKTestPage] SDK script failed to load:', e);
         setSdkError('Failed to load SDK. Please check your connection.');
         setSdkLoaded(false);
       };
 
       document.body.appendChild(script);
+    } else {
+      console.log('[SDKTestPage] SDK script already exists');
     }
 
     // Poll for SDK availability after script loads
@@ -85,6 +98,7 @@ export const SDKTestPage: React.FC = () => {
     const timeout = setTimeout(() => {
       clearInterval(pollInterval);
       if (!getIDV()) {
+        console.error('[SDKTestPage] SDK failed to initialize after timeout. window.IDV:', window.IDV);
         setSdkError('SDK failed to initialize. Please refresh the page.');
       }
     }, 10000);
