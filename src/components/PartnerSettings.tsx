@@ -16,6 +16,7 @@ interface Partner {
   country?: string;
   userNotificationPref?: string;
   webhookUrl?: string;
+  maxRetries?: number;
   apiKey: string;
   apiSecret: string;
   tier: {
@@ -53,7 +54,8 @@ export const PartnerSettings: React.FC = () => {
     state: '',
     country: '',
     userNotificationPref: 'EMAIL',
-    webhookUrl: ''
+    webhookUrl: '',
+    maxRetries: 5
   });
 
   useEffect(() => {
@@ -92,7 +94,8 @@ export const PartnerSettings: React.FC = () => {
         state: data.data.state || '',
         country: data.data.country || '',
         userNotificationPref: data.data.userNotificationPref || 'EMAIL',
-        webhookUrl: data.data.webhookUrl || ''
+        webhookUrl: data.data.webhookUrl || '',
+        maxRetries: data.data.maxRetries ?? 5
       });
     } catch (err) {
       setError('Failed to load profile');
@@ -144,9 +147,10 @@ export const PartnerSettings: React.FC = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const target = e.target;
+    const value = target.name === 'maxRetries' ? parseInt(target.value) || 0 : target.value;
     setFormData({
       ...formData,
-      [target.name]: target.value
+      [target.name]: value
     });
   };
 
@@ -669,6 +673,21 @@ export const PartnerSettings: React.FC = () => {
                   className="form-input"
                 />
                 <small>Enter the URL where you want to receive verification results. Must be HTTPS.</small>
+              </div>
+              <div className="form-group">
+                <label htmlFor="maxRetries">Max Retries</label>
+                <input
+                  type="number"
+                  id="maxRetries"
+                  name="maxRetries"
+                  value={formData.maxRetries}
+                  onChange={handleChange}
+                  min="0"
+                  max="10"
+                  className="form-input"
+                  style={{ width: '100px' }}
+                />
+                <small>Maximum number of retry attempts allowed per verification (0-10). Default is 5.</small>
               </div>
               <div className="webhook-info">
                 <h4>Webhook Headers</h4>
