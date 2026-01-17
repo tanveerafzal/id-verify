@@ -604,6 +604,7 @@ export const PartnerVerifications: React.FC = () => {
               <tr>
                 <th>ID</th>
                 <th>User Details</th>
+                <th>Extracted Details</th>
                 <th>Type</th>
                 <th>Status</th>
                 <th>Risk Level</th>
@@ -633,6 +634,25 @@ export const PartnerVerifications: React.FC = () => {
                         <div className="user-phone">{verification.userPhone}</div>
                       )}
                       {!verification.userName && !verification.userEmail && !verification.userPhone && (
+                        <span className="no-data">-</span>
+                      )}
+                    </div>
+                  </td>
+                  <td>
+                    <div className="extracted-details">
+                      {verification.results?.extractedData ? (
+                        <>
+                          {verification.results.extractedData.fullName && (
+                            <div className="extracted-name">{verification.results.extractedData.fullName}</div>
+                          )}
+                          {verification.results.extractedData.dateOfBirth && (
+                            <div className="extracted-dob">DOB: {verification.results.extractedData.dateOfBirth}</div>
+                          )}
+                          {verification.results.extractedData.documentNumber && (
+                            <div className="extracted-doc-num">Doc#: {verification.results.extractedData.documentNumber}</div>
+                          )}
+                        </>
+                      ) : (
                         <span className="no-data">-</span>
                       )}
                     </div>
