@@ -102,8 +102,11 @@ export const PartnerWebhooks: React.FC = () => {
       const matchesVerificationId = w.verificationId?.toLowerCase().includes(query);
       const matchesUrl = w.url?.toLowerCase().includes(query);
       const matchesStatus = w.status?.toString().includes(query);
+      const matchesRequestBody = w.requestBody
+        ? JSON.stringify(w.requestBody).toLowerCase().includes(query)
+        : false;
 
-      if (!matchesId && !matchesVerificationId && !matchesUrl && !matchesStatus) {
+      if (!matchesId && !matchesVerificationId && !matchesUrl && !matchesStatus && !matchesRequestBody) {
         return false;
       }
     }
@@ -155,7 +158,7 @@ export const PartnerWebhooks: React.FC = () => {
           <div className="search-box">
             <input
               type="text"
-              placeholder="Search by ID, verification ID, URL, or status..."
+              placeholder="Search by ID, verification ID, URL, status, or request body..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="search-input"

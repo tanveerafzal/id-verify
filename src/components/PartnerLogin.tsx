@@ -59,9 +59,10 @@ export const PartnerLogin: React.FC = () => {
         throw new Error(data.error || `Login failed: ${response.status} ${response.statusText}`);
       }
 
-      // Store token
+      // Store token and partner info
       localStorage.setItem('partnerToken', data.data.token);
       localStorage.setItem('partner', JSON.stringify(data.data.partner));
+      localStorage.setItem('partnerInfo', JSON.stringify(data.data.partner));
 
       console.log('[PartnerLogin] Login successful, navigating to dashboard');
       // Redirect to dashboard

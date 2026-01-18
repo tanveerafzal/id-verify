@@ -13,11 +13,25 @@ interface Partner {
   logoUrl?: string;
 }
 
+// Helper to get cached partner data from localStorage
+const getCachedPartner = (): Partner | null => {
+  try {
+    const cached = localStorage.getItem('partnerInfo');
+    if (cached) {
+      return JSON.parse(cached);
+    }
+  } catch {
+    // Invalid JSON, ignore
+  }
+  return null;
+};
+
 export const PartnerLayout: React.FC<PartnerLayoutProps> = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [partner, setPartner] = useState<Partner | null>(null);
+  // Initialize with cached data to prevent flicker
+  const [partner, setPartner] = useState<Partner | null>(getCachedPartner);
 
   useEffect(() => {
     loadPartnerInfo();
@@ -37,6 +51,8 @@ export const PartnerLayout: React.FC<PartnerLayoutProps> = ({ children }) => {
       if (response.ok) {
         const data = await response.json();
         setPartner(data.data);
+        // Cache the partner info for future page loads
+        localStorage.setItem('partnerInfo', JSON.stringify(data.data));
       }
     } catch (error) {
       console.error('Failed to load partner info:', error);
@@ -46,6 +62,7 @@ export const PartnerLayout: React.FC<PartnerLayoutProps> = ({ children }) => {
   const handleLogout = () => {
     localStorage.removeItem('partnerToken');
     localStorage.removeItem('partner');
+    localStorage.removeItem('partnerInfo');
     navigate('/partner/login');
   };
 
