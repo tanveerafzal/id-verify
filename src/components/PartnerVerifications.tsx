@@ -486,7 +486,16 @@ export const PartnerVerifications: React.FC = () => {
       const matchesStatus = v.status?.toLowerCase().includes(query);
       const matchesRiskLevel = v.results?.riskLevel?.toLowerCase().includes(query);
 
-      if (!matchesId && !matchesName && !matchesEmail && !matchesPhone && !matchesType && !matchesStatus && !matchesRiskLevel) {
+      // Search in extracted data
+      const extracted = v.results?.extractedData;
+      const matchesExtractedName = extracted?.fullName?.toLowerCase().includes(query);
+      const matchesExtractedDOB = extracted?.dateOfBirth?.toLowerCase().includes(query);
+      const matchesExtractedDocNum = extracted?.documentNumber?.toLowerCase().includes(query);
+      const matchesExtractedExpiry = extracted?.expiryDate?.toLowerCase().includes(query);
+      const matchesExtractedCountry = extracted?.issuingCountry?.toLowerCase().includes(query);
+
+      if (!matchesId && !matchesName && !matchesEmail && !matchesPhone && !matchesType && !matchesStatus && !matchesRiskLevel &&
+          !matchesExtractedName && !matchesExtractedDOB && !matchesExtractedDocNum && !matchesExtractedExpiry && !matchesExtractedCountry) {
         return false;
       }
     }
@@ -540,7 +549,7 @@ export const PartnerVerifications: React.FC = () => {
         <div className="search-box">
           <input
             type="text"
-            placeholder="Search by ID, name, email, phone, type, status, or risk level..."
+            placeholder="Search by ID, name, email, phone, extracted info, document number..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="search-input"
