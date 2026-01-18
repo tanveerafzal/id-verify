@@ -53,7 +53,7 @@ export const PartnerLayout: React.FC<PartnerLayoutProps> = ({ children }) => {
     { path: '/partner/dashboard', label: 'Dashboard', icon: '📊' },
     { path: '/partner/request-verification', label: 'Request Verification', icon: '➕' },
     { path: '/partner/verifications', label: 'Verifications', icon: '✓' },
-    { path: '/partner/settings', label: 'Settings', icon: '⚙️' },
+    { path: '/partner/webhooks', label: 'Webhooks', icon: '🔗' },
     { path: '/partner/team', label: 'Team', icon: '👥' }
   ];
 
@@ -103,6 +103,16 @@ export const PartnerLayout: React.FC<PartnerLayoutProps> = ({ children }) => {
         </nav>
 
         <div className="sidebar-footer">
+          <button
+            className={`nav-item ${isActive('/partner/settings') ? 'active' : ''}`}
+            onClick={() => {
+              navigate('/partner/settings');
+              setIsMobileMenuOpen(false);
+            }}
+          >
+            <span className="nav-icon">⚙️</span>
+            <span className="nav-label">Settings</span>
+          </button>
           <button className="logout-btn" onClick={handleLogout}>
             <span className="nav-icon">🚪</span>
             <span className="nav-label">Logout</span>

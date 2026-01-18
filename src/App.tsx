@@ -19,6 +19,7 @@ import { PartnerVerifications } from './components/PartnerVerifications'
 import { PartnerSettings } from './components/PartnerSettings'
 import { PartnerRequestVerification } from './components/PartnerRequestVerification'
 import { PartnerTeam } from './components/PartnerTeam'
+import { PartnerWebhooks } from './components/PartnerWebhooks'
 import { PartnerAcceptInvite } from './components/PartnerAcceptInvite'
 import { Roadmap } from './components/Roadmap'
 import { DocsPage } from './components/DocsPage'
@@ -65,6 +66,7 @@ function App() {
         <Route path="/partner/request-verification" element={<PartnerRequestVerification />} />
         <Route path="/partner/settings" element={<PartnerSettings />} />
         <Route path="/partner/team" element={<PartnerTeam />} />
+        <Route path="/partner/webhooks" element={<PartnerWebhooks />} />
         <Route path="/partner/accept-invite" element={<PartnerAcceptInvite />} />
         <Route path="/roadmap" element={<Roadmap />} />
         <Route path="/docs" element={<DocsPage />} />

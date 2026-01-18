@@ -41,8 +41,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   const menuItems = [
     { path: '/admin/dashboard', label: 'Dashboard', icon: '📊' },
     { path: '/admin/partners', label: 'Partners', icon: '👥' },
-    { path: '/admin/verifications', label: 'Verifications', icon: '✓' },
-    { path: '/admin/settings', label: 'Settings', icon: '⚙️' }
+    { path: '/admin/verifications', label: 'Verifications', icon: '✓' }
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -87,6 +86,16 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
             <span className="admin-name">{admin?.name || 'Admin'}</span>
             <span className="admin-role">{admin?.role || 'Administrator'}</span>
           </div>
+          <button
+            className={`nav-item ${isActive('/admin/settings') ? 'active' : ''}`}
+            onClick={() => {
+              navigate('/admin/settings');
+              setIsMobileMenuOpen(false);
+            }}
+          >
+            <span className="nav-icon">⚙️</span>
+            <span className="nav-label">Settings</span>
+          </button>
           <button className="logout-btn" onClick={handleLogout}>
             <span className="nav-icon">🚪</span>
             <span className="nav-label">Logout</span>
