@@ -681,7 +681,7 @@ export const PartnerVerifications: React.FC = () => {
                       : '-'}
                   </td>
                   <td>
-                    {verification.status === 'PENDING' && (
+                    {verification.status === 'PENDING' && verification.userEmail && (
                       <button
                         onClick={() => handleResendEmail(verification.id)}
                         disabled={resendingId === verification.id}
@@ -1065,7 +1065,7 @@ export const PartnerVerifications: React.FC = () => {
                               </span>
                             </div>
                           )}
-                          {selectedVerification.results.checks.nameMatch !== undefined && (
+                          {selectedVerification.results.checks.nameMatch !== undefined && selectedVerification.userName && (
                             <div className={`check-item-modal ${selectedVerification.results.checks.nameMatch ? 'pass' : 'fail'}`}>
                               <span className="check-icon">{selectedVerification.results.checks.nameMatch ? '✓' : '✗'}</span>
                               <span>
@@ -1130,7 +1130,7 @@ export const PartnerVerifications: React.FC = () => {
             )}
 
             <div className="modal-footer">
-              {selectedVerification.status !== 'COMPLETED' && (
+              {selectedVerification.status !== 'COMPLETED' && selectedVerification.userEmail && (
                 <button
                   className="btn btn-primary"
                   onClick={() => handleResendEmail(selectedVerification.id)}

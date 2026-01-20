@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SEO } from './SEO';
-import { SDK_URL, VERIFY_URL, SDK_TEST_API_KEY } from '../config/api';
+import { SDK_URL, VERIFY_URL, SDK_TEST_API_KEY, getVerifyUrl } from '../config/api';
 
 interface IDVInstance {
   init: (config: { apiKey: string; environment?: string; debug?: boolean }) => void;
@@ -129,13 +129,24 @@ export const SDKTestPage: React.FC = () => {
     setIsLoading(true);
     setTestResult(null);
 
+    // Log the URLs being used
+    const verifyUrl = getVerifyUrl(partnerId);
+    const initConfig = {
+      apiKey: partnerId,
+      environment: 'sandbox',
+      debug: true
+    };
+
+    console.log('[SDKTestPage] Starting verification with:');
+    console.log('[SDKTestPage] - SDK URL (script source):', SDK_URL);
+    console.log('[SDKTestPage] - VERIFY_URL base:', VERIFY_URL);
+    console.log('[SDKTestPage] - Full verify URL:', verifyUrl);
+    console.log('[SDKTestPage] - Init config:', initConfig);
+    console.log('[SDKTestPage] - SDK will load iframe from: https://sdk.trustcredo.com/verify?api-key=' + partnerId);
+
     try {
       // Initialize SDK with API key
-      idv.init({
-        apiKey: partnerId,
-        environment: 'production',
-        debug: true
-      });
+      idv.init(initConfig);
 
       // Start the verification flow
       const result = await idv.start({

@@ -16,7 +16,8 @@ export default defineConfig({
       'localhost',
       '127.0.0.1',
       'id-verify-api-960587958424.northamerica-northeast2.run.app',
-      'f2bf1c7ea3e0.ngrok-free.app'
+      'f2bf1c7ea3e0.ngrok-free.app',
+      'a0d675073dc9.ngrok-free.app'
     ],
     proxy: {
       '/api': {
