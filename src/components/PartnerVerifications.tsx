@@ -486,7 +486,16 @@ export const PartnerVerifications: React.FC = () => {
       const matchesStatus = v.status?.toLowerCase().includes(query);
       const matchesRiskLevel = v.results?.riskLevel?.toLowerCase().includes(query);
 
-      if (!matchesId && !matchesName && !matchesEmail && !matchesPhone && !matchesType && !matchesStatus && !matchesRiskLevel) {
+      // Search in extracted data
+      const extracted = v.results?.extractedData;
+      const matchesExtractedName = extracted?.fullName?.toLowerCase().includes(query);
+      const matchesExtractedDOB = extracted?.dateOfBirth?.toLowerCase().includes(query);
+      const matchesExtractedDocNum = extracted?.documentNumber?.toLowerCase().includes(query);
+      const matchesExtractedExpiry = extracted?.expiryDate?.toLowerCase().includes(query);
+      const matchesExtractedCountry = extracted?.issuingCountry?.toLowerCase().includes(query);
+
+      if (!matchesId && !matchesName && !matchesEmail && !matchesPhone && !matchesType && !matchesStatus && !matchesRiskLevel &&
+          !matchesExtractedName && !matchesExtractedDOB && !matchesExtractedDocNum && !matchesExtractedExpiry && !matchesExtractedCountry) {
         return false;
       }
     }
@@ -540,7 +549,7 @@ export const PartnerVerifications: React.FC = () => {
         <div className="search-box">
           <input
             type="text"
-            placeholder="Search by ID, name, email, phone, type, status, or risk level..."
+            placeholder="Search by ID, name, email, phone, extracted info, document number..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="search-input"
@@ -672,7 +681,7 @@ export const PartnerVerifications: React.FC = () => {
                       : '-'}
                   </td>
                   <td>
-                    {verification.status === 'PENDING' && (
+                    {verification.status === 'PENDING' && verification.userEmail && (
                       <button
                         onClick={() => handleResendEmail(verification.id)}
                         disabled={resendingId === verification.id}
@@ -1056,7 +1065,7 @@ export const PartnerVerifications: React.FC = () => {
                               </span>
                             </div>
                           )}
-                          {selectedVerification.results.checks.nameMatch !== undefined && (
+                          {selectedVerification.results.checks.nameMatch !== undefined && selectedVerification.userName && (
                             <div className={`check-item-modal ${selectedVerification.results.checks.nameMatch ? 'pass' : 'fail'}`}>
                               <span className="check-icon">{selectedVerification.results.checks.nameMatch ? '✓' : '✗'}</span>
                               <span>
@@ -1121,7 +1130,7 @@ export const PartnerVerifications: React.FC = () => {
             )}
 
             <div className="modal-footer">
-              {selectedVerification.status !== 'COMPLETED' && (
+              {selectedVerification.status !== 'COMPLETED' && selectedVerification.userEmail && (
                 <button
                   className="btn btn-primary"
                   onClick={() => handleResendEmail(selectedVerification.id)}
