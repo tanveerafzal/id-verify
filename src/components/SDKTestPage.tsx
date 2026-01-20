@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SEO } from './SEO';
-import { SDK_URL, VERIFY_URL, SDK_TEST_API_KEY, getVerifyUrl } from '../config/api';
+import { SDK_URL, VERIFY_URL, SDK_TEST_API_KEY, SDK_ENVIRONMENT, getVerifyUrl } from '../config/api';
 
 interface IDVInstance {
   init: (config: { apiKey: string; environment?: string; debug?: boolean }) => void;
@@ -133,7 +133,7 @@ export const SDKTestPage: React.FC = () => {
     const verifyUrl = getVerifyUrl(partnerId);
     const initConfig = {
       apiKey: partnerId,
-      environment: 'sandbox',
+      environment: SDK_ENVIRONMENT,
       debug: true
     };
 
