@@ -1,7 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getApiUrl } from '../config/api';
 import { SEO } from './SEO';
+import { logger } from '../lib/logger';
+
+// Create a scoped logger for this component
+const log = logger.createLogger('PartnerLogin');
 
 export const PartnerLogin: React.FC = () => {
   const navigate = useNavigate();
@@ -11,6 +15,11 @@ export const PartnerLogin: React.FC = () => {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    logger.component.mount('PartnerLogin');
+    return () => logger.component.unmount('PartnerLogin');
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -24,12 +33,15 @@ export const PartnerLogin: React.FC = () => {
     setError('');
     setLoading(true);
 
+    const timer = logger.timer('Partner Login Request');
+    log.action('Login attempt started', { email: formData.email });
+
     try {
       const apiUrl = getApiUrl('/api/partners/login');
-      console.log('[PartnerLogin] API URL:', apiUrl);
-      console.log('[PartnerLogin] Environment:', import.meta.env.MODE);
-      console.log('[PartnerLogin] VITE_API_BASE_URL:', import.meta.env.VITE_API_BASE_URL);
-      console.log('[PartnerLogin] Request body:', { email: formData.email, password: '***' });
+
+      logger.api.request('POST', apiUrl, {
+        body: { email: formData.email, password: '[REDACTED]' }
+      });
 
       const response = await fetch(apiUrl, {
         method: 'POST',
@@ -39,21 +51,24 @@ export const PartnerLogin: React.FC = () => {
         body: JSON.stringify(formData)
       });
 
-      console.log('[PartnerLogin] Response status:', response.status);
-      console.log('[PartnerLogin] Response statusText:', response.statusText);
-      console.log('[PartnerLogin] Response URL:', response.url);
-      console.log('[PartnerLogin] Response headers:', Object.fromEntries(response.headers.entries()));
-
       let data;
       try {
         const responseText = await response.text();
-        console.log('[PartnerLogin] Response text:', responseText);
+        log.debug('Raw response received', {
+          status: response.status,
+          statusText: response.statusText,
+          contentLength: responseText.length
+        });
         data = JSON.parse(responseText);
-        console.log('[PartnerLogin] Parsed response data:', data);
       } catch (parseErr) {
-        console.error('[PartnerLogin] Failed to parse response as JSON:', parseErr);
+        log.error('Failed to parse response as JSON', parseErr);
         throw new Error('Server returned invalid response');
       }
+
+      const duration = timer.end({ component: 'PartnerLogin' });
+      logger.api.response('POST', apiUrl, response.status, duration,
+        response.ok ? { partnerId: data.data?.partner?.id } : data.error
+      );
 
       if (!response.ok) {
         throw new Error(data.error || `Login failed: ${response.status} ${response.statusText}`);
@@ -64,14 +79,25 @@ export const PartnerLogin: React.FC = () => {
       localStorage.setItem('partner', JSON.stringify(data.data.partner));
       localStorage.setItem('partnerInfo', JSON.stringify(data.data.partner));
 
-      console.log('[PartnerLogin] Login successful, navigating to dashboard');
+      log.info('Login successful', {
+        partnerId: data.data.partner?.id,
+        companyName: data.data.partner?.companyName
+      });
+
+      logger.user('Partner logged in', {
+        partnerId: data.data.partner?.id
+      });
+
       // Redirect to dashboard
       navigate('/partner/dashboard');
     } catch (err) {
-      console.error('[PartnerLogin] Error:', err);
+      timer.end({ component: 'PartnerLogin' });
+
       if (err instanceof TypeError && err.message.includes('fetch')) {
+        log.error('Network error during login', err);
         setError('Network error: Unable to connect to server. Please check your connection.');
       } else {
+        log.error('Login failed', err);
         setError(err instanceof Error ? err.message : 'Login failed');
       }
     } finally {

@@ -5,6 +5,10 @@ import { SelfieCapture } from './SelfieCapture';
 import { VerificationResult } from './VerificationResult';
 import { getApiUrl, getAssetUrl } from '../config/api';
 import { Button } from '@/components/ui/button';
+import { logger } from '../lib/logger';
+
+// Create a scoped logger for this component
+const log = logger.createLogger('IDVerification');
 
 interface VerificationStep {
   step: 'document' | 'document-processing' | 'selfie' | 'selfie-processing' | 'processing' | 'complete';
@@ -44,7 +48,9 @@ export const IDVerification: React.FC = () => {
   const [detectedDocumentType, setDetectedDocumentType] = useState<string | null>(null);
 
   useEffect(() => {
+    logger.component.mount('IDVerification');
     loadVerificationInfo();
+    return () => logger.component.unmount('IDVerification');
   }, []);
 
   const loadVerificationInfo = async () => {
@@ -62,15 +68,15 @@ export const IDVerification: React.FC = () => {
         if (decryptResponse.ok) {
           const decryptData = await decryptResponse.json();
           actualVerificationId = decryptData.verificationId || decryptData.data?.verificationId;
-          console.log('Decrypted verification ID:', actualVerificationId);
+          log.info('Decrypted verification request', { verificationId: actualVerificationId });
         } else {
-          console.error('Failed to decrypt verification request',decryptResponse);
+          log.error('Failed to decrypt verification request', { status: decryptResponse.status });
           setError('Invalid verification link. Please request a new verification link.');
           setIsLoading(false);
           return;
         }
       } catch (error) {
-        console.error('Error decrypting verification request:', error);
+        log.error('Error decrypting verification request', error);
         setError('Failed to process verification link. Please try again.');
         setIsLoading(false);
         return;
@@ -87,7 +93,8 @@ export const IDVerification: React.FC = () => {
 
           // Use the verification ID from response (may be a child retry verification, not the parent from URL)
           setVerificationId(verification.id);
-          console.log('Use the verification ID from response:', verification.id);
+          log.info('Verification loaded', { verificationId: verification.id, status: verification.status });
+
           // Store verification info from user object (do this first, before status checks)
           const verificationInfoData = {
             userName: verification.user?.fullName,
@@ -96,7 +103,7 @@ export const IDVerification: React.FC = () => {
             status: verification.status,
             allowedDocumentTypes: verification.allowedDocumentTypes
           };
-          console.log('Saving verification info:', verificationInfoData);
+          log.debug('Verification info', verificationInfoData);
           setVerificationInfo(verificationInfoData);
 
           // Load partner info if verification has partnerId
@@ -145,7 +152,7 @@ export const IDVerification: React.FC = () => {
           }
         }
       } catch (error) {
-        console.error('Failed to load verification info:', error);
+        log.error('Failed to load verification info', error);
       }
     }
     setIsLoading(false);
@@ -265,7 +272,7 @@ export const IDVerification: React.FC = () => {
 
       setCurrentStep({ step: 'selfie', data: uploadData.data });
     } catch (error) {
-      console.error('Document upload failed:', error);
+      log.error('Document upload failed', error);
       setError('An error occurred while processing your document. Please try again.');
       setCurrentStep({ step: 'document' });
     }
@@ -311,7 +318,7 @@ export const IDVerification: React.FC = () => {
         : `/api/verifications/${verificationId}/submit`;
 
       const submitResponse = await fetch(getApiUrl(submitUrl), { method: 'POST' });
-      console.log('Submit response', submitResponse);
+      log.info('Submit response received', { status: submitResponse.status, ok: submitResponse.ok });
 
       const submitData = await submitResponse.json();
 
@@ -325,7 +332,7 @@ export const IDVerification: React.FC = () => {
       // If the response contains a valid result (even if verification failed), show the result page
       // This handles cases like face match failure where verification was processed but didn't pass
       if (submitData.data && typeof submitData.data.passed !== 'undefined') {
-        console.log('response contains a valid result');
+        log.info('Verification result received', { passed: submitData.data.passed, verificationId });
         setResult(submitData.data);
         setCurrentStep({ step: 'complete', data: submitData.data });
         return;
@@ -333,7 +340,7 @@ export const IDVerification: React.FC = () => {
 
       // If response is not OK but has data, still show the result page with the data
       if (!submitResponse.ok && submitData.data) {
-        console.log('Response not OK but has data, showing result page');
+        log.warn('Response not OK but has data, showing result page', { status: submitResponse.status });
         setResult(submitData.data);
         setCurrentStep({ step: 'complete', data: submitData.data });
         return;
@@ -350,7 +357,7 @@ export const IDVerification: React.FC = () => {
       setResult(submitData.data);
       setCurrentStep({ step: 'complete', data: submitData.data });
     } catch (error) {
-      console.error('Selfie upload failed:', error);
+      log.error('Selfie upload failed', error);
       setError('An error occurred during verification. Please try again.');
       setCurrentStep({ step: 'selfie' });
     }
