@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PartnerLayout } from './PartnerLayout';
 import { getApiUrl, getAssetUrl } from '../config/api';
+import { logger } from '../lib/logger';
+
+// Create a scoped logger for this component
+const log = logger.createLogger('PartnerVerifications');
 
 interface VerificationResult {
   passed: boolean;
@@ -159,6 +163,7 @@ export const PartnerVerifications: React.FC = () => {
     const token = localStorage.getItem('partnerToken');
 
     if (!token) {
+      log.warn('No token found, redirecting to login');
       navigate('/partner/login');
       return;
     }
@@ -167,26 +172,50 @@ export const PartnerVerifications: React.FC = () => {
     setError('');
     setSuccessMessage('');
 
-    try {
-      const response = await fetch(
-        getApiUrl(`/api/partners/verifications/${verificationId}/resend-email`),
-        {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        }
-      );
+    const apiUrl = getApiUrl(`/api/partners/verifications/${verificationId}/resend-email`);
+    log.info('Resending verification email', { verificationId, apiUrl });
 
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || 'Failed to resend email');
+    try {
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      log.debug('Resend email response', {
+        status: response.status,
+        statusText: response.statusText,
+        ok: response.ok
+      });
+
+      // Try to get response body for better error details
+      let data;
+      const responseText = await response.text();
+      log.debug('Resend email response body', { responseText });
+
+      try {
+        data = responseText ? JSON.parse(responseText) : {};
+      } catch (parseErr) {
+        log.error('Failed to parse resend email response', parseErr);
+        data = { error: responseText || `Server error: ${response.status}` };
       }
 
+      if (!response.ok) {
+        const errorMessage = data.error || data.message || `Failed to resend email: ${response.status}`;
+        log.error('Resend email failed', {
+          status: response.status,
+          error: errorMessage,
+          fullResponse: data
+        });
+        throw new Error(errorMessage);
+      }
+
+      log.info('Verification email sent successfully', { verificationId });
       setSuccessMessage('Verification email sent successfully!');
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (err) {
-      console.error('Resend email error:', err);
+      log.error('Resend email error', err);
       setError(err instanceof Error ? err.message : 'Failed to resend email');
     } finally {
       setResendingId(null);
@@ -197,6 +226,7 @@ export const PartnerVerifications: React.FC = () => {
     const token = localStorage.getItem('partnerToken');
 
     if (!token) {
+      log.warn('No token found, redirecting to login');
       navigate('/partner/login');
       return;
     }
@@ -205,27 +235,49 @@ export const PartnerVerifications: React.FC = () => {
     setError('');
     setSuccessMessage('');
 
+    const apiUrl = getApiUrl(`/api/partners/verifications/${verificationId}/resend-webhook`);
+    log.info('Resending webhook', { verificationId, apiUrl });
+
     try {
-      const response = await fetch(
-        getApiUrl(`/api/partners/verifications/${verificationId}/resend-webhook`),
-        {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
         }
-      );
+      });
 
-      const data = await response.json();
+      log.debug('Resend webhook response', {
+        status: response.status,
+        statusText: response.statusText,
+        ok: response.ok
+      });
 
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to resend webhook');
+      let data;
+      const responseText = await response.text();
+      log.debug('Resend webhook response body', { responseText });
+
+      try {
+        data = responseText ? JSON.parse(responseText) : {};
+      } catch (parseErr) {
+        log.error('Failed to parse resend webhook response', parseErr);
+        data = { error: responseText || `Server error: ${response.status}` };
       }
 
+      if (!response.ok) {
+        const errorMessage = data.error || data.message || `Failed to resend webhook: ${response.status}`;
+        log.error('Resend webhook failed', {
+          status: response.status,
+          error: errorMessage,
+          fullResponse: data
+        });
+        throw new Error(errorMessage);
+      }
+
+      log.info('Webhook sent successfully', { verificationId });
       setSuccessMessage('Webhook sent successfully!');
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (err) {
-      console.error('Resend webhook error:', err);
+      log.error('Resend webhook error', err);
       setError(err instanceof Error ? err.message : 'Failed to resend webhook');
     } finally {
       setResendingWebhookId(null);
