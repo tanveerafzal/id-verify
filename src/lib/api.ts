@@ -47,11 +47,12 @@ export async function apiRequest<T = unknown>(
     headers['Authorization'] = `Bearer ${token}`;
   }
 
-  // Log the request
-  logger.api.request(method, url, {
-    body,
-    headers: { ...headers, Authorization: headers.Authorization ? '[REDACTED]' : undefined },
-  });
+  // Log the request (redact auth header if present)
+  const logHeaders = { ...headers };
+  if ('Authorization' in logHeaders) {
+    logHeaders['Authorization'] = '[REDACTED]';
+  }
+  logger.api.request(method, url, { body, headers: logHeaders });
 
   // Create abort controller for timeout
   const controller = new AbortController();
