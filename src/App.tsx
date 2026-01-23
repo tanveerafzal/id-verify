@@ -1,4 +1,6 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
+import { useEffect, useRef } from 'react'
+import { logger } from './lib/logger'
 import { LandingPage } from './components/LandingPage'
 import { CareersPage } from './components/CareersPage'
 import { TermsOfService } from './components/TermsOfService'
@@ -42,9 +44,34 @@ import './styles/partner.css'
 import './styles/admin.css'
 import './styles/user.css'
 
+// Navigation logger component
+function NavigationLogger() {
+  const location = useLocation()
+  const prevLocation = useRef(location.pathname)
+
+  useEffect(() => {
+    if (prevLocation.current !== location.pathname) {
+      logger.nav(prevLocation.current, location.pathname)
+      prevLocation.current = location.pathname
+    }
+  }, [location])
+
+  useEffect(() => {
+    // Log initial page load
+    logger.info('Initial navigation', {
+      pathname: location.pathname,
+      search: location.search,
+      hash: location.hash,
+    })
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  return null
+}
+
 function App() {
   return (
     <BrowserRouter>
+      <NavigationLogger />
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/careers" element={<CareersPage />} />

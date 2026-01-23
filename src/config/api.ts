@@ -1,4 +1,6 @@
 // API configuration
+import { logger } from '../lib/logger';
+
 // Base URL should be just the server URL without /api/v1
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -13,12 +15,18 @@ export const getVerifyUrl = (apiKey: string): string => {
   return `${VERIFY_URL}?apiKey=${apiKey}`;
 };
 
-console.log('[API Config] Environment:', import.meta.env.MODE);
-console.log('[API Config] DEV mode:', import.meta.env.DEV);
-console.log('[API Config] PROD mode:', import.meta.env.PROD);
-console.log('[API Config] VITE_API_BASE_URL:', import.meta.env.VITE_API_BASE_URL);
-console.log('[API Config] API_BASE_URL:', API_BASE_URL);
-console.log('[API Config] window.location:', typeof window !== 'undefined' ? window.location.href : 'N/A');
+// Log API configuration (using structured logger)
+const apiLogger = logger.createLogger('APIConfig');
+apiLogger.info('API Configuration loaded', {
+  environment: import.meta.env.MODE,
+  devMode: import.meta.env.DEV,
+  prodMode: import.meta.env.PROD,
+  apiBaseUrl: API_BASE_URL,
+  sdkUrl: SDK_URL,
+  verifyUrl: VERIFY_URL,
+  sdkEnvironment: SDK_ENVIRONMENT,
+  windowLocation: typeof window !== 'undefined' ? window.location.href : 'N/A',
+});
 
 // Helper function to resolve asset URLs (e.g., uploaded logos, documents)
 // Converts paths to URLs that work in both development and production
@@ -77,7 +85,7 @@ export const getAssetUrl = (path: string | undefined): string | undefined => {
 export const getApiUrl = (path: string): string => {
   // In development, use relative paths (Vite proxy handles it)
   if (import.meta.env.DEV) {
-    console.log('[API Config] DEV mode - returning relative path:', path);
+    apiLogger.debug('DEV mode - using relative path', { path });
     return path; // e.g., /api/partners/register
   }
 
@@ -85,7 +93,6 @@ export const getApiUrl = (path: string): string => {
   // Remove /api prefix and add /api/v1
   const cleanPath = path.replace(/^\/api/, '');
   const fullUrl = `${API_BASE_URL}/api/v1${cleanPath}`;
-  console.log('[API Config] PROD mode - converting', path, 'to', fullUrl);
-  console.log('[API Config] Final URL will be:', fullUrl);
+  apiLogger.debug('PROD mode - URL resolved', { originalPath: path, resolvedUrl: fullUrl });
   return fullUrl;
 };
