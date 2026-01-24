@@ -142,7 +142,7 @@ export const SDKTestPage: React.FC = () => {
     console.log('[SDKTestPage] - VERIFY_URL base:', VERIFY_URL);
     console.log('[SDKTestPage] - Full verify URL:', verifyUrl);
     console.log('[SDKTestPage] - Init config:', initConfig);
-    console.log('[SDKTestPage] - SDK will load iframe from: https://sdk.trustcredo.com/verify?api-key=' + partnerId);
+    console.log('[SDKTestPage] - SDK will load iframe from:', `${VERIFY_URL}?api-key=${partnerId}`);
 
     try {
       // Initialize SDK with API key
