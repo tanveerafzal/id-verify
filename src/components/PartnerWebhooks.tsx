@@ -26,6 +26,8 @@ export const PartnerWebhooks: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedWebhook, setSelectedWebhook] = useState<WebhookLog | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [resendingWebhookId, setResendingWebhookId] = useState<string | null>(null);
+  const [resendMessage, setResendMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   useEffect(() => {
     loadWebhooks();
@@ -116,6 +118,51 @@ export const PartnerWebhooks: React.FC = () => {
 
   const closeModal = () => {
     setSelectedWebhook(null);
+    setResendMessage(null);
+  };
+
+  const handleResendWebhook = async (verificationId: string) => {
+    const token = localStorage.getItem('partnerToken');
+
+    if (!token) {
+      navigate('/partner/login');
+      return;
+    }
+
+    setResendingWebhookId(verificationId);
+    setResendMessage(null);
+
+    try {
+      const response = await fetch(getApiUrl(`/api/partners/verifications/${verificationId}/resend-webhook`), {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      let data;
+      const responseText = await response.text();
+      try {
+        data = responseText ? JSON.parse(responseText) : {};
+      } catch {
+        data = { error: responseText || `Server error: ${response.status}` };
+      }
+
+      if (!response.ok) {
+        throw new Error(data.error || data.message || `Failed to resend webhook: ${response.status}`);
+      }
+
+      setResendMessage({ type: 'success', text: 'Webhook resent successfully!' });
+      // Refresh the webhook list to show the new delivery
+      loadWebhooks();
+    } catch (err) {
+      setResendMessage({
+        type: 'error',
+        text: err instanceof Error ? err.message : 'Failed to resend webhook'
+      });
+    } finally {
+      setResendingWebhookId(null);
+    }
   };
 
   if (loading) {
@@ -373,8 +420,21 @@ export const PartnerWebhooks: React.FC = () => {
                 </div>
               </div>
 
+              {resendMessage && (
+                <div className={resendMessage.type === 'success' ? 'success-alert' : 'error-alert'} style={{ margin: '0 24px 16px' }}>
+                  {resendMessage.text}
+                </div>
+              )}
+
               <div className="modal-footer">
                 <button className="btn btn-secondary" onClick={closeModal}>Close</button>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => handleResendWebhook(selectedWebhook.verificationId)}
+                  disabled={resendingWebhookId === selectedWebhook.verificationId}
+                >
+                  {resendingWebhookId === selectedWebhook.verificationId ? 'Resending...' : 'Resend Webhook'}
+                </button>
               </div>
             </div>
           </div>
