@@ -36,10 +36,11 @@ export const SDKTestPage: React.FC = () => {
   const [sdkLoaded, setSdkLoaded] = useState(false);
   const [sdkError, setSdkError] = useState<string | null>(null);
   const [loadingProfile, setLoadingProfile] = useState(true);
+  const [remainingVerifications, setRemainingVerifications] = useState<number | null>(null);
 
-  // Load partner profile to get API key
+  // Load partner profile and usage stats
   useEffect(() => {
-    const loadPartnerProfile = async () => {
+    const loadPartnerData = async () => {
       const token = localStorage.getItem('partnerToken');
       if (!token) {
         navigate('/partner/login');
@@ -47,27 +48,38 @@ export const SDKTestPage: React.FC = () => {
       }
 
       try {
-        const response = await fetch(getApiUrl('/api/partners/profile'), {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
+        // Fetch profile and usage stats in parallel
+        const [profileResponse, statsResponse] = await Promise.all([
+          fetch(getApiUrl('/api/partners/profile'), {
+            headers: { 'Authorization': `Bearer ${token}` }
+          }),
+          fetch(getApiUrl('/api/partners/usage-stats'), {
+            headers: { 'Authorization': `Bearer ${token}` }
+          })
+        ]);
 
-        if (response.ok) {
-          const data = await response.json();
+        if (profileResponse.ok) {
+          const data = await profileResponse.json();
           if (data.data?.apiKey) {
             setPartnerId(data.data.apiKey);
           }
         }
+
+        if (statsResponse.ok) {
+          const statsData = await statsResponse.json();
+          setRemainingVerifications(statsData.data?.remainingVerifications ?? null);
+        }
       } catch (error) {
-        console.error('Failed to load partner profile:', error);
+        console.error('Failed to load partner data:', error);
       } finally {
         setLoadingProfile(false);
       }
     };
 
-    loadPartnerProfile();
+    loadPartnerData();
   }, [navigate]);
+
+  const isVerificationLimitReached = remainingVerifications !== null && remainingVerifications <= 0;
 
   // Get the IDV instance from the SDK namespace
   const getIDV = (): IDVInstance | null => {
@@ -304,6 +316,16 @@ console.log('Verification ID:', data.id);`;
               </div>
             )}
 
+            {isVerificationLimitReached && (
+              <div className="info-alert" style={{ marginBottom: '16px' }}>
+                <strong>Verification Limit Reached</strong>
+                <p style={{ margin: '8px 0 0' }}>
+                  You have exhausted all your verification attempts for this billing period.
+                  Please upgrade your plan or wait for the next billing cycle to continue testing.
+                </p>
+              </div>
+            )}
+
             <div className="test-form">
               <div className="form-group">
                 <label htmlFor="partnerId">API Key</label>
@@ -322,7 +344,7 @@ console.log('Verification ID:', data.id);`;
               <button
                 className="btn-test"
                 onClick={handleTest}
-                disabled={isLoading || !sdkLoaded || loadingProfile}
+                disabled={isLoading || !sdkLoaded || loadingProfile || isVerificationLimitReached}
               >
                 {isLoading ? 'Verification in Progress...' : 'Start Verification'}
               </button>

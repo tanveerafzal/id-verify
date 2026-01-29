@@ -574,39 +574,6 @@ export const PartnerSettings: React.FC = () => {
             </div>
           </div>
 
-          {/* General Verification Link */}
-          <div className="settings-section">
-            <h2>General Verification Link</h2>
-            <p className="section-description">
-              Share this link with your customers to start the ID verification process.
-              This link is unique to your company and will show your branding.
-            </p>
-            <div className="verification-link-box">
-              <code className="verification-link">
-                {getVerifyUrl(partner.apiKey)}
-              </code>
-              <div className="link-actions">
-                <button
-                  type="button"
-                  className="btn btn-secondary btn-sm"
-                  onClick={() => copyToClipboard(getVerifyUrl(partner.apiKey))}
-                >
-                  Copy Link
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-primary btn-sm"
-                  onClick={() => window.open(getVerifyUrl(partner.apiKey), '_blank')}
-                >
-                  Test Link
-                </button>
-              </div>
-            </div>
-            <p className="link-note">
-              <strong>Tip:</strong> For personalized verification links with user details pre-filled, use the "Request Verification" feature or API to generate links in the format: <code>?verification-request=&lt;encrypted-token&gt;</code>
-            </p>
-          </div>
-
           {/* Notification Settings */}
           <div className="settings-section">
             <h2>Notification Settings</h2>

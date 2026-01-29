@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PartnerLayout } from './PartnerLayout';
-import { getApiUrl, getVerifyUrl } from '../config/api';
+import { getApiUrl } from '../config/api';
 
 interface Partner {
   id: string;
@@ -285,48 +285,6 @@ export const PartnerDashboard: React.FC = () => {
                 </span>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Verification Link Section */}
-      <div className="verification-link-section">
-        <div className="dashboard-card full-width">
-          <div className="card-header">
-            <h3>General Verification Link</h3>
-          </div>
-          <div className="card-content">
-            <p className="link-description">
-              Share this link with your customers to start the ID verification process.
-              This link is unique to your company and will show your branding.
-            </p>
-            {copyMessage && (
-              <div className="success-message">
-                {copyMessage}
-              </div>
-            )}
-            <div className="verification-link-box">
-              <code className="verification-link">
-                {getVerifyUrl(partner.apiKey)}
-              </code>
-              <div className="link-actions">
-                <button
-                  className="btn-copy"
-                  onClick={() => copyToClipboard(getVerifyUrl(partner.apiKey))}
-                >
-                  Copy Link
-                </button>
-                <button
-                  className="btn-secondary"
-                  onClick={() => window.open(getVerifyUrl(partner.apiKey), '_blank')}
-                >
-                  Test Link
-                </button>
-              </div>
-            </div>
-            <p className="link-note">
-              <strong>Tip:</strong> For personalized verification links with user details pre-filled, use the "Request Verification" feature or API to generate links in the format: <code>?verification-request=&lt;encrypted-token&gt;</code>
-            </p>
           </div>
         </div>
       </div>
