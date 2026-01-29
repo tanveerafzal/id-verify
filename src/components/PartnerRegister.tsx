@@ -120,7 +120,7 @@ export const PartnerRegister: React.FC = () => {
         </div>
 
         <div className="free-tier-badge">
-          <span>🎉</span> Free Tier - 100 verifications/month included!
+          <span>🎉</span> Free Tier - 10 verifications/month included!
         </div>
 
         <form onSubmit={handleSubmit} className="auth-form">
