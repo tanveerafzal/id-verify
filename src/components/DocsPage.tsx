@@ -27,7 +27,7 @@ export const DocsPage: React.FC = () => {
           </div>
           <div className="nav-links">
             <a href="/docs" className="active">Docs</a>
-            <a href="/sdk-test">SDK</a>
+            <a href="/partner/sdk-test">SDK</a>
             <a href="/#about">About</a>
             <a href="/#contact-us">Contact Us</a>
           </div>

@@ -121,6 +121,16 @@ export const PartnerLayout: React.FC<PartnerLayoutProps> = ({ children }) => {
 
         <div className="sidebar-footer">
           <button
+            className={`nav-item ${isActive('/partner/sdk-test') ? 'active' : ''}`}
+            onClick={() => {
+              navigate('/partner/sdk-test');
+              setIsMobileMenuOpen(false);
+            }}
+          >
+            <span className="nav-icon">🧪</span>
+            <span className="nav-label">Test SDK</span>
+          </button>
+          <button
             className={`nav-item ${isActive('/partner/settings') ? 'active' : ''}`}
             onClick={() => {
               navigate('/partner/settings');
