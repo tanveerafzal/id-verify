@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PartnerLayout } from './PartnerLayout';
-import { getApiUrl, getAssetUrl, getVerifyUrl } from '../config/api';
+import { getApiUrl, getAssetUrl } from '../config/api';
 
 interface Partner {
   id: string;
