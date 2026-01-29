@@ -78,7 +78,7 @@ export const LandingPage: React.FC = () => {
             </div>
             */}
             <a href="/docs">Docs</a>
-            <a href="/sdk-test">SDK</a>
+            <a href="/partner/sdk-test">SDK</a>
             <a href="#about">About</a>
             <a href="#contact-us">Contact Us</a>
           </div>
@@ -762,7 +762,7 @@ export const LandingPage: React.FC = () => {
             <div className="footer-column">
               <h4>Product</h4>
               <a href="/docs">Documentation</a>
-              <a href="/sdk-test">SDK</a>
+              <a href="/partner/sdk-test">SDK</a>
               <a href="https://verify.trustcredo.com/verify?verification-request=KajLfFLOjraHyS1BgQr3DjfWhSX48cRa4H7WtUDk0ZwtkjZdOGGj_ZbaT7KHuOGENW3OYOa3GShs6JWbLnZ82G0Icus" target="_blank" rel="noopener noreferrer">Demo</a>
             </div>
             <div className="footer-column">

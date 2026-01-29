@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { SEO } from './SEO';
-import { SDK_URL, VERIFY_URL, SDK_TEST_API_KEY, SDK_ENVIRONMENT, getVerifyUrl } from '../config/api';
+import { SDK_URL, VERIFY_URL, SDK_ENVIRONMENT, getVerifyUrl, getApiUrl } from '../config/api';
+import { PartnerLayout } from './PartnerLayout';
 
 interface IDVInstance {
   init: (config: { apiKey: string; environment?: string; debug?: boolean }) => void;
@@ -30,11 +30,56 @@ declare global {
 
 export const SDKTestPage: React.FC = () => {
   const navigate = useNavigate();
-  const [partnerId, setPartnerId] = useState(SDK_TEST_API_KEY);
+  const [partnerId, setPartnerId] = useState('');
   const [testResult, setTestResult] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [sdkLoaded, setSdkLoaded] = useState(false);
   const [sdkError, setSdkError] = useState<string | null>(null);
+  const [loadingProfile, setLoadingProfile] = useState(true);
+  const [remainingVerifications, setRemainingVerifications] = useState<number | null>(null);
+
+  // Load partner profile and usage stats
+  useEffect(() => {
+    const loadPartnerData = async () => {
+      const token = localStorage.getItem('partnerToken');
+      if (!token) {
+        navigate('/partner/login');
+        return;
+      }
+
+      try {
+        // Fetch profile and usage stats in parallel
+        const [profileResponse, statsResponse] = await Promise.all([
+          fetch(getApiUrl('/api/partners/profile'), {
+            headers: { 'Authorization': `Bearer ${token}` }
+          }),
+          fetch(getApiUrl('/api/partners/usage-stats'), {
+            headers: { 'Authorization': `Bearer ${token}` }
+          })
+        ]);
+
+        if (profileResponse.ok) {
+          const data = await profileResponse.json();
+          if (data.data?.apiKey) {
+            setPartnerId(data.data.apiKey);
+          }
+        }
+
+        if (statsResponse.ok) {
+          const statsData = await statsResponse.json();
+          setRemainingVerifications(statsData.data?.remainingVerifications ?? null);
+        }
+      } catch (error) {
+        console.error('Failed to load partner data:', error);
+      } finally {
+        setLoadingProfile(false);
+      }
+    };
+
+    loadPartnerData();
+  }, [navigate]);
+
+  const isVerificationLimitReached = remainingVerifications !== null && remainingVerifications <= 0;
 
   // Get the IDV instance from the SDK namespace
   const getIDV = (): IDVInstance | null => {
@@ -245,43 +290,10 @@ const { data } = await response.json();
 console.log('Verification ID:', data.id);`;
 
   return (
-    <div className="sdk-test-page">
-      <SEO
-        title="SDK Test - TrustCredo"
-        description="Test your TrustCredo integration and explore SDK options."
-      />
-
-      {/* Navigation */}
-      <nav className="landing-nav">
-        <div className="nav-container">
-          <div className="nav-brand">
-            <img
-              src="/website-logo-horizontal.png"
-              alt="TrustCredo"
-              className="nav-logo"
-              onClick={() => navigate('/')}
-              style={{ cursor: 'pointer' }}
-            />
-          </div>
-          <div className="nav-links">
-            <a href="/docs">Docs</a>
-            <a href="/sdk-test" className="active">SDK</a>
-            <a href="/#about">About</a>
-            <a href="/#contact-us">Contact Us</a>
-          </div>
-          <div className="nav-actions">
-            <button className="btn-nav-secondary" onClick={() => navigate('/partner/login')}>
-              Login
-            </button>
-            <button className="btn-nav-primary" onClick={() => navigate('/partner/register')}>
-              Get Started
-            </button>
-          </div>
-        </div>
-      </nav>
-
-      {/* SDK Test Content */}
-      <div className="sdk-test-container">
+    <PartnerLayout>
+      <div className="sdk-test-page">
+        {/* SDK Test Content */}
+        <div className="sdk-test-container">
         <div className="sdk-test-header">
           <h1>SDK Test Console</h1>
           <p>Test your integration and explore different implementation options</p>
@@ -304,6 +316,16 @@ console.log('Verification ID:', data.id);`;
               </div>
             )}
 
+            {isVerificationLimitReached && (
+              <div className="info-alert" style={{ marginBottom: '16px' }}>
+                <strong>Verification Limit Reached</strong>
+                <p style={{ margin: '8px 0 0' }}>
+                  You have exhausted all your verification attempts for this billing period.
+                  Please upgrade your plan or wait for the next billing cycle to continue testing.
+                </p>
+              </div>
+            )}
+
             <div className="test-form">
               <div className="form-group">
                 <label htmlFor="partnerId">API Key</label>
@@ -312,16 +334,17 @@ console.log('Verification ID:', data.id);`;
                   id="partnerId"
                   value={partnerId}
                   onChange={(e) => setPartnerId(e.target.value)}
-                  placeholder="Enter your API Key"
+                  placeholder={loadingProfile ? 'Loading...' : 'Enter your API Key'}
                   className="form-input"
+                  disabled={loadingProfile}
                 />
-                <small>Find your API Key in your dashboard under Settings</small>
+                <small>Your API Key has been pre-filled from your account</small>
               </div>
 
               <button
                 className="btn-test"
                 onClick={handleTest}
-                disabled={isLoading || !sdkLoaded}
+                disabled={isLoading || !sdkLoaded || loadingProfile || isVerificationLimitReached}
               >
                 {isLoading ? 'Verification in Progress...' : 'Start Verification'}
               </button>
@@ -388,5 +411,6 @@ console.log('Verification ID:', data.id);`;
         </div>
       </div>
     </div>
+    </PartnerLayout>
   );
 };

@@ -97,7 +97,7 @@ function App() {
         <Route path="/partner/accept-invite" element={<PartnerAcceptInvite />} />
         <Route path="/roadmap" element={<Roadmap />} />
         <Route path="/docs" element={<DocsPage />} />
-        <Route path="/sdk-test" element={<SDKTestPage />} />
+        <Route path="/partner/sdk-test" element={<SDKTestPage />} />
 
         {/* Admin Routes */}
         <Route path="/admin/login" element={<AdminLogin />} />

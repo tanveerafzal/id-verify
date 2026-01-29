@@ -52,17 +52,23 @@ export const PartnerLogin: React.FC = () => {
       });
 
       let data;
+      const responseText = await response.text();
+      log.debug('Raw response received', {
+        status: response.status,
+        statusText: response.statusText,
+        contentLength: responseText.length,
+        responseText: responseText.substring(0, 500)
+      });
+      console.log('[PartnerLogin] Raw API response:', responseText);
+
       try {
-        const responseText = await response.text();
-        log.debug('Raw response received', {
-          status: response.status,
-          statusText: response.statusText,
-          contentLength: responseText.length
-        });
         data = JSON.parse(responseText);
       } catch (parseErr) {
-        log.error('Failed to parse response as JSON', parseErr);
-        throw new Error('Server returned invalid response');
+        log.error('Failed to parse response as JSON', {
+          error: parseErr,
+          responseText: responseText.substring(0, 1000)
+        });
+        throw new Error(`Server returned invalid response: ${responseText.substring(0, 200)}`);
       }
 
       const duration = timer.end({ component: 'PartnerLogin' });
